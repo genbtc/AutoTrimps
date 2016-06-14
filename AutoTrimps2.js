@@ -1537,6 +1537,10 @@ function autoMap() {
             enemyHealth *= 2;
         }
         var pierceMod = 0;
+        if(game.global.challengeActive == 'Crushed'){
+            //For crushed, need to farm to ensure we are 1-hitting fairly consistently.  But, only want to farm if there are upgrades
+            shouldFarm = baseDamage < enemyHealth;
+        }
         if(game.global.challengeActive == 'Lead') {
             enemyDamage *= (1 + (game.challenges.Lead.stacks * 0.04));
             enemyHealth *= (1 + (game.challenges.Lead.stacks * 0.04));
