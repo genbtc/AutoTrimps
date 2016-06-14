@@ -423,7 +423,7 @@ function autoHeirlooms() {
                 var styleIndex = 4 + (bestUpgrade.index * 3);
                 //enclose in backtic ` for template string $ stuff
                 document.getElementById('selectedHeirloom').childNodes[0].childNodes[styleIndex].style.backgroundColor = "lightblue";
-                document.getElementById('selectedHeirloom').childNodes[0].childNodes[styleIndex].setAttribute("onmouseover", `tooltip(\'Heirloom\', \"customText\", event, \'<div class=\"selectedHeirloomItem heirloomRare${loom.rarity}\"> AutoTrimps recommended upgrade for this item. </div>\'         )`);
+                document.getElementById('selectedHeirloom').childNodes[0].childNodes[styleIndex].setAttribute("onmouseover", 'tooltip(\'Heirloom\', \"customText\", event, \'<div class=\"selectedHeirloomItem heirloomRare${loom.rarity}\"> AutoTrimps recommended upgrade for this item. </div>\'         )');
                 document.getElementById('selectedHeirloom').childNodes[0].childNodes[styleIndex].setAttribute("onmouseout", 'tooltip(\'hide\')');
                 //lightblue = greyish
                 //swapClass("tooltipExtra", "tooltipExtraHeirloom", document.getElementById("tooltipDiv"));
@@ -1621,7 +1621,12 @@ function autoMap() {
             for (siphlvl; siphlvl < game.global.world; siphlvl++) {
                 //check HP vs damage and find how many siphonology levels we need.
                 var maphp = getEnemyMaxHealth(siphlvl);
-                if (baseDamage * 4 < maphp){
+                if(game.global.challengeActive == 'Crushed'){
+                	//In Crushed, keep the siphonology level down.
+                	if (baseDamage < maphp){
+                		break;
+                	}
+                }else if (baseDamage * 4 < maphp){
                     break;
                 }
             }
