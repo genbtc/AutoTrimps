@@ -1616,7 +1616,7 @@ function autoMap() {
         
         //Create siphonology on demand section.
         var siphlvl = game.global.world - game.portal.Siphonology.level;
-
+        debug("Checking Siphonology");
         if (getPageSetting('DynamicSiphonology')){
             for (siphlvl; siphlvl < game.global.world; siphlvl++) {
                 //check HP vs damage and find how many siphonology levels we need.
