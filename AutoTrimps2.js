@@ -1623,6 +1623,7 @@ function autoMap() {
                 var maphp = getEnemyMaxHealth(siphlvl);
                 if(game.global.challengeActive == 'Crushed'){
                 	//In Crushed, keep the siphonology level down.
+                	debug("Siphonology Check: MyDmg: " + baseDamage + "     MapHP: " + maphp);
                 	if (baseDamage < maphp){
                 		break;
                 	}
