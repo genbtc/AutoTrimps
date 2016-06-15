@@ -1616,15 +1616,12 @@ function autoMap() {
         
         //Create siphonology on demand section.
         var siphlvl = game.global.world - game.portal.Siphonology.level;
-        debug("Checking Siphonology");
         if (getPageSetting('DynamicSiphonology')){
             for (siphlvl; siphlvl < game.global.world; siphlvl++) {
                 //check HP vs damage and find how many siphonology levels we need.
                 var maphp = getEnemyMaxHealth(siphlvl);
-                debug("Siphonology Check: MyDmg: " + baseDamage + "     MapHP: " + maphp);
                 if(game.global.challengeActive == 'Crushed'){
                     //In Crushed, keep the siphonology level down.
-                    
                     if (baseDamage < maphp){
                         break;
                     }
