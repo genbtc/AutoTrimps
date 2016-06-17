@@ -1335,7 +1335,7 @@ function manualLabor() {
 function autoStance() {
     if (game.global.gridArray.length === 0) return;
     
-    baseDamage = game.global.soldierCurrentAttack * 2 * (1 + (game.global.achievementBonus / 100)) * ((game.global.antiStacks * game.portal.Anticipation.level * game.portal.Anticipation.modifier) + 1) * (1 + (game.global.roboTrimpLevel * 0.2));
+    baseDamage = game.global.soldierCurrentAttack * (1 + (game.global.achievementBonus / 100)) * ((game.global.antiStacks * game.portal.Anticipation.level * game.portal.Anticipation.modifier) + 1) * (1 + (game.global.roboTrimpLevel * 0.2));
     if (game.global.formation == 2) {
         baseDamage /= 4;
     } else if (game.global.formation != "0") {
@@ -1510,7 +1510,7 @@ function autoMap() {
     baseDamage *= mapbonusmulti;
     //farm if basedamage is between 10 and 16)
     if(!getPageSetting('DisableFarm')) {
-        shouldFarm = shouldFarm ? getEnemyMaxHealth(game.global.world) / (baseDamage*4) > 2.5 : getEnemyMaxHealth(game.global.world) / (baseDamage*4) > 4;
+        shouldFarm = shouldFarm ? getEnemyMaxHealth(game.global.world) / baseDamage > 5 : getEnemyMaxHealth(game.global.world) / baseDamage > 8;
     }
     //DECIMAL VOID MAPS:
     var voidMapLevelSetting = getPageSetting('VoidMaps');
@@ -1518,7 +1518,7 @@ function autoMap() {
     var voidMapLevelSettingZone = (voidMapLevelSetting+"").split(".")[0];
     var voidMapLevelSettingMap = (voidMapLevelSetting+"").split(".")[1];
     if (voidMapLevelSettingMap === undefined || game.global.challengeActive == 'Lead') 
-        voidMapLevelSettingMap = 95;
+        voidMapLevelSettingMap = 93;
     if (voidMapLevelSettingMap.length == 1) voidMapLevelSettingMap += "0";  //entering 187.70 becomes 187.7, this will bring it back to 187.70
     var voidsuntil = getPageSetting('RunNewVoidsUntil');
     needToVoid = voidMapLevelSetting > 0 && game.global.totalVoidMaps > 0 && game.global.lastClearedCell + 1 >= voidMapLevelSettingMap && 
@@ -1551,7 +1551,7 @@ function autoMap() {
             }
             pierceMod += (game.challenges.Lead.stacks * 0.001);
             baseDamage /= mapbonusmulti;
-            shouldFarm = shouldFarm ? enemyHealth / (baseDamage*4) > 2.5 : enemyHealth / (baseDamage*4) > 2.5;
+            shouldFarm = enemyHealth / baseDamage > 5;
         }
         if(game.global.totalVoidMaps == 0 || !needToVoid)
             doVoids = false;
@@ -1560,7 +1560,7 @@ function autoMap() {
                         || 
                         baseHealth > 30 * (enemyDamage - baseBlock > 0 ? enemyDamage - baseBlock : enemyDamage * (0.2 + pierceMod)));
         enoughDamage = baseDamage * 4 > enemyHealth;
-        HDratio = getEnemyMaxHealth(game.global.world) / baseDamage;
+        HDratio = getEnemyMaxHealth(game.global.world) / baseDamage*2;  //throw a 2 in there to keep the displayed value consistent after an internal removal of 2x off basedamage
         //prevents map-screen from flickering on and off during startup when base damage is 0.
         if (baseDamage > 0){
             var shouldDoMaps = !enoughHealth || !enoughDamage || shouldFarm;
@@ -1801,8 +1801,8 @@ function autoMap() {
                         && 
                             (
                             (game.resources.trimps.realMax() <= game.resources.trimps.owned + 1)
-                            || (game.global.challengeActive == 'Lead' && game.global.lastClearedCell > 95) 
-                            || (doVoids && game.global.lastClearedCell > 95)
+                            || (game.global.challengeActive == 'Lead' && game.global.lastClearedCell > 93) 
+                            || (doVoids && game.global.lastClearedCell > 93)
                             )
                         ){
                         mapsClicked();
@@ -1929,12 +1929,18 @@ function calculateNextHeliumHour (stacked) {
     return heliumNow;
 }
 
+var lastZone = 0;
 function autoPortal() {
     switch (autoTrimpSettings.AutoPortal.selected) {
         //portal if we have lower He/hr than the previous zone
         case "Helium Per Hour":
             game.stats.bestHeliumHourThisRun.evaluate();    //normally, evaluate() is only called once per second, but the script runs at 10x a second.
-            if(game.global.world > game.stats.bestHeliumHourThisRun.atZone) {
+            var zoneincremented = false;
+            if(game.global.world > lastZone) {
+                lastZone = game.global.world;
+                zoneincremented = true;
+            }
+            if(game.global.world > game.stats.bestHeliumHourThisRun.atZone && zoneincremented == true) {
                 var bestHeHr = game.stats.bestHeliumHourThisRun.storedValue;
                 var myHeliumHr = game.stats.heliumHour.value();
                 var heliumHrBuffer = Math.abs(getPageSetting('HeliumHrBuffer'));
