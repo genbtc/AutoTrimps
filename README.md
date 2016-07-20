@@ -218,14 +218,14 @@ Some older date 2/10/2016?
 If you would like to use only the graphs module, replace `AutoTrimps2.js` with `Graphs.js` in the bookmark or your userscript.
 
 - Install greasemonkey/tampermonkey
-- Open the tampermonkey dashboard and go to utilities – in the URL box paste https://raw.githubusercontent.com/zininzinin/AutoTrimps/gh-pages/user.js and import
+- Open the tampermonkey dashboard and go to utilities – in the URL box paste https://raw.githubusercontent.com/genbtc/AutoTrimps/gh-pages/user.js and import
 - Alternatively, paste the contents of `user.js` into a user script - go to https://trimps.github.io
 - You will know you have the script loaded if you see the Automation and Graphs buttons in the game menu at the bottom
 
 V2 is now bookmark compatible. Create new bookmark and set its target to:
 
 ```js
-javascript:with(document)(head.appendChild(createElement('script')).src='https://zininzinin.github.io/AutoTrimps/AutoTrimps2.js')._
+javascript:with(document)(head.appendChild(createElement('script')).src='https://genbtc.github.io/AutoTrimps/AutoTrimps2.js')._
 ```
 
 You can also paste V2 into the console of the page. Geez so many options :/

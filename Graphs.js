@@ -1,9 +1,9 @@
 //Import the Chart Libraries
 var head = document.getElementsByTagName('head')[0];
-var script = document.createElement('script');
-script.type = 'text/javascript';
-script.src = 'https://code.highcharts.com/highcharts.js';
-head.appendChild(script);
+var chartscript = document.createElement('script');
+chartscript.type = 'text/javascript';
+chartscript.src = 'https://code.highcharts.com/highcharts.js';
+head.appendChild(chartscript);
 
 
 //Create the graph button and div
@@ -22,7 +22,7 @@ btn.id = 'graphSelection';
 if(game.options.menu.darkTheme.enabled == 2) btn.setAttribute("style", "color: #C8C8C8");
 else btn.setAttribute("style", "color:black");
 btn.setAttribute("class", "settingBtn");
-btn.setAttribute("onmouseover", 'tooltip(\"Graph\", \"customText\", event, \"What graph would you like to display you nerd you?\")');
+btn.setAttribute("onmouseover", 'tooltip(\"Graph\", \"customText\", event, \"What graph would you like to display?\")');
 btn.setAttribute("onmouseout", 'tooltip("hide")');
 btn.setAttribute("onchange", "setGraphData(document.getElementById('graphSelection').value)");
 for (var item in graphList) {
@@ -67,10 +67,132 @@ btn3.setAttribute("class", "settingBtn");
 if(game.options.menu.darkTheme.enabled != 2) btn3.setAttribute("style", "color:black");
 document.getElementById('graphParent').appendChild(btn3);
 
+//Create Graphs export button.
+var btnExp = document.createElement("button");
+var exp = document.createTextNode("Export your Graph Database");
+btnExp.appendChild(exp);
+btnExp.setAttribute("class", "settingBtn");
+if(game.options.menu.darkTheme.enabled != 2)
+    btnExp.setAttribute("style", "margin-left: 250px; margin-right: 5px; color:black");
+else
+    btnExp.setAttribute("style", "margin-left: 250px; margin-right: 5px;");
+document.getElementById('graphParent').appendChild(btnExp);
+btnExp.setAttribute("onclick", 'GraphsImportExportTooltip(\'ExportGraphs\', null, \'update\')');
+
+/*
+// IMPORT BUTTON IS NOT FINISHED. DO NOT USE! = ONLY FOR DEVELOPERS WHO CAN FIX IT
+
+//Create Graphs import button.
+var btnImp = document.createElement("button");
+var imp = document.createTextNode("Replace your Graph Database");
+btnImp.appendChild(imp);
+btnImp.setAttribute("class", "settingBtn");
+if(game.options.menu.darkTheme.enabled != 2)
+    btnImp.setAttribute("style", "color:black");
+document.getElementById('graphParent').appendChild(btnImp);
+btnImp.setAttribute("onclick", 'GraphsImportExportTooltip(\'ImportGraphs\', null, \'update\')');
+
+//Create Graphs append  button.
+var btnImpApp = document.createElement("button");
+var impapp = document.createTextNode("Append to your Graph Database");
+btnImpApp.appendChild(impapp);
+btnImpApp.setAttribute("class", "settingBtn");
+if(game.options.menu.darkTheme.enabled != 2)
+    btnImpApp.setAttribute("style", "color:black");
+document.getElementById('graphParent').appendChild(btnImpApp);
+btnImpApp.setAttribute("onclick", 'GraphsImportExportTooltip(\'AppendGraphs\', null, \'update\')');
+*/
+
+//tips bottom line
 var tips = document.createElement('div');
 tips.innerHTML = 'Tips: You can zoom by dragging a box around an area. You can turn series off by clicking them on the legend. To delete a portal, Type its portal number in the box and press Delete Selected';
 document.getElementById('graphParent').appendChild(tips);
 
+function GraphsImportExportTooltip(what, isItIn, event) {
+	if (game.global.lockTooltip) 
+        return;
+	var elem = document.getElementById("tooltipDiv");
+	swapClass("tooltipExtra", "tooltipExtraNone", elem);
+	var ondisplay = null; // if non-null, called after the tooltip is displayed
+	var tooltipText;
+	var costText = "";
+	if (what == "ExportGraphs"){
+		tooltipText = "This is your GRAPH DATABASE save string. There are many like it but this one is yours. Save this save somewhere safe so you can save time next time. <br/><br/><textarea id='exportArea' style='width: 100%' rows='5'>" + JSON.stringify(allSaveData) + "</textarea>";
+        costText = "<div class='maxCenter'><div id='confirmTooltipBtn' class='btn btn-info' onclick='cancelTooltip()'>Got it</div>";
+		if (document.queryCommandSupported('copy')){
+			costText += "<div id='clipBoardBtn' class='btn btn-success'>Copy to Clipboard</div>";
+			ondisplay = function(){
+				document.getElementById('exportArea').select();
+				document.getElementById('clipBoardBtn').addEventListener('click', function(event) {
+				    document.getElementById('exportArea').select();
+					  try {
+						document.execCommand('copy');
+					  } catch (err) {
+						document.getElementById('clipBoardBtn').innerHTML = "Error, not copied";
+					  }
+				});
+            };
+		}
+        else {
+            ondisplay = function(){
+                document.getElementById('exportArea').select();
+            };
+		}
+		costText += "</div>";
+	}
+	if (what == "ImportGraphs"){
+        //runs the loadGraphs() function.
+		tooltipText = "Replaces your GRAPH DATABASE with this save string! It'll be fine, I promise.<br/><br/><textarea id='importBox' style='width: 100%' rows='5'></textarea>";
+		costText="<div class='maxCenter'><div id='confirmTooltipBtn' class='btn btn-info' onclick='cancelTooltip(); loadGraphs();'>Import</div><div class='btn btn-info' onclick='cancelTooltip()'>Cancel</div></div>";
+		ondisplay = function () {
+			document.getElementById('importBox').focus();
+        };
+    }
+	if (what == "AppendGraphs"){
+        //runs the appendGraphs() function.
+		tooltipText = "Appends to your GRAPH DATABASE with this save string (combines them)! It'll be fine, I hope.<br/><br/><textarea id='importBox' style='width: 100%' rows='5'></textarea>";
+		costText="<div class='maxCenter'><div id='confirmTooltipBtn' class='btn btn-info' onclick='cancelTooltip(); appendGraphs();'>Import</div><div class='btn btn-info' onclick='cancelTooltip()'>Cancel</div></div>";
+		ondisplay = function () {
+			document.getElementById('importBox').focus();
+        };
+    }    
+    game.global.lockTooltip = true;
+    elem.style.left = "33.75%";
+    elem.style.top = "25%";
+	document.getElementById("tipTitle").innerHTML = what;
+	document.getElementById("tipText").innerHTML = tooltipText;
+	document.getElementById("tipCost").innerHTML = costText;
+	elem.style.display = "block";
+	if (ondisplay !== null)
+		ondisplay();
+}
+
+//function to take the text string, and use it to load and overwrite your saved data (for graphs)
+function loadGraphs() {
+    var thestring = document.getElementById("importBox").value.replace(/(\r\n|\n|\r|\s)/gm,"");
+    var tmpset = JSON.parse(thestring);
+    if (tmpset == null)
+        return;
+    //should have done more error checking with at least an error message.
+    allSaveData = tmpset;
+    //refresh
+    drawGraph();
+}
+
+//function to take the text string, and use it to load and append your saved data (for graphs) to the old database 
+function appendGraphs() {
+    //currently overwrites:
+    /*
+    var thestring = document.getElementById("importBox").value.replace(/(\r\n|\n|\r|\s)/gm,"");
+    var tmpset = JSON.parse(thestring);
+    if (tmpset == null)
+        return;
+    //should have done more error checking with at least an error message.
+    allSaveData = tmpset;
+    */
+    //refresh
+    drawGraph();
+}
 
 function clearData(portal) {
     if(portal) {
@@ -210,14 +332,14 @@ function gatherInfo() {
         allSaveData = [];
     }
     //clear filtered loot data upon portaling. <5 check to hopefully throw out bone portal shenanigans
-  /*  if(allSaveData[allSaveData.length -1].totalPortals != game.global.totalPortals && game.global.world < 5) {
+    if(allSaveData[allSaveData.length -1].totalPortals != game.global.totalPortals && game.global.world < 5) {
     	for(var r in filteredLoot) {
     		for(var b in filteredLoot[r]){
     			filteredLoot[r][b] = 0;
     		}
     	}
     }
-    */
+    
     if (allSaveData.length === 0) {
         pushData();
     } else if (allSaveData[allSaveData.length - 1].world != game.global.world) {
@@ -373,6 +495,9 @@ function setGraphData(graph) {
         var totalNull = 0;
         var theChallenge = '';
         graphData = [];
+        var averagenulli = 0;
+        var sumnulli = 0;
+        var count = 0;
         for (var i in allSaveData) {
             if (allSaveData[i].totalPortals != currentPortal) {
                 if(currentPortal == -1) {
@@ -386,21 +511,28 @@ function setGraphData(graph) {
                     continue;
                 }
                 graphData[0].data.push([allSaveData[i-1].totalPortals, totalNull]);
+                count++;
+                sumnulli += totalNull;
+                //console.log("nulli was: " + totalNull + " " + count + " @ " + allSaveData[i].totalPortals);   //debug
                 theChallenge = allSaveData[i].challenge;
                 totalNull = 0;
                 currentPortal = allSaveData[i].totalPortals;
+                
             }
             if(allSaveData[i].nullifium > totalNull) {
-                 totalNull = allSaveData[i].nullifium;
-             }
+                totalNull = allSaveData[i].nullifium;                
+            }
         }
+        averagenulli = sumnulli / count;
+        //console.log("Average nulli was: " + averagenulli);
         title = 'Nullifium Gained Per Portal';
+        if (averagenulli)
+            title = "Average " + title + " = " + averagenulli;
         xTitle = 'Portal';
         yTitle = 'Nullifium Gained';
         yType = 'Linear';
         break;
 
-           /* 
             case 'Loot Sources':
             graphData = [];
             graphData[0] = {name: 'Metal', data: lootData.metal};
@@ -415,7 +547,7 @@ function setGraphData(graph) {
               return Highcharts.numberFormat(this.y,1);
             };
             break;
-            */
+
             
             case 'Run Time':
             var currentPortal = -1;
@@ -565,7 +697,7 @@ function setGraphData(graph) {
     }
 }
 
-/*
+
 function updateCustomStats() {
     var timeThisPortal = new Date().getTime() - game.global.portalTime;
     timeThisPortal /= 3600000;
@@ -662,7 +794,7 @@ function addResCheckMax(what, number, noStat, fromGather, nonFilteredLoot) {
 }
 
 //END game function overwrite
-*/
+
 var allSaveData = [];
 var graphData = [];
 var tmpGraphData = JSON.parse(localStorage.getItem('allSaveData'));

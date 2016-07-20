@@ -391,21 +391,33 @@ function sortHeirlooms(){
 //Automatically evaluate and carry the best heirlooms, and recommend upgrades for equipped items. AutoHeirlooms will only change carried items when the heirlooms window is not open. Carried items will be compared and swapped with the types that are already carried. If a carry spot is empty, it will be filled with the best shield (if available). Evaluation is based ONLY on the following mods (listed in order of priority, high to low): Void Map Drop Chance/Trimp Attack, Crit Chance/Crit Damage, Miner Efficiency/Metal Drop, Gem Drop/Dragimp Efficiency, Farmer/Lumberjack Efficiency. For the purposes of carrying, rarity trumps all of the stat evaluations. Empty mod slots are valued at the average value of the best missing mod.
 function autoHeirlooms() {
     var bestUpgrade;
+    
     if(!heirloomsShown && game.global.heirloomsExtra.length > 0){
-        sortHeirlooms();
+        //start by immediately carrying any protected heirlooms.
+        for(var extra in game.global.heirloomsExtra) {
+            var theLoom = game.global.heirloomsExtra[extra];
+            if ((theLoom.protected) && (game.global.heirloomsCarried.length < game.global.maxCarriedHeirlooms)){
+                selectHeirloom(extra, 'heirloomsExtra');
+                carryHeirloom();
+            }
+        }
+        //re-evaluate their worth (needed to refresh the worth array since we possibly moved the extras)
+        sortHeirlooms();        
         for(var carried in game.global.heirloomsCarried) {
             var theLoom = game.global.heirloomsCarried[carried];
             if(worth[theLoom.type].length == 0) continue;
             var index = worth[theLoom.type][0];
             if(theLoom.rarity < game.global.heirloomsExtra[index].rarity || (theLoom.rarity == game.global.heirloomsExtra[index].rarity && evaluateMods(carried, 'heirloomsCarried') < evaluateMods(index, 'heirloomsExtra'))) {
-                selectHeirloom(carried, 'heirloomsCarried');
-                stopCarryHeirloom();
-                selectHeirloom(index, 'heirloomsExtra');
-                carryHeirloom();
-                sortHeirlooms();
+                if (!theLoom.protected){
+                    selectHeirloom(carried, 'heirloomsCarried');
+                    stopCarryHeirloom();
+                    selectHeirloom(index, 'heirloomsExtra');
+                    carryHeirloom();
+                    sortHeirlooms();
+                }
             }
         }
-        if(game.global.heirloomsCarried.length < game.global.maxCarriedHeirlooms) {
+        if (game.global.heirloomsCarried.length < game.global.maxCarriedHeirlooms){
             if(worth.Shield.length > 0)
                 selectHeirloom(worth.Shield[0], 'heirloomsExtra');
             else if(worth.Staff.length > 0)
@@ -439,6 +451,48 @@ function autoHeirlooms() {
     //advBtn.setAttribute("onmouseover", 'tooltip(\"Advanced Settings\", \"customText\", event, \"Leave off unless you know what you\'re doing with them.\")');
 }
 
+//commented out because it was never finished.
+/*
+function autoSwapHeirlooms(loomtype="Shield" || "Staff", loomlocation="heirloomsCarried" || "heirloomsExtra"){
+    var bestfooddroploom = [];
+    var bestwooddroploom = [];
+    var bestmetaldroploom = [];
+    var bestgemdroploom = [];
+    
+    //search in loomlocation="heirloomsCarried" or "heirloomsExtra"
+    for(var eachloom in game.global[loomlocation]) {
+        var theLoom = game.global[loomlocation][eachloom];
+        if (theLoom.type != loomtype)
+            continue;
+        var effRating = evaluateMods(eachloom,loomlocation);
+    } 
+    if(loomlocation.includes('Equipped'))
+        loom = game.global[loomlocation];
+    else
+        loom = game.global[loomlocation][loom];
+    
+    //---------- SHIELD SWAP FUNCTION (search on critdamage and swap)---
+    var count = 0;
+    for (var carried in game.global.heirloomsCarried){
+        var heirloom = game.global.heirloomsCarried[carried];
+        for (var item in heirloom.mods){
+            if (item[0] == "critDamage" && item[1] > 300){
+                unequipHeirloom(game.global.ShieldEquipped, "heirloomsCarried");
+                game.global.ShieldEquipped = heirloom;
+                game.global.heirloomsCarried.splice(count, 1);
+            }
+        }
+        count++;
+    }
+    for (var item in heirloom.mods){
+        game.heirlooms[heirloom.type][heirloom.mods[item][0]].currentBonus += heirloom.mods[item][1];
+    }
+    populateHeirloomWindow();    
+    //-------OK------
+}
+*/
+
+
 //Determines the best heirloom mods
 function evaluateMods(loom, location, upgrade) {
     var index = loom;
@@ -456,14 +510,16 @@ function evaluateMods(loom, location, upgrade) {
     //  return loom.rarity;
     var eff = 0;
     for(var m in loom.mods) {
+        var critmult = getPlayerCritDamageMult();
+        var critchance = getPlayerCritChance();
         switch(loom.mods[m][0]) {
             case 'critChance': 
-                tempEff = ((loom.mods[m][1]/100) * (getPlayerCritDamageMult() - game.heirlooms.Shield.critDamage.currentBonus/100))/((getPlayerCritChance() - game.heirlooms.Shield.critChance.currentBonus/100) * (getPlayerCritDamageMult() - game.heirlooms.Shield.critDamage.currentBonus/100) + 1 - (getPlayerCritChance() - game.heirlooms.Shield.critChance.currentBonus/100));
+                tempEff = ((loom.mods[m][1]/100) * (critmult - game.heirlooms.Shield.critDamage.currentBonus/100))/((critchance - game.heirlooms.Shield.critChance.currentBonus/100) * (critmult - game.heirlooms.Shield.critDamage.currentBonus/100) + 1 - (critchance - game.heirlooms.Shield.critChance.currentBonus/100));
                 eff += tempEff;
                 if(upgrade){
                     if(loom.mods[m][1] >= 30) break;
                     steps = game.heirlooms.Shield.critChance.steps[loom.rarity];
-                    tempEff = (steps[2]/100 * getPlayerCritDamageMult())/((getPlayerCritChance() * getPlayerCritDamageMult()) + 1 - getPlayerCritChance());
+                    tempEff = (steps[2]/100 * critmult)/((critchance * critmult) + 1 - critchance);
                     tempEff = tempEff / getModUpgradeCost(loom, m);
                     if(tempEff > bestUpgrade.effect) {
                         bestUpgrade.effect = tempEff;
@@ -473,11 +529,11 @@ function evaluateMods(loom, location, upgrade) {
                 }
                 break;
             case 'critDamage':
-                tempEff = ((loom.mods[m][1]/100) * (getPlayerCritChance() - game.heirlooms.Shield.critChance.currentBonus/100))/((getPlayerCritDamageMult() - game.heirlooms.Shield.critDamage.currentBonus/100) * (getPlayerCritChance() - game.heirlooms.Shield.critChance.currentBonus/100) + 1 - (getPlayerCritChance() - game.heirlooms.Shield.critChance.currentBonus/100));
+                tempEff = ((loom.mods[m][1]/100) * (critchance - game.heirlooms.Shield.critChance.currentBonus/100))/((critmult - game.heirlooms.Shield.critDamage.currentBonus/100) * (critchance - game.heirlooms.Shield.critChance.currentBonus/100) + 1 - (critchance - game.heirlooms.Shield.critChance.currentBonus/100));
                 eff += tempEff;
                 if(upgrade){
                     steps = game.heirlooms.Shield.critDamage.steps[loom.rarity];
-                    tempEff = (getPlayerCritChance() * (steps[2]/100))/((getPlayerCritDamageMult() * getPlayerCritChance()) + 1 - getPlayerCritChance());
+                    tempEff = (critchance * (steps[2]/100))/((critmult * critchance) + 1 - critchance);
                     tempEff = tempEff / getModUpgradeCost(loom, m);
                     if(tempEff > bestUpgrade.effect) {
                         bestUpgrade.effect = tempEff;
@@ -619,13 +675,13 @@ function evaluateMods(loom, location, upgrade) {
                     else if(!checkForMod('critChance', index, location)){
                         steps = game.heirlooms.Shield.critChance.steps[loom.rarity];
                         av = steps[0] + ((steps[1] - steps[0])/2);
-                        tempEff = (av * (getPlayerCritDamageMult() - game.heirlooms.Shield.critDamage.currentBonus/100))/((getPlayerCritChance() - game.heirlooms.Shield.critChance.currentBonus/100) * (getPlayerCritDamageMult() - game.heirlooms.Shield.critDamage.currentBonus/100) + 1 - (getPlayerCritChance() - game.heirlooms.Shield.critChance.currentBonus/100));
+                        tempEff = (av * (critmult - game.heirlooms.Shield.critDamage.currentBonus/100))/((critchance - game.heirlooms.Shield.critChance.currentBonus/100) * (critmult - game.heirlooms.Shield.critDamage.currentBonus/100) + 1 - (critchance - game.heirlooms.Shield.critChance.currentBonus/100));
                         eff += tempEff;
                     }
                     else if(!checkForMod('critDamage', index, location)){
                         steps = game.heirlooms.Shield.critDamage.steps[loom.rarity];
                         av = steps[0] + ((steps[1] - steps[0])/2);
-                        tempEff = (av * (getPlayerCritChance() - game.heirlooms.Shield.critChance.currentBonus/100))/((getPlayerCritDamageMult() - game.heirlooms.Shield.critDamage.currentBonus/100) * (getPlayerCritChance() - game.heirlooms.Shield.critChance.currentBonus/100) + 1 - (getPlayerCritChance() - game.heirlooms.Shield.critChance.currentBonus/100));
+                        tempEff = (av * (critchance - game.heirlooms.Shield.critChance.currentBonus/100))/((critmult - game.heirlooms.Shield.critDamage.currentBonus/100) * (critchance - game.heirlooms.Shield.critChance.currentBonus/100) + 1 - (critchance - game.heirlooms.Shield.critChance.currentBonus/100));
                         eff += tempEff;
                     }
                 }
@@ -640,7 +696,7 @@ function evaluateMods(loom, location, upgrade) {
                     }
                 }
                 break;
-                //metalDrop? trimpHealth?
+                //trimpHealth?
         }
     }
     if(upgrade) return bestUpgrade;
@@ -877,17 +933,29 @@ function getBreedTime(remaining,round) {
 function initializeAutoTrimps() {
     debug('AutoTrimps Loaded!', '*spinner3');
     loadPageVariables();
-    javascript: with(document)(head.appendChild(createElement('script')).src = 'https://genbtc.github.io/AutoTrimps/NewUI.js')._;
-    javascript: with(document)(head.appendChild(createElement('script')).src = 'https://genbtc.github.io/AutoTrimps/Graphs.js')._;
-    //needed for local testing.
-    //javascript:with(document)(head.appendChild(createElement('script')).src = 'https://localhost:4445/NewUI.js')._;
-    //javascript:with(document)(head.appendChild(createElement('script')).src = 'https://localhost:4445/Graphs.js')._;    
+
+    var atscript = document.getElementById('AutoTrimps-script')
+      , base = 'https://genbtc.github.io/AutoTrimps'
+      ;
+    if (atscript !== null) {
+        base = atscript.getAttribute('src').replace(/\/AutoTrimps2\.js$/, '');
+    }
+    document.head.appendChild(document.createElement('script')).src = base + '/NewUI.js';
+    document.head.appendChild(document.createElement('script')).src = base + '/Graphs.js';
     toggleSettingsMenu();
     toggleSettingsMenu();
 }
 
 function easyMode() {
-    if (game.resources.trimps.realMax() > 3000000) {
+    if (game.buildings.Tribute.owned > 1500) {
+        autoTrimpSettings.FarmerRatio.value = '1';
+        autoTrimpSettings.LumberjackRatio.value = '2';
+        autoTrimpSettings.MinerRatio.value = '22';    
+    } else if (game.buildings.Tribute.owned > 1000) {
+        autoTrimpSettings.FarmerRatio.value = '1';
+        autoTrimpSettings.LumberjackRatio.value = '1';
+        autoTrimpSettings.MinerRatio.value = '10';    
+    } else if (game.resources.trimps.realMax() > 3000000) {
         autoTrimpSettings.FarmerRatio.value = '3';
         autoTrimpSettings.LumberjackRatio.value = '1';
         autoTrimpSettings.MinerRatio.value = '4';
@@ -1035,9 +1103,23 @@ function buyJobs() {
     
 
     var oldBuy = game.global.buyAmt;
-
-    //Simple buy if you can
-    if (getPageSetting('MaxTrainers') > game.jobs.Trainer.owned || getPageSetting('MaxTrainers') == -1) {
+    
+    //Trainers capped to tributes percentage.
+    var trainerpercent = getPageSetting('TrainerCaptoTributes');
+    if (trainerpercent > 0){
+        var curtrainercost = game.jobs.Trainer.cost.food[0]*Math.pow(game.jobs.Trainer.cost.food[1],game.jobs.Trainer.owned);
+        var curtributecost = getBuildingItemPrice(game.buildings.Tribute, "food", false, 1) * Math.pow(1 - game.portal.Resourceful.modifier, game.portal.Resourceful.level);
+        if (curtrainercost < curtributecost * (trainerpercent / 100) && (getPageSetting('MaxTrainers') > game.jobs.Trainer.owned || getPageSetting('MaxTrainers') == -1)) {
+            game.global.buyAmt = 1;
+            if (canAffordJob('Trainer', false) && !game.jobs.Trainer.locked) {
+                freeWorkers = Math.ceil(game.resources.trimps.realMax() / 2) - game.resources.trimps.employed;
+                if (freeWorkers <= 0) safeBuyJob('Farmer', -1);
+                safeBuyJob('Trainer');
+            }
+        }
+    }
+    //regular old way of hard capping trainers to a certain number. (sorry about lazy duplicate coding)
+    else if (getPageSetting('MaxTrainers') > game.jobs.Trainer.owned || getPageSetting('MaxTrainers') == -1) {
         game.global.buyAmt = 1;
         if (canAffordJob('Trainer', false) && !game.jobs.Trainer.locked) {
             freeWorkers = Math.ceil(game.resources.trimps.realMax() / 2) - game.resources.trimps.employed;
@@ -1363,17 +1445,27 @@ function autoStance() {
     //start analyzing autostance
     var missingHealth = game.global.soldierHealthMax - game.global.soldierHealth;
     var newSquadRdy = game.resources.trimps.realMax() <= game.resources.trimps.owned + 1;
-
+    var enemy;
     if (!game.global.mapsActive && !game.global.preMapsActive) {
-        var enemy;
         if (typeof game.global.gridArray[game.global.lastClearedCell + 1] === 'undefined') {
             enemy = game.global.gridArray[0];
         } else {
             enemy = game.global.gridArray[game.global.lastClearedCell + 1];
         }
-        var enemyFast = game.global.challengeActive != 'Nom' && (game.badGuys[enemy.name].fast || game.global.challengeActive == 'Slow');
+        var enemyFast = game.global.challengeActive == "Slow" || ((((game.badGuys[enemy.name].fast || enemy.corrupted) && game.global.challengeActive != "Nom") && game.global.challengeActive != "Coordinate"));
         var enemyHealth = enemy.health;
         var enemyDamage = enemy.attack * 1.2;   //changed by genBTC from 1.19 (there is no fluctuation)
+        //check for world Corruption
+        if (enemy.corrupted){
+            enemyHealth *= getCorruptScale("health");
+            enemyDamage *= getCorruptScale("attack");
+        }
+        if (enemy && enemy.corrupted == 'corruptStrong') {
+            enemyDamage *= 2;
+        }
+        if (enemy && enemy.corrupted == 'corruptTough') {
+            enemyHealth *= 5;
+        }
         if (game.global.challengeActive == 'Lead') {
             enemyDamage *= (1 + (game.challenges.Lead.stacks * 0.04));
         }
@@ -1390,13 +1482,24 @@ function autoStance() {
         var bHealth = baseHealth/2;
     } else if (game.global.mapsActive && !game.global.preMapsActive) {
         if (typeof game.global.mapGridArray[game.global.lastClearedMapCell + 1] === 'undefined') {
-            var enemy = game.global.mapGridArray[0];
+            enemy = game.global.mapGridArray[0];
         } else {
-            var enemy = game.global.mapGridArray[game.global.lastClearedMapCell + 1];
+            enemy = game.global.mapGridArray[game.global.lastClearedMapCell + 1];
         }
-        var enemyFast = game.global.challengeActive != 'Nom' && (game.badGuys[enemy.name].fast || game.global.challengeActive == 'Slow' || game.global.voidBuff == 'doubleAttack');
+        var enemyFast = game.global.challengeActive == "Slow" || ((((game.badGuys[enemy.name].fast || enemy.corrupted) && game.global.challengeActive != "Nom") || game.global.voidBuff == "doubleAttack") && game.global.challengeActive != "Coordinate");
         var enemyHealth = enemy.health;
         var enemyDamage = enemy.attack * 1.2;   //changed by genBTC from 1.19 (there is no fluctuation)
+        //check for voidmap Corruption
+        if (getCurrentMapObject().location == "Void" && enemy.corrupted){
+            enemyHealth *= (getCorruptScale("health") / 2).toFixed(1);
+            enemyDamage *= (getCorruptScale("attack") / 2).toFixed(1);
+        }
+        if (enemy && enemy.corrupted == 'corruptStrong') {
+            enemyDamage *= 2;
+        }
+        if (enemy && enemy.corrupted == 'corruptTough') {
+            enemyHealth *= 5;
+        }
         if (game.global.challengeActive == 'Lead') {
             enemyDamage *= (1 + (game.challenges.Lead.stacks * 0.04));
         }
@@ -1429,20 +1532,20 @@ function autoStance() {
         if(xHealth > baseBlock)
             xDamage = enemyDamage*5 - baseBlock > 0 ? enemyDamage*5 - baseBlock : 0;
     }
-    if (game.global.voidBuff == "bleed") {
+    if (game.global.voidBuff == "bleed" || (enemy && enemy.corrupted == 'corruptBleed')) {
         dDamage += game.global.soldierHealth * 0.2;
         xDamage += game.global.soldierHealth * 0.2;
         bDamage += game.global.soldierHealth * 0.2;
     }
     baseDamage *= (game.global.titimpLeft > 0 ? 2 : 1); //consider titimp
     //double attack is OK if the buff isn't double attack, or we will survive a double attack, or we are going to one-shot them (so they won't be able to double attack)
-    var doubleAttackOK = game.global.voidBuff != 'doubleAttack' || ((newSquadRdy && dHealth > dDamage * 2) || dHealth - missingHealth > dDamage * 2) || enemyHealth < baseDamage;
+    var doubleAttackOK = (game.global.voidBuff != 'doubleAttack' || (enemy && enemy.corrupted != 'corruptDbl')) || ((newSquadRdy && dHealth > dDamage * 2) || dHealth - missingHealth > dDamage * 2) || enemyHealth < baseDamage;
     //lead attack ok if challenge isn't lead, or we are going to one shot them, or we can survive the lead damage
     var leadDamage = game.challenges.Lead.stacks * 0.0005;
     var leadAttackOK = game.global.challengeActive != 'Lead' || enemyHealth < baseDamage || ((newSquadRdy && dHealth > dDamage + (dHealth * leadDamage)) || (dHealth - missingHealth > dDamage + (dHealth * leadDamage)));
     //added voidcrit.
     //voidcrit is OK if the buff isn't crit-buff, or we will survive a crit, or we are going to one-shot them (so they won't be able to crit)
-    var isCritVoidMap = game.global.voidBuff == 'getCrit';
+    var isCritVoidMap = game.global.voidBuff == 'getCrit' || (enemy && enemy.corrupted == 'corruptCrit');
     var voidCritinDok = !isCritVoidMap || (!enemyFast ? enemyHealth < baseDamage : false) || (newSquadRdy && dHealth > dVoidCritDamage) || (dHealth - missingHealth > dVoidCritDamage);
     var voidCritinXok = !isCritVoidMap || (!enemyFast ? enemyHealth < baseDamage : false) || (newSquadRdy && xHealth > xVoidCritDamage) || (xHealth - missingHealth > xVoidCritDamage);
 
@@ -1508,9 +1611,14 @@ function autoMap() {
     //calculate with map bonus
     var mapbonusmulti = 1 + (0.20*game.global.mapBonus);
     baseDamage *= mapbonusmulti;
+    
+    //get average enemyhealth and damage for the next zone, cell 30, snimp type and multiply it by a factor of .85 (don't ask why)
+    var enemyDamage = getEnemyMaxAttack(game.global.world + 1, 30, 'Snimp', .85);
+    var enemyHealth = getEnemyMaxHealth(game.global.world + 1);
+    
     //farm if basedamage is between 10 and 16)
     if(!getPageSetting('DisableFarm')) {
-        shouldFarm = shouldFarm ? getEnemyMaxHealth(game.global.world) / baseDamage > 5 : getEnemyMaxHealth(game.global.world) / baseDamage > 8;
+        shouldFarm = shouldFarm ? getEnemyMaxHealth(game.global.world) / baseDamage > 20 : getEnemyMaxHealth(game.global.world) / baseDamage > 32;
     }
     //DECIMAL VOID MAPS:
     var voidMapLevelSetting = getPageSetting('VoidMaps');
@@ -1525,10 +1633,8 @@ function autoMap() {
                                 ((game.global.world == voidMapLevelSettingZone && !getPageSetting('RunNewVoids')) 
                                                                 || 
                                  (game.global.world >= voidMapLevelSettingZone && getPageSetting('RunNewVoids')))
-                         && ((voidsuntil != -1 && game.global.world <= voidsuntil) || (voidsuntil == -1)) ;
+                         && ((voidsuntil != -1 && game.global.world <= voidsuntil) || (voidsuntil == -1) || !getPageSetting('RunNewVoids')) ;
     if (game.global.mapsUnlocked) {
-        var enemyDamage = getEnemyMaxAttack(game.global.world + 1, 30, 'Snimp', .85);
-        var enemyHealth = getEnemyMaxHealth(game.global.world + 1);
       
         needPrestige = (autoTrimpSettings.Prestige.selected != "Off" && game.mapUnlocks[autoTrimpSettings.Prestige.selected].last <= game.global.world - 5 && game.global.mapsUnlocked && game.global.challengeActive != "Frugal");
         if(game.global.challengeActive == "Toxicity") {
@@ -1551,7 +1657,7 @@ function autoMap() {
             }
             pierceMod += (game.challenges.Lead.stacks * 0.001);
             baseDamage /= mapbonusmulti;
-            shouldFarm = enemyHealth / baseDamage > 5;
+            shouldFarm = enemyHealth / baseDamage > 10;
         }
         if(game.global.totalVoidMaps == 0 || !needToVoid)
             doVoids = false;
@@ -1559,8 +1665,8 @@ function autoMap() {
         enoughHealth = (baseHealth * 4 > 30 * (enemyDamage - baseBlock / 2 > 0 ? enemyDamage - baseBlock / 2 : enemyDamage * (0.2 + pierceMod))
                         || 
                         baseHealth > 30 * (enemyDamage - baseBlock > 0 ? enemyDamage - baseBlock : enemyDamage * (0.2 + pierceMod)));
-        enoughDamage = baseDamage * 4 > enemyHealth;
-        HDratio = getEnemyMaxHealth(game.global.world) / baseDamage*2;  //throw a 2 in there to keep the displayed value consistent after an internal removal of 2x off basedamage
+        enoughDamage = baseDamage * 8 > enemyHealth;
+        HDratio = getEnemyMaxHealth(game.global.world) / baseDamage;
         //prevents map-screen from flickering on and off during startup when base damage is 0.
         if (baseDamage > 0){
             var shouldDoMaps = !enoughHealth || !enoughDamage || shouldFarm;
@@ -1585,10 +1691,12 @@ function autoMap() {
                 if (game.global.mapBonus != 10)
                     shouldDoMaps = true;
             }
-            else if (game.global.gridArray[99].nomStacks == 30)
-                shouldFarm = true;
-        
-            debug("Farming off Nom stacks");
+            //Go into maps on 30 stacks, and I assume our enemy health to damage ratio is worse than 10 (so that shouldfarm would be true),
+            // and exit farming once we get enough damage to drop under 10.
+            if (game.global.gridArray[99].nomStacks == 30){
+                shouldFarm = (HDratio > 20);
+                shouldDoMaps = true;
+            }
         }
 
         //stack tox stacks if heliumGrowing has been set to true, or if we need to clear our void maps
@@ -1646,6 +1754,8 @@ function autoMap() {
         if (keysSorted[0]) var highestMap = keysSorted[0];
         else shouldDoMap = "create";
          
+        //set the repeatBionics flag (farm bionics before spire), for the repeat management code below.
+        var repeatBionics = getPageSetting('RunBionicBeforeSpire') && game.global.bionicOwned >= 5; //WARNING: Currently repeats infinitely, no cue to exit, not sure under what conditions it should exit. When Farming is done? When is that? When player's Block exceeds cell 100's Spire improbability's attack?  We can get the attack data with this command: getSpireStats(100, "Improbability", "attack"). Needs to know there are no more prestige items so we can set this to false.
 
 
         //Look through all the maps we have - find Uniques or Voids and figure out if we need to run them.
@@ -1683,8 +1793,9 @@ function autoMap() {
                         shouldFarm = false;
                 }
                 shouldDoMap = theMap.id;
-                if(game.global.mapsActive && game.global.challengeActive == "Nom") {
-                    if(game.global.mapGridArray[game.global.lastClearedMapCell + 1].nomStacks > 6) {
+                //Restart the voidmap if we hit 30 nomstacks on the final boss
+                if(game.global.mapsActive && game.global.challengeActive == "Nom" && getPageSetting('FarmWhenNomStacks7')) {
+                    if(game.global.mapGridArray[theMap.size-1].nomStacks >= 100) {
                         mapsClicked(true);
                     }
                 }
@@ -1726,6 +1837,29 @@ function autoMap() {
                         break;
                     }
                 }
+                //run Bionics before spire to farm.
+                if (getPageSetting('RunBionicBeforeSpire') && (game.global.world == 199 || game.global.world == 200) && theMap.name.includes('Bionic Wonderland')){                    
+                    //this is how to check if a bionic is green or not.
+                    var bionicnumber = ((theMap.level - 125) / 15).toFixed(2);
+                    //if numbers match, map is green, so run it. (do the pre-requisite bionics one at a time in order)
+                    if (bionicnumber == game.global.bionicOwned && bionicnumber < 5){ 
+                        shouldDoMap = theMap.id;
+                        break;
+                    }
+                    //Count number of prestige items left,
+                    var prestigeitemsleft = addSpecials(true, true, theMap);
+                    //Always run Bionic Wonderland VI (if there are still prestige items available)
+                    if (theMap.name == 'Bionic Wonderland VI' && prestigeitemsleft > 0){
+                        shouldDoMap = theMap.id;
+                        break;
+                    }
+                    //Run Bionic Wonderland VII (if we have exhausted all the prestiges from VI) - Code will not get to here if we have items still.
+                    if (theMap.name == 'Bionic Wonderland VII' && prestigeitemsleft > 0){
+                        shouldDoMap = theMap.id;
+                        break;
+                    }
+                }
+                
                 //other unique maps here
             }
         }
@@ -1762,7 +1896,8 @@ function autoMap() {
             if (game.global.mapsActive) {
                 
                 //if we are doing the right map, and it's not a norecycle (unique) map, and we aren't going to hit max map bonus
-                if (shouldDoMap == game.global.currentMapId && !game.global.mapsOwnedArray[getMapIndex(game.global.currentMapId)].noRecycle && (game.global.mapBonus < 9 || shouldFarm || stackingTox || needPrestige)) {
+                //or repeatbionics is true and there are still prestige items available to get
+                if (shouldDoMap == game.global.currentMapId && (!game.global.mapsOwnedArray[getMapIndex(game.global.currentMapId)].noRecycle && (game.global.mapBonus < 9 || shouldFarm || stackingTox || needPrestige)) || (repeatBionics && addSpecials(true, true, game.global.mapsOwnedArray[getMapIndex(game.global.currentMapId)]) > 0)) {
                     var targetPrestige = autoTrimpSettings.Prestige.selected;
                     //make sure repeat map is on
                     if (!game.global.repeatMap) {
@@ -1938,6 +2073,8 @@ function autoPortal() {
             var zoneincremented = false;
             if(game.global.world > lastZone) {
                 lastZone = game.global.world;
+                console.log("The zone has been incremented. Level " + lastZone);
+                console.log("And the best helium this run was " + game.stats.bestHeliumHourThisRun.storedValue + " at zone: " +  game.stats.bestHeliumHourThisRun.atZone);
                 zoneincremented = true;
             }
             if(game.global.world > game.stats.bestHeliumHourThisRun.atZone && zoneincremented == true) {
@@ -1962,7 +2099,7 @@ function autoPortal() {
                 else
                     doPortal();
             }
-            break;
+            break; 
         case "Balance":
         case "Electricity":
         case "Crushed":
@@ -1970,10 +2107,15 @@ function autoPortal() {
         case "Toxicity":
         case "Watch":
         case "Lead":
+        case "Corrupted":
             if(!game.global.challengeActive) {
                 pushData();
                 doPortal(autoTrimpSettings.AutoPortal.selected);
             }
+            break;
+        case "Spire":
+            if(game.global.world >= 201)
+                doPortal("Lead");
             break;
         default:
             break;
@@ -2012,15 +2154,20 @@ function checkSettings() {
         case "Watch":
             portalLevel = 181;
             break;
+        case "Corrupted":
+            portalLevel = 191;
+            break;              
+        case "Spire":
+            portalLevel = 201;
+            break;        
     }
     if(portalLevel == -1)
-        return;
-    if(autoTrimpSettings.VoidMaps.value >= portalLevel) {
-        tooltip('confirm', null, 'update', 'WARNING: Your void maps are set to complete after your autoPortal, and therefore will not be done at all! Please verify your settings. Remember you can choose \'Custom\' autoPortal along with challenges for complete control over when you portal. <br><br> Estimated autoPortal level: ' + portalLevel , 'cancelTooltip()', 'Void Maps Conflict');
-        return;
-    }
+        return portalLevel;
+    if(autoTrimpSettings.VoidMaps.value >= portalLevel)
+        tooltip('confirm', null, 'update', 'WARNING: Your void maps are set to complete after your autoPortal, and therefore will not be done at all! Please Change Your Settings Now. This Box Will Not Go away Until You do. Remember you can choose \'Custom\' autoPortal along with challenges for complete control over when you portal. <br><br> Estimated autoPortal level: ' + portalLevel , 'cancelTooltip()', 'Void Maps Conflict');
     if((leadCheck || game.global.challengeActive == 'Lead') && (autoTrimpSettings.VoidMaps.value % 2 == 0 && portalLevel < 182))
         tooltip('confirm', null, 'update', 'WARNING: Voidmaps run during Lead on an Even zone do not receive the 2x Helium Bonus for Odd zones, and are also tougher. You should probably fix this.', 'cancelTooltip()', 'Lead Challenge Void Maps');
+    return portalLevel;
 }
 
 function doPortal(challenge) {
@@ -2115,17 +2262,24 @@ function delayStart() {
 function delayStartAgain(){
     setInterval(mainLoop, runInterval);
     updateCustomButtons();
+    document.getElementById('Prestige').value = autoTrimpSettings.PrestigeBackup.selected;
 }
 
 function mainLoop() {
     stopScientistsatFarmers = 250000;   //put this here so it reverts every cycle (in case we portal out of watch challenge)
     game.global.addonUser = true;
+    game.global.autotrimps = {
+        firstgiga: getPageSetting('FirstGigastation'),
+        deltagiga: getPageSetting('DeltaGigastation')
+    }    
     if(getPageSetting('PauseScript')) return;
     if(game.global.viewingUpgrades) return;
     //auto-close breaking the world textbox
     if(document.getElementById('tipTitle').innerHTML == 'The Improbability') cancelTooltip();
     //auto-close the corruption at zone 181 textbox
     if(document.getElementById('tipTitle').innerHTML == 'Corruption') cancelTooltip();
+    //auto-close the Spire notification checkbox
+    if(document.getElementById('tipTitle').innerHTML == 'Spire') cancelTooltip();
     setTitle();          //set the browser title
     setScienceNeeded();  //determine how much science is needed
     updateValueFields(); //refresh the UI
@@ -2157,7 +2311,54 @@ function mainLoop() {
             // debug('triggered fight');
         }
     }
+    //Run the dynamic prestige changing script below.
+    if (getPageSetting('DynamicPrestige')) prestigeChanging();
+    else autoTrimpSettings.Prestige.selected = document.getElementById('Prestige').value; //if we dont want to, just make sure the UI setting and the internal setting are aligned.
 }
+
+//Change prestiges as we go (thanks to Hider)
+//The idea is like this. We will stick to Dagger until the end of the run, then we will slowly start grabbing prestiges, so we can hit the Prestige we want by the last zone.
+//The keywords below "Dagadder" and "GambesOP" are merely representative of the minimum and maximum values. Toggling these on and off, the script will take care of itself, when set to min (Dagger) or max (Gambeson).
+//In this way, we will achieve the desired "maxPrestige" setting (which would be somewhere in the middle, like Polearm) by the end of the run. (instead of like in the past where it was gotten from the beginning and wasting time in early maps.)
+
+function prestigeChanging(){
+    //find out the prestige we want to hit at the end.
+    var maxPrestige = document.getElementById('Prestige').value;
+    var maxPrestigeIndex = document.getElementById('Prestige').selectedIndex;
+    
+    //find out the last zone (checks custom autoportal and challenge's portal zone)
+    var lastzone = checkSettings() - 1; //subtract 1 because the function adds 1 for its own purposes.
+    
+    //stop doing anything if lastzone is not set
+    if (lastzone < 0) return;
+    
+    // so that Dynamic Prestige somewhat accounts for Lead challenge not being able to farm on even levels. This would lead to it needing to farm twice as much on the odd levels. But we should exceed 5 at this point. This is a temp fix only.
+    if (game.global.challengeActive == "Lead" && maxPrestigeIndex <=5)
+        maxPrestigeIndex *= 2;
+        
+    //If we are between 20 and 10 zones before the last zone OR If we are within 10 zones of the last zone:
+    if((game.global.world >= (lastzone-20) && game.global.world < (lastzone-10) && game.global.lastClearedCell < 79)
+        ||
+        (game.global.world >= (lastzone-10) && game.global.world < (lastzone) &&  game.global.lastClearedCell < 79)){
+        if (game.global.mapBonus < maxPrestigeIndex)
+            autoTrimpSettings.Prestige.selected = "GambesOP";
+        else if (game.global.mapBonus >= maxPrestigeIndex)
+            autoTrimpSettings.Prestige.selected = "Dagadder";
+    }
+    
+    //If we are on the last zone:
+    if(game.global.world == lastzone){
+        if (game.global.lastClearedCell < 79 && game.global.mapBonus < 9)
+            autoTrimpSettings.Prestige.selected = "GambesOP";
+        else if (game.global.mapBonus >= 9)
+            autoTrimpSettings.Prestige.selected = "Dagadder";
+    }
+    
+    //If we are over 20 zones away from the last zone (the beginning of the run), use dagger:
+    if (game.global.world < lastzone-20 || game.global.mapBonus == 10)  
+       autoTrimpSettings.Prestige.selected = "Dagadder";
+}
+
 
 
 //we copied message function because this was not able to be called from function debug() without getting a weird scope? related "cannot find function" error.
@@ -2172,6 +2373,10 @@ function message2(messageString, type, lootIcon, extraClass) {
         prefix =  "icomoon icon-";
     }
     else prefix = "glyphicon glyphicon-";
+    //add timestamp
+    if (game.options.menu.timestamps.enabled){ 
+        messageString = ((game.options.menu.timestamps.enabled == 1) ? getCurrentTime() : updatePortalTimer(true)) + " " + messageString; 
+    }
     //add a suitable icon for "AutoTrimps"
     if (lootIcon) 
         messageString = "<span class=\"" + prefix + lootIcon + "\"></span> " + messageString;
@@ -2231,4 +2436,67 @@ function filterMessage2(what){
         toChange[x].style.display = displayed;
     }
     log.scrollTop = log.scrollHeight;
+}
+
+var hrlmProtBtn1 = document.createElement("DIV");
+hrlmProtBtn1.setAttribute('class', 'noselect heirloomBtnActive heirBtn');
+hrlmProtBtn1.setAttribute('onclick', 'protectHeirloom(this,true)');
+hrlmProtBtn1.innerHTML = 'Protect/Unprotect';  //since we cannot detect the selected heirloom on load, ambiguous name
+hrlmProtBtn1.id='protectHeirloomBTN1';
+var hrlmProtBtn2 = document.createElement("DIV");
+hrlmProtBtn2.setAttribute('class', 'noselect heirloomBtnActive heirBtn');
+hrlmProtBtn2.setAttribute('onclick', 'protectHeirloom(this,true)');
+hrlmProtBtn2.innerHTML = 'Protect/Unprotect';
+hrlmProtBtn2.id='protectHeirloomBTN2';
+var hrlmProtBtn3 = document.createElement("DIV");
+hrlmProtBtn3.setAttribute('class', 'noselect heirloomBtnActive heirBtn');
+hrlmProtBtn3.setAttribute('onclick', 'protectHeirloom(this,true)');
+hrlmProtBtn3.innerHTML = 'Protect/Unprotect';
+hrlmProtBtn3.id='protectHeirloomBTN3';
+document.getElementById('equippedHeirloomsBtnGroup').appendChild(hrlmProtBtn1);
+document.getElementById('carriedHeirloomsBtnGroup').appendChild(hrlmProtBtn2);
+document.getElementById('extraHeirloomsBtnGroup').appendChild(hrlmProtBtn3);
+
+
+function protectHeirloom(element,modify){
+    var selheirloom = game.global.selectedHeirloom;  //[number,location]
+    var heirloomlocation = selheirloom[1];
+    var heirloom = game.global[heirloomlocation];
+    if (selheirloom[0] != -1)
+        var heirloom = heirloom[selheirloom[0]];
+    //hard way ^^, easy way>>
+    //var heirloom = getSelectedHeirloom();
+    if (modify)    //sent by onclick of protect button, to toggle the state.
+        heirloom.protected = !heirloom.protected;
+        
+    if (!element) { //then we came from newSelectHeirloom
+        if (heirloomlocation.includes("Equipped"))
+            element = document.getElementById('protectHeirloomBTN1');
+        else if (heirloomlocation == "heirloomsCarried")
+            element = document.getElementById('protectHeirloomBTN2');
+        else if (heirloomlocation == "heirloomsExtra")
+            element = document.getElementById('protectHeirloomBTN3');
+    }
+    if (element)
+        element.innerHTML = heirloom.protected ? 'UnProtect' : 'Protect';
+}
+
+//wrapper for selectHeirloom, to handle the protect button
+function newSelectHeirloom(number, location, elem){
+    selectHeirloom(number, location, elem);
+    protectHeirloom();
+}
+
+//replacement function that inserts a new onclick action into the heirloom icons so it can populate the proper Protect icon. (yes this is the best way to do it.)
+function generateHeirloomIcon(heirloom, location, number){
+    if (typeof heirloom.name === 'undefined') return "<span class='icomoon icon-sad3'></span>";
+    var icon = (heirloom.type == "Shield") ? 'icomoon icon-shield3' : 'glyphicon glyphicon-grain';
+    var html = '<span class="heirloomThing heirloomRare' + heirloom.rarity;
+    if (location == "Equipped") html += ' equipped';
+    var locText = "";
+    if (location == "Equipped") locText += '-1,\'' + heirloom.type + 'Equipped\'';
+    else locText += number + ', \'heirlooms' + location + '\''; 
+    html += '" onmouseover="tooltip(\'Heirloom\', null, event, null, ' + locText + ')" onmouseout="tooltip(\'hide\')" onclick="newSelectHeirloom(';
+    html += locText + ', this)"> <span class="' + icon + '"></span></span>';
+    return html;
 }
