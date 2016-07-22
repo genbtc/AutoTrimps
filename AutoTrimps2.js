@@ -435,7 +435,7 @@ function autoHeirlooms() {
                 var styleIndex = 4 + (bestUpgrade.index * 3);
                 //enclose in backtic ` for template string $ stuff
                 document.getElementById('selectedHeirloom').childNodes[0].childNodes[styleIndex].style.backgroundColor = "lightblue";
-                document.getElementById('selectedHeirloom').childNodes[0].childNodes[styleIndex].setAttribute("onmouseover", `tooltip(\'Heirloom\', \"customText\", event, \'<div class=\"selectedHeirloomItem heirloomRare${loom.rarity}\"> AutoTrimps recommended upgrade for this item. </div>\'         )`);
+                document.getElementById('selectedHeirloom').childNodes[0].childNodes[styleIndex].setAttribute("onmouseover", 'tooltip(\'Heirloom\', \"customText\", event, \'<div class=\"selectedHeirloomItem heirloomRare${loom.rarity}\"> AutoTrimps recommended upgrade for this item. </div>\'         )');
                 document.getElementById('selectedHeirloom').childNodes[0].childNodes[styleIndex].setAttribute("onmouseout", 'tooltip(\'hide\')');
                 //lightblue = greyish
                 //swapClass("tooltipExtra", "tooltipExtraHeirloom", document.getElementById("tooltipDiv"));
@@ -1643,6 +1643,10 @@ function autoMap() {
             enemyHealth *= 2;
         }
         var pierceMod = 0;
+        if(game.global.challengeActive == 'Crushed'){
+            //For crushed, need to farm to ensure we are 1-hitting fairly consistently.  But, only want to farm if there are upgrades
+            shouldFarm = baseDamage < enemyHealth;
+        }
         if(game.global.challengeActive == 'Lead') {
             enemyDamage *= (1 + (game.challenges.Lead.stacks * 0.04));
             enemyHealth *= (1 + (game.challenges.Lead.stacks * 0.04));
@@ -1720,12 +1724,16 @@ function autoMap() {
         
         //Create siphonology on demand section.
         var siphlvl = game.global.world - game.portal.Siphonology.level;
-
         if (getPageSetting('DynamicSiphonology')){
             for (siphlvl; siphlvl < game.global.world; siphlvl++) {
                 //check HP vs damage and find how many siphonology levels we need.
                 var maphp = getEnemyMaxHealth(siphlvl);
-                if (baseDamage * 4 < maphp){
+                if(game.global.challengeActive == 'Crushed'){
+                    //In Crushed, keep the siphonology level down.
+                    if (baseDamage < maphp){
+                        break;
+                    }
+                }else if (baseDamage * 1 < maphp){
                     break;
                 }
             }
