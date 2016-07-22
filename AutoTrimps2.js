@@ -2330,7 +2330,7 @@ function prestigeChanging(){
     
 	// Find total prestiges needed by determining current prestiges versus the desired prestiges by the end of the run
 	var neededPrestige = 0;
-	for (i = 1; i < maxPrestigeIndex ; i++){
+	for (i = 1; i <= maxPrestigeIndex ; i++){
 		if (game.mapUnlocks[autoTrimpSettings.Prestige.list[i]].last <= lastzone){
 			// For Scientist IV bonus, halve the required prestiges to farm
 			if (game.global.sLevel > 3)
