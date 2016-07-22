@@ -2380,6 +2380,8 @@ function prestigeChanging(){
 		else if (lastzone - game.global.world == 4)
 			mapThreshold = 5;
 		
+		// Correcting for the logic of the script that only checks this while a map is underway
+		mapThreshold -= 1;
 		
 		if (game.global.mapBonus < mapThreshold)
             autoTrimpSettings.Prestige.selected = "GambesOP";
