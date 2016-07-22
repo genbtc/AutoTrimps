@@ -2309,16 +2309,18 @@ function mainLoop() {
     else autoTrimpSettings.Prestige.selected = document.getElementById('Prestige').value; //if we dont want to, just make sure the UI setting and the internal setting are aligned.
 }
 
-//Change prestiges as we go (thanks to Hider)
+//Change prestiges as we go (thanks to Hider, reworked by Hyppy)
 //The idea is like this. We will stick to Dagger until the end of the run, then we will slowly start grabbing prestiges, so we can hit the Prestige we want by the last zone.
 //The keywords below "Dagadder" and "GambesOP" are merely representative of the minimum and maximum values. Toggling these on and off, the script will take care of itself, when set to min (Dagger) or max (Gambeson).
 //In this way, we will achieve the desired "maxPrestige" setting (which would be somewhere in the middle, like Polearm) by the end of the run. (instead of like in the past where it was gotten from the beginning and wasting time in early maps.)
 
 function prestigeChanging(){
-    //find out the prestige we want to hit at the end.
-    var maxPrestige = document.getElementById('Prestige').value;
+    //find out the equipment index of the prestige we want to hit at the end.
     var maxPrestigeIndex = document.getElementById('Prestige').selectedIndex;
-    
+	// Cancel dynamic prestige logic if maxPrestigeIndex is less than or equal to 2 (dagger)
+	if (maxPrestigeIndex <= 2)
+		return;
+		
     //find out the last zone (checks custom autoportal and challenge's portal zone)
     var lastzone = checkSettings() - 1; //subtract 1 because the function adds 1 for its own purposes.
     
@@ -2326,45 +2328,68 @@ function prestigeChanging(){
     if (lastzone < 0)
         lastzone = game.global.lastPortal;
     
-    //Lead Challenge: Farm twice as much during odd zones, due to even zones farming being deactivated (and cap at 10)
-    if (game.global.challengeActive == "Lead" && maxPrestigeIndex <=5)
-        maxPrestigeIndex *= 2;
-    
-    //account for repeat button de-activating one zone too late.
-    maxPrestigeIndex -= 1;
-    if (maxPrestigeIndex < 1)
-        maxPrestigeIndex = 1;
-    
-    //possible new algorithm
-    //game.mapUnlocks[targetPrestige].last >= game.global.world - 9
-    //game.mapUnlocks["GambesOP"].last
-    //game.mapUnlocks["Harmabalest"].last
-    //game.mapUnlocks["Greatersword"].last
-    //game.mapUnlocks["Axeidic"].last
-    //game.mapUnlocks["Polierarm"].last
-    //game.mapUnlocks["Megamace"].last
-    //game.mapUnlocks["Dagadder"].last
-    //Find what we have:
-    //game.upgrades["Dagadder"].allowed
-    
-    //If we are between 20 and 10 zones before the last zone OR If we are within 10 zones of the last zone:
-    if(game.global.world >= (lastzone-20) && game.global.world < (lastzone) && game.global.lastClearedCell < 79){
-        if (game.global.mapBonus < maxPrestigeIndex)
+	// Find total prestiges needed by determining current prestiges versus the desired prestiges by the end of the run
+	var neededPrestige = 0;
+	for (i = 1; i <= maxPrestigeIndex ; i++){
+		if (game.mapUnlocks[autoTrimpSettings.Prestige.list[i]].last <= lastzone){
+			// For Scientist IV bonus, halve the required prestiges to farm
+			if (game.global.sLevel > 3)
+				neededPrestige += Math.ceil(Math.ceil((lastzone + 1 - game.mapUnlocks[autoTrimpSettings.Prestige.list[i]].last)/5)/2);
+			else
+				neededPrestige += Math.ceil((lastzone + 1 - game.mapUnlocks[autoTrimpSettings.Prestige.list[i]].last)/5);
+		}
+			
+			
+	}
+	
+	// For Lead runs, we hack this by doubling the neededPrestige to acommodate odd zone-only farming. This might overshoot a bit
+	neededPrestige *= 2;
+	
+	// Determine the number of zones we want to farm.  We will farm 4 maps per zone, then ramp up to 9 maps by the final zone
+	var zonesToFarm = 0;
+	if (neededPrestige == 0){
+		autoTrimpSettings.Prestige.selected = "Dagadder";
+		return;
+	}
+	else if (neededPrestige <= 9)
+		zonesToFarm = 1;
+	else if (neededPrestige <= 17)
+		zonesToFarm = 2;
+	else if (neededPrestige <= 24)
+		zonesToFarm = 3;
+	else if (neededPrestige <= 30)
+		zonesToFarm = 4;
+	else if (neededPrestige <= 35)
+		zonesToFarm = 4;
+	else
+		zonesToFarm = 4 + Math.ceil((neededPrestige - 35)/4);
+
+	// Default map bonus threshold
+	var mapThreshold = 4;
+	
+    //If we are in the zonesToFarm threshold, kick off the prestige farming
+    if(game.global.world > (lastzone-zonesToFarm) && game.global.lastClearedCell < 79){
+		if (lastzone == game.global.world)
+			mapThreshold = 9;
+		else if (lastzone - game.global.world == 1)
+			mapThreshold = 8;
+		else if (lastzone - game.global.world == 2)
+			mapThreshold = 7;
+		else if (lastzone - game.global.world == 3)
+			mapThreshold = 6;
+		else if (lastzone - game.global.world == 4)
+			mapThreshold = 5;
+		
+		
+		if (game.global.mapBonus < mapThreshold)
             autoTrimpSettings.Prestige.selected = "GambesOP";
-        else if (game.global.mapBonus >= maxPrestigeIndex)
+        else if (game.global.mapBonus >= mapThreshold)
             autoTrimpSettings.Prestige.selected = "Dagadder";
     }
     
-    //If we are on the last zone:
-    if(game.global.world == lastzone){
-        if (game.global.lastClearedCell < 79 && game.global.mapBonus < 9)
-            autoTrimpSettings.Prestige.selected = "GambesOP";
-        else if (game.global.mapBonus >= 9)
-            autoTrimpSettings.Prestige.selected = "Dagadder";
-    }
     
-    //If we are over 20 zones away from the last zone (the beginning of the run), use dagger:
-    if (game.global.world < lastzone-20 || game.global.mapBonus == 10)  
+    //If we are not in the prestige farming zone (the beginning of the run), use dagger:
+    if (game.global.world < lastzone-zonesToFarm || game.global.mapBonus == 10)  
        autoTrimpSettings.Prestige.selected = "Dagadder";
 }
 
