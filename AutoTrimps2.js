@@ -2672,7 +2672,7 @@ function betterAutoFight() {
 
 //Exits the Spire after completing the specified cell.
 function exitSpireCell() {    
-    if(game.global.world == 200 && game.global.spireActive && game.global.lastClearedCell >= getPageSetting('ExitSpireCell')-1) 
+     if(getPageSetting('ExitSpireCell') != -1 && (game.global.world == 200 && game.global.spireActive && game.global.lastClearedCell >= getPageSetting('ExitSpireCell') - 1))
         endSpire();    
 }
 
