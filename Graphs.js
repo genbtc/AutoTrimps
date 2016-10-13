@@ -16,7 +16,7 @@ settingbarRow.insertBefore(newItem, settingbarRow.childNodes[10]);
 document.getElementById("settingsRow").innerHTML += '<div id="graphParent" style="display: none; height: 600px"><div id="graph" style="margin-bottom: 15px;margin-top: 10px; height: 540px;"></div><div id="graphFooter" style="height: 50px;"></div>';
 
 //Create the dropdown for what graph to show
-var graphList = ['HeliumPerHour','HeliumPerHour Delta', 'Helium', 'Clear Time', 'Cumulative Clear Time', 'Void Maps', 'Loot Sources', 'Run Time', 'Void Map History', 'Coords', 'Gigas', 'UnusedGigas', 'Lastwarp', 'Trimps','Nullifium Gained'];
+var graphList = ['HeliumPerHour', 'HeliumPerHour Delta', 'Helium', 'Clear Time', 'Cumulative Clear Time', 'Void Maps', 'Loot Sources', 'Run Time', 'Void Map History', 'Coords', 'Gigas', 'UnusedGigas', 'Lastwarp', 'Trimps', 'Nullifium Gained', 'Dark Essence Gained'];
 var btn = document.createElement("select");
 btn.id = 'graphSelection';
 if(game.options.menu.darkTheme.enabled == 2) btn.setAttribute("style", "color: #C8C8C8");
@@ -381,7 +381,8 @@ function pushData() {
         gigasleft: game.upgrades.Gigastation.allowed - game.upgrades.Gigastation.done,
         trimps: game.resources.trimps.realMax(),
         coord: game.upgrades.Coordination.done,
-        lastwarp: game.global.lastWarp
+        lastwarp: game.global.lastWarp,
+        essence: game.global.essence
     });
     //only keep 15 portals worth of runs to prevent filling storage
     clearData(15);
@@ -680,6 +681,49 @@ function setGraphData(graph) {
                 title = "Average " + title + " = " + averagenulli;
             xTitle = 'Portal';
             yTitle = 'Nullifium Gained';
+            yType = 'Linear';
+            break;
+
+        case 'Dark Essence Gained':
+            var currentPortal = -1;
+            var totalDark = 0;
+            var theChallenge = '';
+            graphData = [];
+            var averagedark = 0;
+            var sumdark = 0;
+            var count = 0;
+            for (var i in allSaveData) {
+                if (allSaveData[i].totalPortals != currentPortal) {
+                    if (currentPortal == -1) {
+                        theChallenge = allSaveData[i].challenge;
+                        currentPortal = allSaveData[i].totalPortals;
+                        graphData.push({
+                            name: 'Dark Essence Gained',
+                            data: [],
+                            type: 'column'
+                        });
+                        continue;
+                    }
+                    graphData[0].data.push([allSaveData[i - 1].totalPortals, totalDark]);
+                    count++;
+                    sumdark += totalDark;
+                    //console.log("dark was: " + totalDark + " " + count + " @ " + allSaveData[i].totalPortals);   //debug
+                    theChallenge = allSaveData[i].challenge;
+                    totalDark = 0;
+                    currentPortal = allSaveData[i].totalPortals;
+
+                }
+                if (allSaveData[i].essence > totalDark) {
+                    totalDark = allSaveData[i].essence;
+                }
+            }
+            averagedark = sumdark / count;
+            //console.log("Average dark was: " + averagedark);
+            title = 'Essence Gained Per Portal';
+            if (averagedark)
+                title = "Average " + title + " = " + averagedark;
+            xTitle = 'Portal';
+            yTitle = 'Dark Essence Gained';
             yType = 'Linear';
             break;
 
