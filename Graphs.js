@@ -704,7 +704,7 @@ function setGraphData(graph) {
                         });
                         continue;
                     }
-                    graphData[0].data.push([allSaveData[i - 1].totalPortals, totalDark]);
+                    graphData[0].data.push([allSaveData[i - 1].totalPortals, totalDark - allSaveData[i-1].essence]);
                     count++;
                     sumdark += totalDark;
                     //console.log("dark was: " + totalDark + " " + count + " @ " + allSaveData[i].totalPortals);   //debug
