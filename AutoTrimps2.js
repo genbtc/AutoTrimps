@@ -2561,6 +2561,8 @@ function manageGenes() {
     if (game.portal.Anticipation.level && game.global.antiStacks < targetBreed && getBreedTime() >= targetBreed && getBreedTime(true) == 0 && (game.global.lastBreedTime/1000) >= targetBreed && newSquadRdy && game.resources.trimps.soldiers > 0) {
         if (game.global.mapsActive && getCurrentMapObject().location == "Void")
             return;
+        if (game.global.mapsActive && getCurrentMapObject().location == "Bionic")
+            return;
         if (!game.global.preMapsActive) {
             mapsClicked(); 
             //force abandon army
