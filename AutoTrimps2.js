@@ -385,7 +385,7 @@ function getEnemyMaxAttack(world, level, name, diff, corrupt) {
     if (!corrupt)
         amt *= game.badGuys[name].attack;
     else {
-        amt *= getCorruptScale("attack");
+        amt *= mutations.Corruption.statScale(3);
     }
     return Math.floor(amt);
 }
@@ -411,7 +411,7 @@ function getEnemyMaxHealth(world, level, corrupt) {
     if (!corrupt)
         amt *= game.badGuys["Grimp"].health;
     else
-        amt *= getCorruptScale("health");
+        amt *= mutations.Corruption.statScale(10);
     return Math.floor(amt);
 }
 
@@ -1728,8 +1728,8 @@ function autoStance() {
         var enemyDamage = enemy.attack * 1.2;   //changed by genBTC from 1.19 (there is no fluctuation)
         //check for world Corruption
         if (enemy.corrupted){
-            enemyHealth *= getCorruptScale("health");
-            enemyDamage *= getCorruptScale("attack");
+            enemyHealth *= mutations.Corruption.statScale(10);
+            enemyDamage *= mutations.Corruption.statScale(3);
         }
         if (enemy && enemy.corrupted == 'corruptStrong') {
             enemyDamage *= 2;
@@ -1756,8 +1756,8 @@ function autoStance() {
         var enemyDamage = enemy.attack * 1.2;   //changed by genBTC from 1.19 (there is no fluctuation)
         //check for voidmap Corruption
         if (getCurrentMapObject().location == "Void" && enemy.corrupted){
-            enemyHealth *= (getCorruptScale("health") / 2).toFixed(1);
-            enemyDamage *= (getCorruptScale("attack") / 2).toFixed(1);
+            enemyHealth *= (mutations.Corruption.statScale(10) / 2).toFixed(1);
+            enemyDamage *= (mutations.Corruption.statScale(3) / 2).toFixed(1);
         }
         if (enemy && enemy.corrupted == 'corruptStrong') {
             enemyDamage *= 2;
@@ -1917,12 +1917,12 @@ function autoMap() {
     //Corruption Zone Proportionality Farming Calculator:
     if (getPageSetting('CorruptionCalc') && game.global.world >= 181){
         var cptnum = getCorruptedCellsNum();     //count corrupted cells
-        var cpthlth = getCorruptScale("health"); //get corrupted health mod
+        var cpthlth = mutations.Corruption.statScale(10); //get corrupted health mod
         var cptpct = cptnum / 100;               //percentage of zone which is corrupted.
         var hlthprop = cptpct * cpthlth;         //Proportion of cells corrupted * health of a corrupted cell
         if (hlthprop >= 1)                       //dont allow sub-1 numbers to make the number less
             enemyHealth *= hlthprop;
-        var cptatk = getCorruptScale("attack");  //get corrupted attack mod
+        var cptatk = mutations.Corruption.statScale(3);  //get corrupted attack mod
         var atkprop = cptpct * cptatk;           //Proportion of cells corrupted * attack of a corrupted cell
         if (atkprop >= 1)
             enemyDamage *= atkprop;
@@ -2147,7 +2147,7 @@ function autoMap() {
             //check to make sure we won't get 1-shot in nostance by boss
             var eAttack = getEnemyMaxAttack(game.global.world, theMap.size, 'Voidsnimp', theMap.difficulty);
             if (game.global.world >= 181 || (game.global.challengeActive == "Corrupted" && game.global.world >= 60))
-                eAttack *= (getCorruptScale("attack") / 2).toFixed(1);
+                eAttack *= (mutations.Corruption.statScale(3) / 2).toFixed(1);
             var ourHealth = baseHealth;
             if(game.global.challengeActive == 'Balance') {
                 var stacks = game.challenges.Balance.balanceStacks ? (game.challenges.Balance.balanceStacks > theMap.size) ? theMap.size : game.challenges.Balance.balanceStacks : false;
