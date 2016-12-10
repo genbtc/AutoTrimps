@@ -22,17 +22,8 @@ if (!String.prototype.includes) {
 function loadPageVariables() {
     var tmp = JSON.parse(localStorage.getItem('autoTrimpSettings'));
     if (tmp !== null) {
-        autoTrimpSettings = tmp;
-    }
-}
-
-function getCorruptScale(type) {
-    switch (type) {
-        case "attack":
-            return mutations.Corruption.statScale(3);
-
-        case "health":
-            return mutations.Corruption.statScale(10);
+        if (tmp['ATversion'] != undefined && !versionIsOlder(tmp['ATversion'], ATversion)) autoTrimpSettings = tmp;
+        else updateOldSettings(tmp);
     }
 }
 
@@ -49,8 +40,39 @@ function saveSettings() {
     }        
 }
 
-//Grabs the automation settings from the page
+//returns true if old is older than testcase
+function versionIsOlder(old, testcase) {
+    var oldVer = parseVersion(old);
+    var testVer = parseVersion(testcase);
+    
+    if (oldVer.length == 0) return true;
+    //compare major to minor numbers, if older it's older, if newer it's not
+    for (var i=0; i < oldVer.length; i++) {
+        if (oldVer[i] < testVer[i]) return true;
+        else if ( oldVer[i] > testVer[i]) return false;
+    }
+    if (oldVer.length < testVer.length) return true; //assume added numbers mean a newer subversioning scheme
+    return false;
+}
 
+//takes a version string, returns an array
+function parseVersion(version) {
+    if (version == null || version === undefined || typeof(version) != "string") return {}; //invalid = older or corrupt
+    version = version.split("-", 1); //anything after the dash doesn't matter
+    return version[0].split(".");
+}
+
+function updateOldSettings(oldSettings) {
+    var oldVer = oldSettings[ATversion];
+    
+    if (versionIsOlder(oldVer, '2.1.3.9-genbtc-12-9-2016+Modular')) {
+        //do something
+    }
+    
+    autoTrimpSettings = oldVer;
+}
+
+//Grabs the automation settings from the page
 function getPageSetting(setting) {
     if (autoTrimpSettings.hasOwnProperty(setting) == false) {
         return false;
@@ -163,6 +185,16 @@ function postBuy() {
     game.global.firing = preBuyFiring;
     game.global.lockTooltip = preBuyTooltip;
     game.global.maxSplit = preBuymaxSplit;
+}
+
+function getCorruptScale(type) {
+    switch (type) {
+        case "attack":
+            return mutations.Corruption.statScale(3);
+
+        case "health":
+            return mutations.Corruption.statScale(10);
+    }
 }
 
 
