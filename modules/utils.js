@@ -69,7 +69,7 @@ function updateOldSettings(oldSettings) {
         //do something
     }
     
-    autoTrimpSettings = oldVer;
+    autoTrimpSettings = oldSettings;
 }
 
 //Grabs the automation settings from the page
