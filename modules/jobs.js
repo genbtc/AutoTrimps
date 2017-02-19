@@ -12,6 +12,7 @@ MODULES["jobs"].autoRatio2 = [3,3,5];
 MODULES["jobs"].autoRatio1 = [1,1,1];
 
 function safeBuyJob(jobTitle, amount) {
+	if (document.getElementById('jobTitle') == null) {return false;}
     if (amount === undefined) amount = 1;
     if (amount === 0) return false;
     var old = preBuy2();
