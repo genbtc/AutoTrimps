@@ -32,6 +32,7 @@ function autoGoldenUpgradesAT() {
     //get the numerical value of the selected index of the dropdown box
     try {
         var setting = document.getElementById('AutoGoldenUpgrades').value;
+        var speedVoid = document.getElementById('speedVoid').value;
         if (setting == "Off") return;   //if disabled, exit.
         var num = getAvailableGoldenUpgrades();
         if (num == 0) return;       //if we have nothing to buy, exit.
@@ -43,7 +44,18 @@ function autoGoldenUpgradesAT() {
         if (setting == "Void") { // we can only buy a few void GUs. We should check if we actually made the buy.
             num = getAvailableGoldenUpgrades();
             if (num == 0) return; // we actually bought the upgrade.
-            buyGoldenUpgrade("Helium"); // since we did not buy a "Void", we buy a "Helium" instead.
+            // DerSkagg Mod - For every Helium upgrade buy X-1 battle upgrades to maintain speed runs
+            if (speedVoid == "True") {
+                var calibration = parseInt(document.getElementById("goldenVoidOwned").innerHTML)
+                var everyX = document.getElementById('everyXhelium')
+                if ((game.global.goldenUpgrades-calibration)%2 == 0){
+                    buyGoldenUpgrade("Helium");
+                }else{
+                    buyGoldenUpgrade("Battle");
+                }
+            }else{
+                buyGoldenUpgrade("Helium");
+            }
         }
         // END OF DZUGAVILI MOD
 
