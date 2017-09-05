@@ -48,7 +48,7 @@ function autoGoldenUpgradesAT() {
             if (speedVoid == "True") {
                 var calibration = parseInt(document.getElementById("goldenVoidOwned").innerHTML)
                 var everyX = document.getElementById('everyXhelium')
-                if ((game.global.goldenUpgrades-calibration)%2 == 0){
+                if ((game.global.goldenUpgrades-calibration)%everyX == 0){
                     buyGoldenUpgrade("Helium");
                 }else{
                     buyGoldenUpgrade("Battle");
