@@ -94,6 +94,7 @@ function initializeAllTabs() {
     createTabs("Uni", "Uni's mods");
     createTabs("Scryer", "Scryer Stance");
     createTabs("Magma", "Dimensional Generator");
+    createTabs("Golden", "Golden Upgrade Strategies");
     createTabs("Spam", "Controls AutoTrimps message Spam");
     createTabs("Import Export", "Import Export Settings");
     //add a minimize button:
@@ -221,8 +222,6 @@ function initializeAllSettings() {
     createSetting('WarpstationCoordBuy', 'Buy Warp to Hit Coord', 'If we are very close to hitting the next coordination, and we can afford the warpstations it takes to do it, Do it! (even if we are over the Cap/Wall). Recommended with WarpCap/WarpWall. (has no point otherwise) ', 'boolean', true, null, 'genBTC');
     createSetting('AutoRoboTrimp', 'AutoRoboTrimp', 'Use RoboTrimps ability starting at this level, and every 5 levels thereafter. (set to 0 to disable. default 60.) 60 is a good choice for mostly everybody.', 'value', '60', null, 'genBTC');
     createSetting('AutoGoldenUpgrades', 'AutoGoldenUpgrades', 'IMPORTANT SETTING. Automatically Buy the specified Golden Upgrades as they become available.', 'dropdown', 'Off', ["Off", "Helium", "Battle", "Void"], 'genBTC');
-    createSetting('speedVoid', 'speedVoid', 'This setting will after max void golden upgrades alternate between buying helium and battle upgrades', 'dropdown', 'False', ["False", "True"], 'genBTC');
-    createSetting('xUpgrade', 'xUpgrade', 'Buy a helium upgrade after X-1 battle upgrades have been purchased', 'value', '2', '2', 'genBTC');             
     createSetting('AutoHeirlooms2', 'Auto Heirlooms2', 'IMPORTANT SETTING. New algorithm for Heirlooms. While enabled, the old AutoHeirlooms algorithm will be disabled (the button will stay lit or you can turn that one off). CAUTION: Turning this on will immediately re-sort your heirlooms according to the new algorithm, and turning it off again DOES revert to the original algorithm even though it may NOT have a visible result on your heirlooms. (fyi: This lack of action highlights one of the problems with the old one.) ', 'boolean', null, null, 'genBTC');
     createSetting('AutoUpgradeHeirlooms', 'Auto Upgrade Heirlooms', 'Automatically buys the upgrades the script advises for the Equipped shield and staff, until we are out of nullifium.', 'boolean', null, null, 'genBTC');
     createSetting('TrainerCaptoTributes', 'Cap Trainers to a % of Tributes', 'Only Buy a Trainer when its cost is LESS than X% of cost of a tribute. This setting can work in combination with the other one, or set the other one to -1 and this will take full control. Default: -1 (Disabled). 50% is close to the point where the cap does nothing. You can go as low as you want but recommended is 10% to 1%. (example: Trainer cost of 5001, Tribute cost of 100000, @ 5%, it would NOT buy the trainer.)', 'value', '-1', null, 'genBTC');
@@ -274,6 +273,13 @@ function initializeAllSettings() {
     createSetting('SupplyWall', 'Throttle Supply (or Capacity)', 'Positive number NOT 1 e.g. 2.5: Consider Supply when its cost * 2.5 is < Capacity, instead of immediately when < Cap. Effectively throttles supply for when you don\'t need too many.<br><br>Negative number (-1 is ok) e.g. -2.5: Consider Supply if it costs < Capacity * 2.5, buy more supplys! Effectively throttling capacity instead.<br><br><b>Set to 1: DISABLE SUPPLY only spend magmite on Efficiency, Capacity and Overclocker. (For some end game players, supply is worth probably figuratively nothing.)<br>Set to 0: IGNORE SETTING and use old behaviour (will still try to buy overclocker)</b>', 'valueNegative', 2, null, 'Magma');
     createSetting('OneTimeOnly', 'One Time / Overclock Only', 'Makes the magmite spending sequence only buy one time upgrades and overclock, ignoring Efficiency, Capacity and Supply. Intended for manual use. Does not disable itself.', 'boolean', false, null, 'Magma');
     createSetting('BuyOvclock', 'Buy Overclock', 'Turn this off to not buy anymore overclocks. Will still buy the first level if you don\'t already own it.', 'boolean', true, null, 'Magma');
+
+//Golden Upgrade Strategies:
+    Golden
+    createSetting('goldStrat', 'goldStrat', 'This setting will after max void golden upgrades alternate between buying helium and battle upgrades', 'dropdown', 'Off', ["Off", "Alternating", "Zone"], 'Golden');
+    createSetting('goldAlternating', 'goldAlternating', 'Buy a helium upgrade after X-1 battle upgrades have been purchased', 'value', '2', '2', 'Golden'); 
+    createSetting('goldZone', 'goldZone', 'Buy a helium upgrade until zone, then buy battle upgrades', 'value', '200', '200', 'Golden'); 
+    
 //Spam settings:
     createSetting('SpamGeneral', 'General Spam', 'General Spam = Starting Zone, Auto He/Hr, AutoMagmiteSpender ', 'boolean', true, null, 'Spam');
     createSetting('SpamUpgrades', 'Upgrades Spam', 'Upgrades Spam', 'boolean', true, null, 'Spam');
