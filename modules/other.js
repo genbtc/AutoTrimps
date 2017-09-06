@@ -49,16 +49,16 @@ function autoGoldenUpgradesAT() {
             num = getAvailableGoldenUpgrades();
             if (num == 0) return; // we actually bought the upgrade.
             // DerSkagg Mod - For every Helium upgrade buy X-1 battle upgrades to maintain speed runs
-            var goldStrat = getPageSetting('goldStrat');
+            var goldStrat = document.getElementById('goldStrat').value;
             if (goldStrat == "Alternating"){
-                var goldAlternating = parseInt(document.getElementById('goldAlternating').value;)
+                var goldAlternating = getPageSetting('goldAlternating');
                 if (game.global.goldenUpgrades%goldAlternating == 0){
                     buyGoldenUpgrade("Helium");
                 }else{
                     buyGoldenUpgrade("Battle");
                 }
             }else if(goldStrat == "goldZone"){
-                var zone = game.global.world
+                var zone = game.global.world;
                 var goldZone = getPageSetting('goldZone')
                 if (zone <= goldZone){
                     buyGoldenUpgrade("Helium");
