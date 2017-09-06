@@ -32,7 +32,7 @@ function autoGoldenUpgradesAT() {
     //get the numerical value of the selected index of the dropdown box
     try {
         var setting = document.getElementById('AutoGoldenUpgrades').value;
-        var speedVoid = document.getElementById('speedVoid').value;
+        var goldStrat = document.getElementById('goldStrat').value;
         if (setting == "Off") return;   //if disabled, exit.
         var num = getAvailableGoldenUpgrades();
         if (num == 0) return;       //if we have nothing to buy, exit.
