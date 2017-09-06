@@ -46,8 +46,8 @@ function autoGoldenUpgradesAT() {
             if (num == 0) return; // we actually bought the upgrade.
             // DerSkagg Mod - For every Helium upgrade buy X-1 battle upgrades to maintain speed runs
             if (speedVoid == "True") {
-                var calibration = parseInt(document.getElementById("goldenVoidOwned").innerHTML)
-                var everyX = document.getElementById('buyHeliumOnXGoldenUpgrade')
+                var calibration = parseInt(document.getElementById('goldenVoidOwned').innerHTML)
+                var everyX = document.getElementById('everyX').value
                 if ((game.global.goldenUpgrades-calibration)%everyX == 0){
                     buyGoldenUpgrade("Helium");
                 }else{
