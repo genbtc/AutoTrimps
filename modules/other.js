@@ -31,8 +31,6 @@ function autoRoboTrimp() {
 function autoGoldenUpgradesAT() {
     //get the numerical value of the selected index of the dropdown box
     try {
-        var setting = getPageSetting('AutoGoldenUpgrades');
-        var goldStrat = getPageSetting('goldStrat');
         if (setting == "Off") return;   //if disabled, exit.
         var num = getAvailableGoldenUpgrades();
         if (num == 0) return;       //if we have nothing to buy, exit.
@@ -50,6 +48,8 @@ function autoGoldenUpgradesAT() {
             num = getAvailableGoldenUpgrades();
             if (num == 0) return; // we actually bought the upgrade.
             // DerSkagg Mod - For every Helium upgrade buy X-1 battle upgrades to maintain speed runs
+            var setting = getPageSetting('AutoGoldenUpgrades');
+            var goldStrat = getPageSetting('goldStrat');
             if (goldStrat == "Alternating"){
                 var goldAlternating = parseInt(getPageSetting('goldAlternating'))
                 if (game.global.goldenUpgrades%goldAlternating == 0){
