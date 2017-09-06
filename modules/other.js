@@ -39,15 +39,28 @@ function autoGoldenUpgradesAT() {
         //buy one upgrade per loop.
         buyGoldenUpgrade(setting);
         
+            //createSetting('goldStrat', 'goldStrat', 'This setting will after max void golden upgrades alternate between buying helium and battle upgrades', 'dropdown', 'Off', ["Off", "Alternating", "Zone"], 'Golden');
+            //createSetting('goldAlternating', 'goldAlternating', 'Buy a helium upgrade after X-1 battle upgrades have been purchased', 'value', '2', '2', 'Golden'); 
+            //createSetting('goldZone', 'goldZone', 'Buy a helium upgrade until zone, then buy battle upgrades', 'value', '200', '200', 'Golden'); 
+    
+        
         // DZUGAVILI MOD - SMART VOID GUs
         // Assumption: buyGoldenUpgrades is not an asynchronous operation and resolves completely in function execution.
         if (setting == "Void") { // we can only buy a few void GUs. We should check if we actually made the buy.
             num = getAvailableGoldenUpgrades();
             if (num == 0) return; // we actually bought the upgrade.
             // DerSkagg Mod - For every Helium upgrade buy X-1 battle upgrades to maintain speed runs
-            if (speedVoid == "True") {
-                var everyX = getPageSetting('xUpgrade')
-                if (game.global.goldenUpgrades%everyX == 0){
+            if (goldStrat == "Alternating") {
+                var goldAlternating = getPageSetting('goldAlternating')
+                if (game.global.goldenUpgrades%goldAlternating == 0){
+                    buyGoldenUpgrade("Helium");
+                }else{
+                    buyGoldenUpgrade("Battle");
+                }
+            }else if(goldStrat == "goldZone")
+                var zone = game.global.world
+                var goldZone = getPageSetting('goldZone')
+                if (zone <= goldZone){
                     buyGoldenUpgrade("Helium");
                 }else{
                     buyGoldenUpgrade("Battle");
