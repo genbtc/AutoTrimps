@@ -57,7 +57,7 @@ function autoGoldenUpgradesAT() {
                 }else{
                     buyGoldenUpgrade("Battle");
                 }
-            }else if(goldStrat == "goldZone"){
+            }else if(goldStrat == "Zone"){
                 var zone = game.global.world;
                 var goldZone = getPageSetting('goldZone');
                 if (zone <= goldZone){
