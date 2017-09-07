@@ -59,7 +59,7 @@ function autoGoldenUpgradesAT() {
                 }
             }else if(goldStrat == "goldZone"){
                 var zone = game.global.world;
-                var goldZone = getPageSetting('goldZone')
+                var goldZone = getPageSetting('goldZone');
                 if (zone <= goldZone){
                     buyGoldenUpgrade("Helium");
                 }else{
