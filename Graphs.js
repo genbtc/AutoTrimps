@@ -1100,63 +1100,49 @@ setInterval(getLootData, 15000);
 
 //BEGIN overwriting default game functions!!!!!!!!!!!!!!!!!!!!!!
 //(dont panic, this is done to insert the tracking function "filterLoot" in)
-game.badGuys.Jestimp.loot =
-function() {
-    var elligible = ["food", "wood", "metal", "science"];
-    if (game.jobs.Dragimp.owned > 0) elligible.push("gems");
-    if (game.jobs.Explorer.locked == 0) elligible.push("fragments");
-    var roll = Math.floor(Math.random() * elligible.length);
-    var item = elligible[roll];
-    var amt = simpleSeconds(item, 45);
-    amt = scaleToCurrentMap(amt);
-    addResCheckMax(item, amt);
-    filterLoot(item, amt, true);
-    message("That Jestimp gave you " + prettify(amt) + " " + item + "!", "Loot", "*dice", "exotic", "exotic");
-    game.unlocks.impCount.Jestimp++;
-};
-
-game.badGuys.Chronoimp.loot =
-function () {
-    var elligible = ["food", "wood", "metal", "science"];
-    if (game.jobs.Dragimp.owned > 0) elligible.push("gems");
-    if (game.jobs.Explorer.locked == 0) elligible.push("fragments");
-    var cMessage = "That Chronoimp dropped ";
-    for (var x = 0; x < elligible.length; x++){
-        var item = elligible[x];
-        var amt = simpleSeconds(item, 5);
-        amt = scaleToCurrentMap(amt);
-        addResCheckMax(item, amt, null, null, true);
-        filterLoot(item, amt, true);
-        cMessage += prettify(amt) + " " + item;
-        if (x == (elligible.length - 1)) cMessage += "!";
-        else if (x == (elligible.length - 2)) cMessage += ", and ";
-        else cMessage += ", ";
-    }
-    message(cMessage, "Loot", "hourglass", "exotic", "exotic");
-    game.unlocks.impCount.Chronoimp++;
-};
-
 (function(){
-  // who even thought copying the code was a good idea?
-  const oldFunction = window.addResCheckMax;
-  window.addResCheckMax = (a, b, c, d, e) => filterLoot(a, b, null, d) || oldFunction(a, b, c, d, e);
+    var resAmts;
+
+    function storeResAmts() {
+        resAmts = {};
+        for (let item in lootData) {
+            resAmts[item] = game.resources[item].owned;
+        }
+    }
+
+    const oldJestimpLoot = game.badGuys.Jestimp.loot;
+    game.badGuys.Jestimp.loot =
+    function() {
+        storeResAmts();
+        var toReturn = oldJestimpLoot.apply(this, arguments);
+        for (let item in resAmts) {
+            var gained = game.resources[item].owned - resAmts[item];
+            if (gained > 0) {
+                filterLoot(item, gained, true);
+            }
+        }
+        return toReturn;
+    };
+
+    const oldChronoimpLoot = game.badGuys.Chronoimp.loot;
+    game.badGuys.Chronoimp.loot =
+    function () {
+        storeResAmts();
+        var toReturn = oldChronoimpLoot.apply(this, arguments);
+        for (let item in resAmts) {
+            var gained = game.resources[item].owned - resAmts[item];
+            if (gained > 0) {
+                filterLoot(item, gained, true);
+            }
+        }
+        return toReturn;
+    };
+
+    // who even thought copying the code was a good idea?
+    const oldFunction = window.addResCheckMax;
+    window.addResCheckMax = (a, b, c, d, e) => filterLoot(a, b, null, d) || oldFunction(a, b, c, d, e);
 })();
-//function addResCheckMax(what, number, noStat, fromGather, nonFilteredLoot) {
-//    filterLoot(what, number, null, fromGather);
-//    var res = game.resources[what];
-//    if (res.max == -1) {
-//        res.owned += number;
-//        if (!noStat && what == "gems") game.stats.gemsCollected.value += number;
-//        return;
-//    }
-//    var newMax = res.max + (res.max * game.portal.Packrat.modifier * game.portal.Packrat.level);
-//    newMax = calcHeirloomBonus("Shield", "storageSize", newMax);
-//    if (res.owned + number <= newMax) res.owned += number;
-//    else res.owned = newMax;
-//    if (nonFilteredLoot && game.options.menu.useAverages.enabled){
-//        addAvg(what, number);
-//    }
-//}//END overwriting default game functions!!!!!!!!!!!!!!!!!!!!!!
+//END overwriting default game functions!!!!!!!!!!!!!!!!!!!!!!
 
 function lookUpZoneData(zone,portal) {
     if (portal == null)
