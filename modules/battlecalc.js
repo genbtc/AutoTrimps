@@ -74,7 +74,7 @@ function getBattleStats(what,form,crit) {
     if (game.portal[perk] && game.portal[perk].level > 0){
         var PerkStrength = (game.portal[perk].level * game.portal[perk].modifier);
         currentCalc  *= (PerkStrength + 1);
-    }   
+    }
     //Add resilience
     if (what == "health" && game.portal.Resilience.level > 0){
         var resStrength = Math.pow(game.portal.Resilience.modifier + 1, game.portal.Resilience.level);
@@ -118,6 +118,9 @@ function getBattleStats(what,form,crit) {
         currentCalc *= (1 + roboTrimpMod);
         roboTrimpMod *= 100;
     }
+    if (what == "health" && game.global.totalSquaredReward > 0) {
+        currentCalc *= ((game.global.totalSquaredReward / 100) + 1);
+    }
     //Add challenges
     if (what == "health" && game.global.challengeActive == "Balance"){
         currentCalc *= game.challenges.Balance.getHealthMult();
@@ -159,7 +162,7 @@ function getBattleStats(what,form,crit) {
         currentCalc *= 1 + amt;
     }
     if (what != "block" && game.talents.voidPower.purchased && game.global.voidBuff){
-        amt = (game.talents.voidPower2.purchased) ? 35 : 15;
+        amt = (game.talents.voidPower2.purchased) ? ((game.talents.voidPower3.purchased) ? 65 : 35) : 15;
         currentCalc *= (1 + (amt / 100));
     }
     //Magma
@@ -218,8 +221,20 @@ function calcOurDmg(number,maxormin,disableStances,disableFlucts) { //number = b
         number *= game.goldenUpgrades.Battle.currentBonus + 1;
     }
     if (game.talents.voidPower.purchased && game.global.voidBuff){
-        var vpAmt = (game.talents.voidPower2.purchased) ? 35 : 15;
+        var vpAmt = (game.talents.voidPower2.purchased) ? ((game.talents.voidPower3.purchased) ? 65 : 35) : 15;
         number *= ((vpAmt / 100) + 1);
+    }
+    if (game.global.totalSquaredReward > 0){
+        number *= ((game.global.totalSquaredReward / 100) + 1)
+    }
+    if (game.talents.magmamancer.purchased){
+        number *= game.jobs.Magmamancer.getBonusPercent();
+    }
+    if (game.talents.stillRowing2.purchased){
+        number *= ((game.global.spireRows * 0.06) + 1);
+    }
+    if (game.talents.healthStrength.purchased && mutations.Healthy.active()){
+        number *= ((0.15 * mutations.Healthy.cellCount()) + 1);
     }
 
     if (game.global.challengeActive == "Daily"){
@@ -257,14 +272,14 @@ function calcOurDmg(number,maxormin,disableStances,disableFlucts) { //number = b
         if (minFluct == -1) minFluct = fluctuation;
         var min = Math.floor(number * (1 - minFluct));
         var max = Math.ceil(number + (number * maxFluct));
-        
+
         //number = Math.floor(Math.random() * ((max + 1) - min)) + min;
         return maxormin ? max : min;
     }
-    else 
+    else
         return number;
 }
-        
+
 
 function calcBadGuyDmg(enemy,attack,daily,maxormin,disableFlucts) {
     var number;
@@ -272,7 +287,7 @@ function calcBadGuyDmg(enemy,attack,daily,maxormin,disableFlucts) {
         number = enemy.attack;
     else
         number = attack;
-    
+
     var fluctuation = .2; //%fluctuation
     var maxFluct = -1;
     var minFluct = -1;
@@ -314,11 +329,11 @@ function calcBadGuyDmg(enemy,attack,daily,maxormin,disableFlucts) {
         if (minFluct == -1) minFluct = fluctuation;
         var min = Math.floor(number * (1 - minFluct));
         var max = Math.ceil(number + (number * maxFluct));
-        
+
         //number = Math.floor(Math.random() * ((max + 1) - min)) + min;
         return maxormin ? max : min;
     }
-    else 
+    else
         return number;
 }
 function calcDailyAttackMod(number) {

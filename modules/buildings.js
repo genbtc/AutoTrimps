@@ -144,12 +144,12 @@ function buyGemEfficientHousing() {
             var getcoord = getPageSetting('WarpstationCoordBuy');
             if (getcoord && skipWarp) {
                 var toTip = game.buildings.Warpstation;
-/*  
+/*
                 //calc Cost
                 var warpMetalOK = getBuildingItemPrice(toTip, "metal", false, 1) * Math.pow(1 - game.portal.Resourceful.modifier, game.portal.Resourceful.level) / game.resources.metal.owned;
                 var warpGemsOK = getBuildingItemPrice(toTip, "gems", false, 1) * Math.pow(1 - game.portal.Resourceful.modifier, game.portal.Resourceful.level) / game.resources.gems.owned;
                 //var afford = Math.floor(Math.min(warpMetalOK,warpGemsOK));
-                if (warpMetalOK <= 1 && warpGemsOK <= 1) { 
+                if (warpMetalOK <= 1 && warpGemsOK <= 1) {
 */
                 if (canAffordBuilding("Warpstation")) {
                     var howMany = calculateMaxAfford(game.buildings["Warpstation"], true);
@@ -176,7 +176,7 @@ function buyGemEfficientHousing() {
     if (bestBuilding) {
         safeBuyBuilding(bestBuilding);
     }
-}    
+}
 
 //Main Decision Function that determines cost efficiency and Buys all housing (gems), or calls buyFoodEfficientHousing, and also non-storage buildings (Gym,Tribute,Nursery)s
 function buyBuildings() {
@@ -229,10 +229,14 @@ function buyBuildings() {
     var targetBreed = parseInt(getPageSetting('GeneticistTimer'));
     //NoNurseriesUntil', 'No Nurseries Until z', 'For Magma z230+ purposes. Nurseries get shut down, and wasting nurseries early on is probably a bad idea. Might want to set this to 230+ as well.'
     var nursminlvl = getPageSetting('NoNurseriesUntil');
-    if (game.global.world < nursminlvl) {
+    var preSpireOverride = getPageSetting('PreSpireNurseries');
+    //override NoNurseriesUntil and MaxNursery if on a Spire >= SpireLimit, or on a world zone < 200 when SpireLimit is set to <= 1
+    var overrideNurseries = preSpireOverride >= 0 && (isActiveSpireAT() || (game.global.world < 200 && getPageSetting('SpireLimit') <= 1));
+    if (game.global.world < nursminlvl && !overrideNurseries) {
         postBuy2(oldBuy);
         return;
     }
+    var maxNursery = overrideNurseries ? preSpireOverride : getPageSetting('MaxNursery');
     //only buy nurseries if enabled,   and we need to lower our breed time, or our target breed time is 0, or we aren't trying to manage our breed time before geneticists, and they aren't locked
     //even if we are trying to manage breed timer pre-geneticists, start buying nurseries once geneticists are unlocked AS LONG AS we can afford a geneticist (to prevent nurseries from outpacing geneticists soon after they are unlocked)
     if ((targetBreed < getBreedTime() || targetBreed <= 0 ||
@@ -246,7 +250,7 @@ function buyBuildings() {
         //buy nurseries irrelevant of warpstations (after we unlock them) - if we have enough extra gems that its not going to impact anything. note:(we will be limited by wood anyway - might use a lot of extra wood)
         var buyWithExtraGems = (!game.buildings.Warpstation.locked && nursCost * resomod < nwr * game.resources.gems.owned);
         //refactored the old calc, and added new buyWithExtraGems tacked on the front
-        if ((getPageSetting('MaxNursery') > game.buildings.Nursery.owned || getPageSetting('MaxNursery') == -1) &&
+        if ((maxNursery > game.buildings.Nursery.owned || maxNursery == -1) &&
             (buyWithExtraGems ||
                 ((nursCost < nwr * warpCost || game.buildings.Warpstation.locked) &&
                     (nursCost < nwr * collCost || game.buildings.Collector.locked || !game.buildings.Warpstation.locked)))) {

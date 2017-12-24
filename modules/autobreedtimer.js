@@ -13,6 +13,7 @@ function autoBreedTimer() {
     var customVars = MODULES["autobreedtimer"];
     var fWorkers = Math.ceil(game.resources.trimps.realMax() / 2) - game.resources.trimps.employed;
     var newSquadRdy = game.resources.trimps.realMax() <= game.resources.trimps.owned + 1;
+    var defaultBreedTimer = game.talents.patience.purchased && getPageSetting('UsePatience') ? 45 : 30;
     if(getPageSetting('ManageBreedtimer')) {
         if(game.portal.Anticipation.level == 0) setPageSetting('GeneticistTimer',0);
         else if(game.global.challengeActive == 'Electricity' || game.global.challengeActive == 'Mapocalypse') setPageSetting('GeneticistTimer',3.5);
@@ -20,14 +21,14 @@ function autoBreedTimer() {
 
             if(getPageSetting('FarmWhenNomStacks7') && game.global.gridArray[99].nomStacks >= 5 && !game.global.mapsActive) {
                 //if Improbability already has 5 nomstacks, do 30 antistacks.
-                setPageSetting('GeneticistTimer',30);
+                setPageSetting('GeneticistTimer',defaultBreedTimer);
             }
             else
                 setPageSetting('GeneticistTimer',10);
         }
-        else if (getPageSetting('SpireBreedTimer') > -1 && game.global.world == 200 && game.global.spireActive)
+        else if (getPageSetting('SpireBreedTimer') > -1 && isActiveSpireAT())
             setPageSetting('GeneticistTimer',getPageSetting('SpireBreedTimer'));
-        else setPageSetting('GeneticistTimer',30);
+        else setPageSetting('GeneticistTimer',defaultBreedTimer);
     }
     var inDamageStance = game.upgrades.Dominance.done ? game.global.formation == 2 : game.global.formation == 0;
     var inScryerStance = (game.global.world >= 60 && game.global.highestLevelCleared >= 180) && game.global.formation == 4;
@@ -35,7 +36,7 @@ function autoBreedTimer() {
     var targetBreed = getPageSetting('GeneticistTimer');
     //if we need to hire geneticists
     //Don't hire geneticists if total breed time remaining is greater than our target breed time
-    //Don't hire geneticists if we have already reached 30 anti stacks (put off further delay to next trimp group) //&& (game.global.lastBreedTime/1000 + getBreedTime(true) < targetBreed) 
+    //Don't hire geneticists if we have already reached 30 anti stacks (put off further delay to next trimp group) //&& (game.global.lastBreedTime/1000 + getBreedTime(true) < targetBreed)
     if ((newSquadRdy || (game.global.lastBreedTime/1000 + getBreedTime(true) < targetBreed)) && targetBreed > getBreedTime() && !game.jobs.Geneticist.locked && targetBreed > getBreedTime(true) && game.resources.trimps.soldiers > 0 && !breedFire) {
         var time = getBreedTime();
         var timeOK = time > 0 ? time : 0.1;
@@ -49,16 +50,16 @@ function autoBreedTimer() {
         if (numgens > 0 && canAffordJob('Geneticist', false, numgens)) {
             //debug("1a. Time: " + getBreedTime(true) + " / " + getBreedTime() );
             //debug("1b. " + numgens + " Genes.. / " + game.jobs.Geneticist.owned + " -> " + (game.jobs.Geneticist.owned+numgens));
-            safeBuyJob('Geneticist', numgens);            
+            safeBuyJob('Geneticist', numgens);
             //debug("1c. Time: " + getBreedTime(true) + " / " + getBreedTime() );
         }
         //if all else fails, hire geneticists slowly (not likely)
-        else            
+        else
             safeBuyJob('Geneticist', customVars.buyGensIncrement);
     }
     var fire1 = targetBreed*1.02 < getBreedTime();
     var fire2 = targetBreed*1.02 < getBreedTime(true);
-    var fireobj = fire1 ? getBreedTime() : getBreedTime(true);    
+    var fireobj = fire1 ? getBreedTime() : getBreedTime(true);
     //if we need to speed up our breeding
     //if we have potency upgrades available, buy them. If geneticists are unlocked, or we aren't managing the breed timer, just buy them
     if ((targetBreed < getBreedTime() || !game.jobs.Geneticist.locked || !getPageSetting('ManageBreedtimer') || game.global.challengeActive == 'Watch') && game.upgrades.Potency.allowed > game.upgrades.Potency.done && canAffordTwoLevel('Potency') && getPageSetting('BuyUpgrades')) {
@@ -71,7 +72,7 @@ function autoBreedTimer() {
         var numgens = Math.trunc(Math.log(targetBreed / timeOK ) / Math.log(1.02)) - 1;
         //debug("2a. Time: " + getBreedTime(true) + " / " + getBreedTime() );
         //debug("2b. " + numgens + " Genes.. / " + game.jobs.Geneticist.owned + " -> " + (game.jobs.Geneticist.owned+numgens));
-        safeBuyJob('Geneticist', numgens);    
+        safeBuyJob('Geneticist', numgens);
         //debug("2c. Time: " + getBreedTime(true) + " / " + getBreedTime() );
     }
     //if our time remaining to full trimps is still too high, fire some jobs to get-er-done
@@ -87,7 +88,7 @@ function autoBreedTimer() {
     targetBreed = parseInt(getPageSetting('GeneticistTimer'));
     newSquadRdy = game.resources.trimps.realMax() <= game.resources.trimps.owned + 1;
     var nextgrouptime = (game.global.lastBreedTime/1000);
-    if  (targetBreed > 30) targetBreed = 30; //play nice with custom timers over 30.
+    if (targetBreed > defaultBreedTimer) targetBreed = defaultBreedTimer; //play nice with custom timers over default.
     var newstacks = nextgrouptime >= targetBreed ? targetBreed : nextgrouptime;
     //kill titimp if theres less than (5) seconds left on it or, we stand to gain more than (5) antistacks.
     var killTitimp = (game.global.titimpLeft < customVars.killTitimpStacks || (game.global.titimpLeft >= customVars.killTitimpStacks && newstacks - game.global.antiStacks >= customVars.killTitimpStacks))
@@ -109,7 +110,7 @@ function abandonVoidMap() {
     //do nothing if the button isnt set to on.
     if (!getPageSetting('ForceAbandon')) return;
     //exit out of the voidmap if we go back into void-farm-for-health mode (less than 95%, account for some leeway during equipment buying.)
-    if (game.global.mapsActive && getCurrentMapObject().location == "Void") {        
+    if (game.global.mapsActive && getCurrentMapObject().location == "Void") {
         var targetBreed = parseInt(getPageSetting('GeneticistTimer'));
         if(voidCheckPercent < customVars.voidCheckPercent) {
             //only exit if it happened for reasons other than random losses of anti-stacks.
@@ -136,7 +137,7 @@ function forceAbandonTrimps() {
     //dont if were on map-selection screen.
     if (game.global.preMapsActive) return;
     //dont if we are in spire:
-    if (game.global.world == 200 && game.global.spireActive && !game.global.mapsActive) return;
+    if (isActiveSpireAT() && !game.global.mapsActive) return;
     var targetBreed = parseInt(getPageSetting('GeneticistTimer'));
     if (getPageSetting('AutoMaps')) {
         mapsClicked();

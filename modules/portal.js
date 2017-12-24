@@ -64,7 +64,7 @@ function autoPortal() {
                         else
                             doPortal();
                     },MODULES["portal"].timeout+100);
-                }                
+                }
             }
             break;
         case "Custom":
@@ -87,6 +87,8 @@ function autoPortal() {
         case "Crushed":
         case "Nom":
         case "Toxicity":
+            if (getPageSetting('MaxTox'))
+                settingChanged("MaxTox");
         case "Watch":
         case "Lead":
         case "Corrupted":
@@ -108,6 +110,10 @@ function doPortal(challenge) {
     } catch (err) {
         debug("Error encountered in AutoMagmiteSpender: " + err.message,"general");
     }
+    // From mainLoop
+    if (getPageSetting('AutoHeirlooms2')) autoHeirlooms2(); //"Auto Heirlooms 2" (heirlooms.js)
+    else if (getPageSetting('AutoHeirlooms')) autoHeirlooms();//"Auto Heirlooms"      (")
+    if (getPageSetting('AutoUpgradeHeirlooms') && !heirloomsShown) autoNull();  //"Auto Upgrade Heirlooms" (heirlooms.js)
     //Go into portal screen
     portalClicked();
     //AutoPerks: do this first, because it reflashes the screen.
@@ -117,26 +123,28 @@ function doPortal(challenge) {
     if (getPageSetting('AutoStartDaily')) {
         selectChallenge('Daily');
         checkCompleteDailies();
-        var yesterdayDone = (game.global.recentDailies.indexOf(getDailyTimeString(-1)) != -1);
-        var todayDone = (game.global.recentDailies.indexOf(getDailyTimeString()) != -1);
-        if (yesterdayDone && todayDone) {
+
+        var lastUndone = -7; // Note: Most previous challenge == -6
+        while (++lastUndone <= 0) {
+            var done = (game.global.recentDailies.indexOf(getDailyTimeString(lastUndone)) != -1);
+            if (!done)
+                break;
+        }
+
+        if (lastUndone == 1) { // None
             debug("All available Dailies already completed.");
-            //Fallback to w/e Regular challenge we picked.
-            if(challenge)
-                selectChallenge(challenge); 
-        } else if (!yesterdayDone) {
-            getDailyChallenge(-1);
-            debug("Portaling into Daily for: " + getDailyTimeString(-1,true) + " now!");
-        } else if (!todayDone) {
-            getDailyChallenge(0);
-            debug("Portaling into Daily for: " + getDailyTimeString(0,true) + " now!");
+            //Fallback to w/e Regular challenge we picked. Or none (unselect)
+            selectChallenge(challenge || 0);
+        } else {
+            getDailyChallenge(lastUndone);
+            debug("Portaling into Daily for: " + getDailyTimeString(lastUndone, true) + " now!");
         }
     }
     //Regular Challenge:
     else if(challenge) {
         selectChallenge(challenge);
     }
-    //Push He Data: 
+    //Push He Data:
     pushData();
     //Actually Portal.
     activateClicked();

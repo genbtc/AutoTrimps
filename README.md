@@ -8,8 +8,12 @@ Automation script for the idle incremental game Trimps, based on the zininzinin 
 <a href="https://discord.gg/0VbWe0dxB9kIfV2C"><img src="https://pbs.twimg.com/profile_images/568588143226413056/9Lwrixxj.png" width=48></a>
 Discord is a chat program. Come to talk about AutoTrimps, for help, or suggestions for new features : https://discord.gg/0VbWe0dxB9kIfV2C (same one as zininzinin)
 
-## Current Version
-- 12/23 v2.1.5.2-genbtc-12-23-2016+Modular
+## Current Version (full changes below)
+- v2.1.5.7 - November 7,2017 = Merge in DerSkagg's GoldenUpgrades Mod (Pull request #90) (thanks Derskagg)
+- v2.1.5.6 - August 26, 2017 = Merge ALL of Unihedro branch back into genBTC branch. (thanks UniHedro)
+- v2.1.5.4 - August 26, 2017 = Added AutoDimGen + little fixes (FirenX)
+took a break
+- v2.1.5.3 - January 10, 2017 genbtc-1-10-2016+Modular (meant 2017 lol)
 
 ## Script Installation
 **Please backup your game via export before and during use to prevent losing your save due to corruption!**
@@ -57,7 +61,37 @@ Feel free to submit any bugs/suggestions as issues here on github.
 The fact that it works at all is misleading new players into thinking its perfect. Its not. If your highest zone is under z60, you have not unlocked the stats required, and have not experienced the full meta with its various paradigm shifts. If you are just starting, my advice is to play along naturally and use AutoTrimps as a tool, not a crutch. Play with the settings as if it was the game, Dont expect to go unattended, if AT chooses wrong, and make the RIGHT choice yourself. Additionally, its not coded to run one-time challenges for you, only repeatable ones for helium. During this part of the game, content is king - automating literally removes the fun of the game. If you find that many flaws in the automation exist for you, level up. Keep in mind the challenge of maintaining the code is that it has to work for everyone. AT cant see the future and doesnt run simulations, it exists only in the present moment. Post any suggestions on how it can be better, or volunteer to adapt the code, or produce some sort of low-level player guide with what youve learned. Happy scripting! -genBTC
 
 ## Current feature changes by genBTC
-- ***12/23***
+- Current as of :
+- *** 11/7/2017, v2.1.5.7 Merge DerSkagg PullRequest In*** 
+- New AutoGoldenUpgrades - After max void golden upgrades, alternate between buying helium and battle upgrades. Or Choose a Zone to switch over completely at.
+- *** 8/26/2017, v2.1.5.6 Merge Unihedro Branch In*** 
+- Uni changes include: Dont buy Coords, Trimple Z#, Scryer Suicide Z#, Safety First, Forced Prestige Z#, Prefer Metal Maps, Nursery Count Pre-Spire, Finish Challenge2, DontCare/PowerSaving/DontRushVoids, Prestige Skip 2, Auto Eggs.
+- See his branch here @  https://github.com/Unihedro/AutoTrimps
+- Past Changes: 
+- *** April Unihedro Branch Changes ***
+- 4/17 v2.1.5.5u3 - fix improvedautostorage hijack
+- Fixed a certain specific stupid bug caused by how graph overwrites some functions unnecessarily
+- 4/16 v2.1.5.5u2 - do more map stacks if not enoughHealth
+- No longer forces Buy Storage off
+- 4/15 v2.1.5.5u1 - new settings BuyOvclock
+- 4/14 v2.1.5.4u6 - Improved nurseries map and betterautostorage 
+- 4/14 v2.1.5.4u5 - Auto Eggs</b>, some more 4.3 support 
+- 4/12 v2.1.5.4u4 - AutoTrimps lifecycle changes
+- 4/11 v2.1.5.4u3 - fixed spire farming, autogen supply zone
+- 4/10 v2.1.5.4u2 - PrestigeSkip2 
+- 4/09 v2.1.5.4u1 - Magma: AutoGen, AutoGen2
+- 4/08 v2.1.5.3u6 - ForcePresZ 
+- 4/07 + 4/06: 
+- U5: FinishC2, PowerSaving 
+- U4: PreferMetal, PreSpireNurseries 
+- U3: LinearZ, SupplyWall, OneTimeOnly 
+- U2: TrimpleZ, ScryerDieZ, IgnoreCrits 
+- U1: Don't buy Coords / Skip challenge maps
+- ***1/10/2017***
+- new setting Buy Warp to Hit Coord (genbtc page)
+- AutoStance support for Plague/Bogged Daily
+- Update Map Sliders decisions - less loot% reduction
+- ***12/23/2016***
 - v2.1.5.2-genbtc-12-23-2016+Modular
 - ***12/20***
 - Gear tab to Settings UI. Customize your equip level cap.

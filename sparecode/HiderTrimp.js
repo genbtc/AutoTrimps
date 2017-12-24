@@ -40,7 +40,7 @@ function getNiceThingsDone() {
 		document.getElementById("trimps").insertAdjacentHTML('afterend', '<div id="pic"><img src="' + vp + '"></div>');
 		} else if (mp.length > 5 && game.global.mapsActive && getCurrentMapObject().location != "Void") {
 		document.getElementById("trimps").insertAdjacentHTML('afterend', '<div id="pic"><img src="' + mp + '"></div>');
-		} else if (sp.length > 5 && game.global.world == 200 && game.global.spireActive) {
+		} else if (sp.length > 5 && game.global.world >= getPageSetting('IgnoreSpiresUntil') && (game.global.world == 200 || game.global.world == 300 || game.global.world == 400 || game.global.world == 500 || game.global.world == 600) && game.global.spireActive) {
 		document.getElementById("trimps").insertAdjacentHTML('afterend', '<div id="pic"><img src="' + sp + '"></div>');
 		}
 		if ((sp.length > 5 || zp.length > 5) && game.resources.trimps.soldiers != 0 && !game.global.preMapsActive && !game.global.mapsActive && (new Date().getTime() - game.global.zoneStarted) > 1600 && game.global.gridArray.length != 0) {

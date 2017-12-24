@@ -12,6 +12,7 @@ MODULES["jobs"].autoRatio2 = [3,3,5];
 MODULES["jobs"].autoRatio1 = [1,1,1];
 
 function safeBuyJob(jobTitle, amount) {
+	if (document.getElementById('jobTitle') == null) {return false;}
     if (amount === undefined) amount = 1;
     if (amount === 0) return false;
     var old = preBuy2();
@@ -32,7 +33,7 @@ function safeBuyJob(jobTitle, amount) {
             game.global.maxSplit = 1;
             //if we can't afford it, try to use 'Max' and try again.
             result = canAffordJob(jobTitle, false) && freeWorkers;
-        }        
+        }
     }
     if (result) {
         debug((game.global.firing ? 'Firing ' : 'Hiring ') + prettify(game.global.buyAmt) + ' ' + jobTitle + 's', "jobs", "*users");
@@ -210,6 +211,10 @@ function buyJobs() {
     if (game.jobs.Magmamancer.locked) return;
     //game.jobs.Magmamancer.getBonusPercent(true);
     var timeOnZone = Math.floor((new Date().getTime() - game.global.zoneStarted) / 60000);
+    // Add 5 minutes for zone-time for magmamancer mastery
+    if (game.talents.magmamancer.purchased) {
+        timeOnZone += 5;
+    }
     var stacks2 = Math.floor(timeOnZone / 10);
     if (getPageSetting('AutoMagmamancers') && stacks2 > tierMagmamancers) {
         var old = preBuy2();
@@ -238,6 +243,15 @@ function buyJobs() {
     }
     else if (stacks2 < tierMagmamancers) {
         tierMagmamancers = 0;
+    }
+
+    if ((game.resources.trimps.owned - game.resources.trimps.employed) < 2) {
+        if (game.jobs.Farmer.owned > 2)
+            safeFireJob('Farmer', 2);
+        else if (game.jobs.Lumberjack.owned > 2)
+            safeFireJob('Lumberjack', 2);
+        else if (game.jobs.Miner.owned > 2)
+            safeFireJob('Miner', 2);
     }
 }
 var tierMagmamancers = 0;

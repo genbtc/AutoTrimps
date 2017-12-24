@@ -13,9 +13,9 @@
 if (typeof(AutoPerks) === 'undefined')
     var AutoPerks = {};
 else {
-    debug('AutoPerks is now included in Autotrimps, please disable the tampermonkey script for AutoPerks to remove this message!');  
+    debug('AutoPerks is now included in Autotrimps, please disable the tampermonkey script for AutoPerks to remove this message!');
 }
-    
+
 
 //Import the Library
 var head = document.getElementsByTagName('head')[0];
@@ -147,7 +147,7 @@ AutoPerks.saveCustomRatios = function() {
         // Storage full, maybe notify user or do some clean-up
         debug("Error: LocalStorage is full, or error. Attempt to delete some portals from your graph or restart browser.");
       }
-    }        
+    }
 }
 
 //sets the ratioboxes with the default ratios embedded in the script when perks are instanciated. hardcoded @ lines 461-488 (ish)
@@ -189,7 +189,7 @@ AutoPerks.setDefaultRatios = function() {
         // Storage full, maybe notify user or do some clean-up
         debug("Error: LocalStorage is full, or error. Attempt to delete some portals from your graph or restart browser.");
       }
-    }        
+    }
 }
 
 //updates the internal perk variables with values grabbed from the custom ratio input boxes that the user may have changed.
@@ -489,7 +489,7 @@ AutoPerks.VariablePerk = function(name, base, compounding, value, baseIncrease, 
     this.max = max || Number.MAX_VALUE;
     this.level = level || 0; // How many levels have been invested into a perk
     this.spent = 0; // Total helium spent on each perk.
-    function getRatiosFromPresets() { 
+    function getRatiosFromPresets() {
         //var perkOrder = [looting,toughness,power,motivation,pheromones,artisanistry,carpentry,resilience,coordinated,resourceful,overkill];
         var valueArray = [];
         for (var i=0; i<presetList.length; i++) {
@@ -498,7 +498,7 @@ AutoPerks.VariablePerk = function(name, base, compounding, value, baseIncrease, 
         return valueArray;
         //return [preset_ZXV[value],preset_ZXVnew[value],preset_ZXV3[value],preset_TruthEarly[value],preset_TruthLate[value],preset_nsheetz[value],preset_nsheetzNew[value],preset_HiderHehr[value],preset_HiderBalance[value],preset_HiderMore[value]];
     }
-    this.value = getRatiosFromPresets();    
+    this.value = getRatiosFromPresets();
 }
 
 AutoPerks.ArithmeticPerk = function(name, base, increase, baseIncrease, parent, max, level) { // Calculate a way to obtain parent automatically.

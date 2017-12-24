@@ -58,3 +58,18 @@ ul.tab li a:hover {background-color: #ddd;}
     from {opacity: 0;}
     to {opacity: 1;}
 }
+
+#tipText b.AutoEggs,
+#AutoEggs.settingBtntrue {
+  -webkit-animation: eggGradient 3s infinite;
+  animation: eggGradient 3s infinite;
+  color: black;
+}
+
+@keyframes eggGradient {
+  0% { background-color: #83ddd6; }
+  25% { background-color: #f4c7c7; }
+  50% { background-color: #8beab7; }
+  75% { background-color: #f6f297; }
+  100% { background-color: #83ddd6; }
+}

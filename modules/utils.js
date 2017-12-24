@@ -36,17 +36,35 @@ function getCorruptScale(type) {
     }
 }
 
+// Serialize automation settings
+function serializeSettings() {
+    return JSON.stringify(Object.keys(autoTrimpSettings).reduce((v, k) => {
+            const el = autoTrimpSettings[k];
+            switch (el.type) {
+            case 'boolean':
+                return v[k] = el.enabled, v;
+            case 'value':
+            case 'valueNegative':
+            case 'multitoggle':
+                return v[k] = el.value, v;
+            case 'dropdown':
+                return v[k] = el.selected, v;
+            }
+            return v[k] = el, v; // ATversion, anything else unhandled by NewUI2
+        }, {}));
+}
+
 //Saves automation settings to browser cache
 function saveSettings() {
     // debug('Saved');
     try {
-        localStorage.setItem('autoTrimpSettings', JSON.stringify(autoTrimpSettings));
+        localStorage.setItem('autoTrimpSettings', serializeSettings());
     } catch(e) {
       if (e.code == 22) {
         // Storage full, maybe notify user or do some clean-up
         debug("Error: LocalStorage is full, or error. Attempt to delete some portals from your graph or restart browser.");
       }
-    }        
+    }
 }
 
 //Grabs the automation settings from the page
@@ -64,6 +82,9 @@ function getPageSetting(setting) {
     } else if (autoTrimpSettings[setting].type == 'multitoggle') {
         // debug('found a multitoggle');
         return parseInt(autoTrimpSettings[setting].value);
+    } else if (autoTrimpSettings[setting].type == 'dropdown') {
+        // debug('found a dropdown')
+        return autoTrimpSettings[setting].selected;
     }
 }
 
@@ -161,7 +182,7 @@ function postBuy() {
     game.global.lockTooltip = preBuyTooltip;
     game.global.maxSplit = preBuymaxSplit;
 }
-//#2 Called before buying things that can be purchased in bulk 
+//#2 Called before buying things that can be purchased in bulk
 function preBuy2() {
     return [game.global.buyAmt,game.global.firing,game.global.lockTooltip,game.global.maxSplit];
 }

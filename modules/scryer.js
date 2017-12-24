@@ -10,6 +10,7 @@ function useScryerStance() {
     //check preconditions   (exit quick, if impossible to use)
     var use_auto = game.global.preMapsActive || game.global.gridArray.length === 0 || game.global.highestLevelCleared < 180;
     use_auto = use_auto || game.global.world <= 60;
+    use_auto = use_auto || game.global.mapsActive && getCurrentMapObject().location == "Void" && getPageSetting('ScryerUseinVoidMaps2') == 2;
     if (use_auto) {
         autostancefunction();
         wantToScry = false;
@@ -25,13 +26,19 @@ function useScryerStance() {
     var form = game.global.formation;
     var oktoswitch = true;
     var die = getPageSetting('ScryerDieToUseS');
+    const willSuicide = getPageSetting('ScryerDieZ');
+    if (die && willSuicide >= 0) {
+        var [dieZ, dieC] = willSuicide.toString().split(".");
+        if (dieC && dieC.length == 1) dieC = dieC + "0";
+        die = game.global.world >= dieZ && (!dieC || (game.global.lastClearedCell + 1 >= dieC));
+    }
     if (form == 0 || form == 1)
         oktoswitch = die || newSquadRdy || (missingHealth < (baseHealth / 2));
 
     var useoverkill = getPageSetting('ScryerUseWhenOverkill');
     if (useoverkill && game.portal.Overkill.level == 0)
         setPageSetting('ScryerUseWhenOverkill', false);
-    if (useoverkill && !game.global.mapsActive && game.global.world == 200 && game.global.spireActive && getPageSetting('ScryerUseinSpire2')==2)
+    if (useoverkill && !game.global.mapsActive && isActiveSpireAT() && getPageSetting('ScryerUseinSpire2')==2)
         useoverkill = false;
     //Overkill button being on and being able to overkill in S will override any other setting, regardless.
     if (useoverkill && game.portal.Overkill.level > 0) {
@@ -49,7 +56,7 @@ function useScryerStance() {
 
 //Any of these being true will indicate scryer should not be used, and cause the function to dump back to regular autoStance():
     //check for spire
-    use_auto = use_auto || !game.global.mapsActive && game.global.world == 200 && game.global.spireActive && getPageSetting('ScryerUseinSpire2')!=1;
+    use_auto = use_auto || !game.global.mapsActive && isActiveSpireAT() && getPageSetting('ScryerUseinSpire2')!=1;
     //check for voids
     use_auto = use_auto || game.global.mapsActive && getCurrentMapObject().location == "Void" && !getPageSetting('ScryerUseinVoidMaps2');
     //check for maps
