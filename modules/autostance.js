@@ -364,7 +364,26 @@ function autoStance2() {
     }
     baseDamage *= (game.global.titimpLeft > 0 ? 2 : 1); //consider titimp
     baseDamage *= (!game.global.mapsActive && game.global.mapBonus > 0) ? ((game.global.mapBonus * .2) + 1) : 1;    //consider mapbonus
-
+    
+    //handle Daily Challenge explosion/suicide
+    var xExplosionOK = true;
+    var dExplosionOK = true;
+    if (typeof game.global.dailyChallenge['explosive'] !== 'undefined') {
+        var dExplosion = 0;
+        var xExplosion = 0;
+        var explosiveDamage = 1 + game.global.dailyChallenge['explosive'].strength;
+        
+        var playerCritMult = getPlayerCritChance() ? getPlayerCritDamageMult() : 1;
+        var playerDCritDmg = (baseDamage*4) * playerCritMult;
+        var playerXCritDmg = (baseDamage/4) * playerCritMult;
+  
+        // I don't know if I have to use x or d damage or just the base damage multiplier for this calculation.
+        xExplosion = xDamage * explosiveDamage;
+        dExplosion = dDamage * explosiveDamage;
+        xExplosionOK = ((xHealth - missingHealth > xExplosion) && (enemyHealth > playerXCritDmg));
+        dExplosionOK = ((dHealth - missingHealth > dExplosion) && (enemyHealth > playerDCritDmg));
+    }
+    
     //lead attack ok if challenge isn't lead, or we are going to one shot them, or we can survive the lead damage
     var oneshotFast = enemyFast ? enemyHealth <= baseDamage : false;
     var surviveD = ((newSquadRdy && dHealth > dDamage) || (dHealth - missingHealth > dDamage));
@@ -378,7 +397,7 @@ function autoStance2() {
 
     if (!game.global.preMapsActive && game.global.soldierHealth > 0) {
         //use D stance if: new army is ready&waiting / can survive void-double-attack or we can one-shot / can survive lead damage / can survive void-crit-dmg
-        if (game.upgrades.Dominance.done && surviveD && leadAttackOK && drainAttackOK && voidCritinDok) {
+        if (game.upgrades.Dominance.done && surviveD && leadAttackOK && drainAttackOK && voidCritinDok && dExplosionOK) {
             setFormation(2);
         //if CritVoidMap, switch out of D stance if we cant survive. Do various things.
         } else if (isCritThing && !voidCritinDok) {
@@ -403,6 +422,9 @@ function autoStance2() {
                 else if (game.upgrades.Barrier.done && (game.global.formation == 2 || game.global.formation == 4))
                     setFormation(3);
             }
+        } else if (game.upgrades.Formations.done && !xExplosionOK) {
+            // Set to H if killing badguys will cause your trimps to die
+            setFormation(1);
         } else if (game.upgrades.Formations.done && surviveX) {
             //in lead challenge, switch to H if about to die, so doesn't just die in X mode without trying
             if ((game.global.challengeActive == 'Lead') && (xHealth - missingHealth < xDamage + (xHealth * leadDamage)))
