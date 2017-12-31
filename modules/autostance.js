@@ -375,13 +375,13 @@ function autoStance2() {
         
         var playerCritMult = getPlayerCritChance() ? getPlayerCritDamageMult() : 1;
         var playerDCritDmg = (baseDamage*4) * playerCritMult;
-        var playerXCritDmg = (baseDamage/4) * playerCritMult;
+        var playerXCritDmg = (baseDamage) * playerCritMult;
   
         // I don't know if I have to use x or d damage or just the base damage multiplier for this calculation.
         xExplosion = xDamage * explosiveDamage;
         dExplosion = dDamage * explosiveDamage;
-        xExplosionOK = ((xHealth - missingHealth > xExplosion) && (enemyHealth > playerXCritDmg));
-        dExplosionOK = ((dHealth - missingHealth > dExplosion) && (enemyHealth > playerDCritDmg));
+        xExplosionOK = ((xHealth - missingHealth > xExplosion) || (enemyHealth > playerXCritDmg));
+        dExplosionOK = ((dHealth - missingHealth > dExplosion) || (enemyHealth > playerDCritDmg));
     }
     
     //lead attack ok if challenge isn't lead, or we are going to one shot them, or we can survive the lead damage
