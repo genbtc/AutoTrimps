@@ -230,8 +230,8 @@ function buyBuildings() {
     //NoNurseriesUntil', 'No Nurseries Until z', 'For Magma z230+ purposes. Nurseries get shut down, and wasting nurseries early on is probably a bad idea. Might want to set this to 230+ as well.'
     var nursminlvl = getPageSetting('NoNurseriesUntil');
     var preSpireOverride = getPageSetting('PreSpireNurseries');
-    //override NoNurseriesUntil and MaxNursery if on a Spire >= SpireLimit, or on a world zone < 200 when SpireLimit is set to <= 1
-    var overrideNurseries = preSpireOverride >= 0 && (isActiveSpireAT() || (game.global.world < 200 && getPageSetting('SpireLimit') <= 1));
+    //override NoNurseriesUntil and MaxNursery if on a Spire >= IgnoreSpiresUntil, or on a world zone < 200 when IgnoreSpiresUntil is set to <= 200
+    var overrideNurseries = preSpireOverride >= 0 && (isActiveSpireAT() || (game.global.world < 200 && getPageSetting('IgnoreSpiresUntil') <= 200));
     if (game.global.world < nursminlvl && !overrideNurseries) {
         postBuy2(oldBuy);
         return;
