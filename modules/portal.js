@@ -84,6 +84,7 @@ function autoPortal() {
         case "Balance":
         case "Decay":
         case "Electricity":
+        case "Life":
         case "Crushed":
         case "Nom":
         case "Toxicity":
