@@ -1,7 +1,7 @@
 
 function calcBaseDamageinX() {
     //baseDamage
-    baseDamage = game.global.soldierCurrentAttack * (1 + (game.global.achievementBonus / 100)) * ((game.global.antiStacks * game.portal.Anticipation.level * game.portal.Anticipation.modifier) + 1) * (1 + (game.global.roboTrimpLevel * 0.2));
+    baseDamage = game.global.soldierCurrentAttack * (1 + (game.global.achievementBonus / 100)) * ((game.global.antiStacks * game.portal.Anticipation.level * game.portal.Anticipation.modifier) + 1) * (1 + (game.global.roboTrimpLevel * 0.2)) * (1 + (game.global.totalSquaredReward / 100)) * (game.talents.stillRowing2.purchased ? (1 + (0.06 * game.global.spireRows)) : 1) * (game.talents.healthStrength.purchased ? (1 + (0.15 * mutations.Healthy.cellCount())) : 1) * (Fluffy.isActive() ? Fluffy.getDamageModifier() : 1) * (1 + (1 - game.empowerments.Ice.getCombatModifier())) * (game.talents.magmamancer.purchased ? game.jobs.Magmamancer.getBonusPercent() : 1);
     if (game.global.challengeActive == "Daily"){
         if (typeof game.global.dailyChallenge.weakness !== 'undefined'){
             baseDamage *= dailyModifiers.weakness.getMult(game.global.dailyChallenge.weakness.strength, game.global.dailyChallenge.weakness.stacks);
