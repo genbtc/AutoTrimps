@@ -70,7 +70,7 @@ for (var i in listratios2)
 //Line3
 var ratios3 = document.createElement("DIV");
 ratios3.setAttribute('style', 'display: inline-block; text-align: left; width: 100%');
-var listratios3 = ["Capable","Cunning","Curious"];
+var listratios3 = ["Cunning","Curious"];
 for (var i in listratios3)
     AutoPerks.createInput(listratios3[i],ratios3);
 //Create dump perk dropdown
@@ -112,6 +112,7 @@ html += "<option id='preset_HiderBalance'>Hider (Balance)</option>"
 html += "<option id='preset_HiderMore'>Hider* (More Zones)</option>"
 html += "<option id='preset_genBTC'>genBTC</option>"
 html += "<option id='preset_genBTC2'>genBTC2</option>"
+html += "<option id='preset_Zek450'>Zeker0 (z450+)</option>"
 html += "<option id='customPreset'>Custom</option></select>"
 ratioPreset.innerHTML = html;
 //load the last ratio used
@@ -497,7 +498,7 @@ AutoPerks.VariablePerk = function(name, base, compounding, value, baseIncrease, 
     this.level = level || 0; // How many levels have been invested into a perk
     this.spent = 0; // Total helium spent on each perk.
     function getRatiosFromPresets() {
-        //var perkOrder = [looting,toughness,power,motivation,pheromones,artisanistry,carpentry,resilience,coordinated,resourceful,overkill,capable,curious,cunning];
+        //var perkOrder = [looting,toughness,power,motivation,pheromones,artisanistry,carpentry,resilience,coordinated,resourceful,overkill,curious,cunning];
         var valueArray = [];
         for (var i=0; i<presetList.length; i++) {
             valueArray.push(presetList[i][value]);
@@ -536,21 +537,23 @@ var agility = new AutoPerks.FixedPerk("agility", 4, 20, 20);
 var bait = new AutoPerks.FixedPerk("bait", 4, 30);
 var trumps = new AutoPerks.FixedPerk("trumps", 3, 30);
 var packrat = new AutoPerks.FixedPerk("packrat", 3, 30);
+var capable = new AutoPerks.FixedPerk("capable", 100000000, 10, 10);
 //Ratio Presets:
-//      (perk order): [looting,toughness,power,motivation,pheromones,artisanistry,carpentry,resilience,coordinated,resourceful,overkill,capable,cunning,curious];
-var preset_ZXV = [20, 0.5, 1, 1.5, 0.5, 1.5, 8, 1, 25, 2, 3, 1, 1, 1];
-var preset_ZXVnew = [50, 0.75, 1, 3, 0.75, 3, 10, 1.5, 60, 2, 5, 1, 1, 1];
-var preset_ZXV3 = [100, 1, 3, 3, 1, 3, 40, 2, 100, 1, 3, 1, 1, 1];
-var preset_TruthEarly = [30, 4, 4, 4, 4, 2, 24, 8, 60, 2, 3, 1, 1, 1];
-var preset_TruthLate = [120, 4, 4, 4, 4, 2, 24, 8, 60, 2, 3, 1, 1, 1];
-var preset_nsheetz = [42, 1.75, 5, 4, 1.5, 5, 29, 3.5, 100, 1, 5, 1, 1, 1];
-var preset_nsheetzNew= [160, 1.5, 5, 2.5, 1.5, 3.5, 18, 3, 100, 1, 10, 1, 1, 1];
-var preset_HiderHehr = [90, 4, 12, 10, 1, 8, 8, 1, 20, 0.1, 3, 1, 1, 1];
-var preset_HiderBalance = [75, 4, 8, 4, 1, 4, 24, 1, 75, 0.5, 3, 1, 1, 1];
-var preset_HiderMore = [20, 4, 10, 12, 1, 8, 8, 1, 40, 0.1, 0.5, 1, 1, 1];
-var preset_genBTC = [100, 8, 8, 4, 4, 5, 18, 8, 14, 1, 1, 1, 1, 1];
-var preset_genBTC2 = [96, 19, 15.4, 8, 8, 7, 14, 19, 11, 1, 1, 1, 1, 1];
-var presetList = [preset_ZXV,preset_ZXVnew,preset_ZXV3,preset_TruthEarly,preset_TruthLate,preset_nsheetz,preset_nsheetzNew,preset_HiderHehr,preset_HiderBalance,preset_HiderMore,preset_genBTC,preset_genBTC2];
+//      (perk order): [looting,toughness,power,motivation,pheromones,artisanistry,carpentry,resilience,coordinated,resourceful,overkill,cunning,curious];
+var preset_ZXV = [20, 0.5, 1, 1.5, 0.5, 1.5, 8, 1, 25, 2, 3, 1, 1];
+var preset_ZXVnew = [50, 0.75, 1, 3, 0.75, 3, 10, 1.5, 60, 2, 5, 1, 1];
+var preset_ZXV3 = [100, 1, 3, 3, 1, 3, 40, 2, 100, 1, 3, 1, 1];
+var preset_TruthEarly = [30, 4, 4, 4, 4, 2, 24, 8, 60, 2, 3, 1, 1];
+var preset_TruthLate = [120, 4, 4, 4, 4, 2, 24, 8, 60, 2, 3, 1, 1];
+var preset_nsheetz = [42, 1.75, 5, 4, 1.5, 5, 29, 3.5, 100, 1, 5, 1, 1];
+var preset_nsheetzNew= [160, 1.5, 5, 2.5, 1.5, 3.5, 18, 3, 100, 1, 10, 1, 1];
+var preset_HiderHehr = [90, 4, 12, 10, 1, 8, 8, 1, 20, 0.1, 3, 1, 1];
+var preset_HiderBalance = [75, 4, 8, 4, 1, 4, 24, 1, 75, 0.5, 3, 1, 1];
+var preset_HiderMore = [20, 4, 10, 12, 1, 8, 8, 1, 40, 0.1, 0.5, 1, 1];
+var preset_genBTC = [100, 8, 8, 4, 4, 5, 18, 8, 14, 1, 1, 1, 1];
+var preset_genBTC2 = [96, 19, 15.4, 8, 8, 7, 14, 19, 11, 1, 1, 1, 1];
+var preset_Zek450 = [300, 1, 30, 2, 4, 2, 9, 8, 17, 0.1, 1, 320, 1];
+var presetList = [preset_ZXV,preset_ZXVnew,preset_ZXV3,preset_TruthEarly,preset_TruthLate,preset_nsheetz,preset_nsheetzNew,preset_HiderHehr,preset_HiderBalance,preset_HiderMore,preset_genBTC,preset_genBTC2,preset_Zek450];
 //ratio was replaced by position, value will be pulled from ratios above later.
 var looting = new AutoPerks.VariablePerk("looting", 1, false,             0, 0.05);
 var toughness = new AutoPerks.VariablePerk("toughness", 1, false,         1, 0.05);
@@ -569,10 +572,9 @@ var power_II = new AutoPerks.ArithmeticPerk("power_II", 20000, 500, 0.01, power)
 var motivation_II = new AutoPerks.ArithmeticPerk("motivation_II", 50000, 1000, 0.01, motivation);
 var carpentry_II = new AutoPerks.ArithmeticPerk("carpentry_II", 100000, 10000, 0.0025, carpentry);
 var looting_II = new AutoPerks.ArithmeticPerk("looting_II", 100000, 10000, 0.0025, looting);
-//fluffy perks
-var capable = new AutoPerks.VariablePerk("capable", 2, false,   11, 0.1);
-var cunning = new AutoPerks.VariablePerk("cunning", 2, false,   12, 0.1);
-var curious = new AutoPerks.VariablePerk("curious", 2, false,   13, 0.1);
+//fluffy perks please fix as required, pretty sure base values are right though
+var cunning = new AutoPerks.VariablePerk("cunning", 100000000000, false,      11, 0.05);
+var curious = new AutoPerks.VariablePerk("curious", 100000000000000, false,   12, 0.05);
 //gather these into an array of objects
 AutoPerks.perkHolder = [siphonology, anticipation, meditation, relentlessness, range, agility, bait, trumps, packrat, looting, toughness, power, motivation, pheromones, artisanistry, carpentry, resilience, coordinated, resourceful, overkill, capable, cunning, curious, toughness_II, power_II, motivation_II, carpentry_II, looting_II];
 
