@@ -569,10 +569,10 @@ var power_II = new AutoPerks.ArithmeticPerk("power_II", 20000, 500, 0.01, power)
 var motivation_II = new AutoPerks.ArithmeticPerk("motivation_II", 50000, 1000, 0.01, motivation);
 var carpentry_II = new AutoPerks.ArithmeticPerk("carpentry_II", 100000, 10000, 0.0025, carpentry);
 var looting_II = new AutoPerks.ArithmeticPerk("looting_II", 100000, 10000, 0.0025, looting);
-//fluffy perks
-var capable = new AutoPerks.VariablePerk("capable", 2, false,   11, 0.1);
-var cunning = new AutoPerks.VariablePerk("cunning", 2, false,   12, 0.1);
-var curious = new AutoPerks.VariablePerk("curious", 2, false,   13, 0.1);
+//fluffy perks please fix as required, pretty sure base values are right though
+var capable = new AutoPerks.VariablePerk("capable", 100000000, true,          11, 10, 10);
+var cunning = new AutoPerks.VariablePerk("cunning", 100000000000, false,      12, 0.05);
+var curious = new AutoPerks.VariablePerk("curious", 100000000000000, false,   13, 0.05);
 //gather these into an array of objects
 AutoPerks.perkHolder = [siphonology, anticipation, meditation, relentlessness, range, agility, bait, trumps, packrat, looting, toughness, power, motivation, pheromones, artisanistry, carpentry, resilience, coordinated, resourceful, overkill, capable, cunning, curious, toughness_II, power_II, motivation_II, carpentry_II, looting_II];
 
