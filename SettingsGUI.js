@@ -205,7 +205,7 @@ function initializeAllSettings() {
     createSetting('LumberjackRatio', 'Lumberjack Ratio', '', 'value', '1', null, "Settings");
     createSetting('MinerRatio', 'Miner Ratio', '', 'value', '1', null, "Settings");
     createSetting('MaxScientists', 'Max Scientists', 'Advanced. Cap your scientists. recommend: -1 (infinite still controls itself)', 'value', '-1', null, "Settings");
-    createSetting('MaxExplorers', 'Max Explorers', 'Cap your explorers, most of fragments are gained by looting not gathering. recommend: 150', 'value', '150', null, "Settings");
+    createSetting('MaxExplorers', 'Max Explorers', 'Advanced. Cap your explorers. recommend: -1', 'value', '-1', null, "Settings");
     createSetting('MaxTrainers', 'Max Trainers', 'Advanced. Cap your trainers. recommend: -1', 'value', '-1', null, "Settings");
     createSetting('MaxHut', 'Max Huts', 'Huts', 'value', '100', null, "Settings");
     createSetting('MaxHouse', 'Max Houses', 'Houses', 'value', '100', null, "Settings");
