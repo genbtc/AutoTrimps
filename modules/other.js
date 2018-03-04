@@ -88,6 +88,17 @@ function autoNatureTokens() {
             changed = true;
             debug('Upgraded ' + nature + ' transfer rate', 'other');
         }
+        else if (setting == 'Convert to Both') {
+            if (empowerment.tokens < 20) continue;
+            for (var targetNature in game.empowerments) {
+                if (targetNature == nature) continue;
+                empowerment.tokens -= 10;
+                var convertRate = (game.talents.nature.purchased) ? ((game.talents.nature2.purchased) ? 8 : 6) : 5;
+                game.empowerments[targetNature].tokens += convertRate;
+                changed = true;
+                debug('Converted ' + nature + ' tokens to ' + targetNature, 'other');
+            }
+        }
         else {
             if (empowerment.tokens < 10)
                 continue;
