@@ -215,7 +215,7 @@ function buyJobs() {
         timeOnZone += 5;
     }
     var stacks2 = Math.floor(timeOnZone / 10);
-    if (getPageSetting('AutoMagmamancers') && stacks2 > tierMagmamancers) {
+    if (stacks2 > tierMagmamancers) {
         var old = preBuy2();
         game.global.firing = false;
         game.global.buyAmt = 'Max';
