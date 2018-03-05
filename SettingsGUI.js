@@ -212,6 +212,7 @@ function initializeAllSettings() {
     createSetting('MaxNursery', 'Max Nurseries', 'Advanced. recommend: -1', 'value', '-1', null, "Settings");
     createSetting('BreedFire', 'Breed Fire', 'OPTIONAL. Fire Lumberjacks and Miners to speed up breeding when needed. Basically trades wood/metal to cut the wait between deaths down. Disclaimer: May heavily negatively impact wood-gathering. ', 'boolean', null, null, 'Settings');
     createSetting('AutoMagmamancers', ['Magmamancers Off', 'Magmamancers After 10', 'Magmamancers Always'], 'OPTIONAL. Auto Magmamancer Management. Hires Magmamancers when the Current Zone time goes over 10 minutes. Does a one-time spend of at most 10% of your resources. Every increment of 10 minutes after that repeats the 10% hiring process. Disclaimer: May negatively impact Gem count.', 'multitoggle', 0, null, 'Settings');
+    createSetting('AutoMagmamancersZone', 'Magmamancer after Zone', 'Only buys Magmamancers if you are on this Zone or higer', 'value', '0', null, "Settings");
 
 //genBTC advanced settings - option buttons.
     createSetting('WarpstationCap', 'Warpstation Cap', 'Do not level Warpstations past Basewarp+DeltaGiga **. Without this, if a Giga wasnt available, it would level infinitely (wastes metal better spent on prestiges instead.) **The script bypasses this cap each time a new giga is bought, when it insta-buys as many as it can afford (since AT keeps available metal/gems to a low, overbuying beyond the cap to what is affordable at that first moment is not a bad thing). ', 'boolean', true, null, 'genBTC');
