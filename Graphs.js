@@ -912,9 +912,9 @@ function setGraphData(graph) {
             break;
         case 'Magmamancers':
             graphData = allPurposeGraph('magmamancers',true,"number");
-            title = 'Total Magmite Owned';
+            title = 'Total Magmamancers Owned';
             xTitle = 'Zone';
-            yTitle = 'Magmite';
+            yTitle = 'Magmamancers';
             yType = 'Linear';
             break;
         case 'DarkEssence':
