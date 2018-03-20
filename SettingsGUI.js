@@ -149,9 +149,9 @@ function initializeAllTabs() {
     addTabsDiv.appendChild(addtabsUL);
     //Make Tabs.
     createTabs("Core", "Main Controls for the script");
-    createTabs("Buildings", "Building automation settings");
-    createTabs("Jobs", "Worker hiring settings");
-    createTabs("Gear", "Equipment prestige & levelling settings");
+    createTabs("Buildings", "Building automation Settings");
+    createTabs("Jobs", "Worker hiring Settings");
+    createTabs("Gear", "Equipment prestige & levelling Settings");
     createTabs("AutoMaps", "AutoMaps & VoidMaps related Settings");
     createTabs("Battle", "Combat & Stance related Settings");
     createTabs("Scryer", "Scryer Settings");
