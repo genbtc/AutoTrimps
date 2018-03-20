@@ -153,7 +153,7 @@ function initializeAllTabs() {
     createTabs("Jobs", "Settings for Automating Worker Hiring");
     createTabs("Gear", "Gear = Prestiges / Equipment settings");
     createTabs("AutoMaps", "AutoMaps + VoidMaps related Settings");
-    createTabs("Battle", "Combat & Stance related Settings"
+    createTabs("Battle", "Combat & Stance related Settings");
     createTabs("genBTC", "GenBTC Advanced");
     createTabs("Uni", "Uni's mods");
     createTabs("Scryer", "Scryer Stance");
