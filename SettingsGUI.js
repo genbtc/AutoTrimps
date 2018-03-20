@@ -212,8 +212,8 @@ function initializeAllSettings() {
     createSetting('PauseScript', 'Pause AutoTrimps', 'Pause AutoTrimps Script (not including the graphs module)', 'boolean', null, null, 'Core');
     var $pauseScript = document.getElementById('PauseScript');
     $pauseScript.parentNode.style.setProperty('float','right');
-    $pauseScript.parentNode.style.setProperty('margin-right','0');
-    $pauseScript.parentNode.style.setProperty('margin-left','1vw');
+    $pauseScript.parentNode.style.setProperty('margin-right','1vw');
+    $pauseScript.parentNode.style.setProperty('margin-left','0');
 
     
     
