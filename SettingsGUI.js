@@ -148,7 +148,7 @@ function initializeAllTabs() {
     addtabsUL.className = "tab";
     addTabsDiv.appendChild(addtabsUL);
     //Make Tabs.
-    createTabs("Core", "Main Controls for the script");
+    createTabs("Core", "TEST Main Controls for the script");
     createTabs("Gear", "Gear = Prestiges / Equipment settings");
     createTabs("Maps", "AutoMaps + VoidMaps related Settings");
     createTabs("Settings", "Sub Controls for the script");
