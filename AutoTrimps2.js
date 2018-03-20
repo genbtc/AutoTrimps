@@ -53,9 +53,7 @@ function initializeAutoTrimps() {
 //          : Description
 //Other function should be made to create a DOM element for this, scrape the API data into it, and then print tooltip with header/footer.
 function printChangelog() {
-    tooltip('confirm', null, 'update', '\
-NOT GENS VERSION
-', 'cancelTooltip()', 'Script Update Notice<br>' + ATversion);
+    tooltip('confirm', null, 'update', 'NOT GENS VERSION', 'cancelTooltip()', 'Script Update Notice<br>' + ATversion);
 }
 ////////////////////////////////////////
 //Main DELAY Loop///////////////////////
