@@ -152,7 +152,7 @@ function initializeAllTabs() {
     createTabs("Buildings", "Building Settings");
     createTabs("Jobs", "Worker Settings");
     createTabs("Gear", "Equipment Settings");
-    createTabs("AutoMaps", "AutoMaps & VoidMaps related Settings");
+    createTabs("AutoMaps", "AutoMaps & VoidMaps Settings");
     createTabs("Battle", "Combat & Stance Settings");
     createTabs("Scryer", "Scryer Settings");
     createTabs("Settings", "Heirloom & Perk Settings");
