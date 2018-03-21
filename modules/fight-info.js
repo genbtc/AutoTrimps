@@ -39,9 +39,6 @@
 	M["fightinfo"].lastProcessedWorld = null;
 	M["fightinfo"].lastProcessedMap = null;
 
-	// Make battle grids less ugly
-	document.head.appendChild(document.createElement('style')).innerHTML = '.battleCell { border-width: 1px 1px 0 0; } .battleRow { border-width: 0 0 1px 1px; }'
-
 	function Update()
 	{
 		// Check if we should update world or map info
