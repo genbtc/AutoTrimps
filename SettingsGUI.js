@@ -179,7 +179,7 @@ function initializeAllTabs() {
     createTabs("Maps", "Maps - AutoMaps & VoidMaps Settings");
     createTabs("Combat", "Combat & Stance Settings");
     createTabs("Scryer", "Scryer Settings");
-    createTabs("Heirlooms", "Heirloom & Perk Settings");
+    createTabs("Heirlooms", "Heirloom Settings");
     createTabs("Magma", "Dimensional Generator & Magmite Settings");
     createTabs("Golden", "Golden Upgrade Settings");
     createTabs("Nature", "Nature Settings");
