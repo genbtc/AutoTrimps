@@ -155,11 +155,11 @@ function initializeAllTabs() {
     createTabs("Maps", "AutoMaps & VoidMaps Settings");
     createTabs("Combat", "Combat & Stance Settings");
     createTabs("Scryer", "Scryer Settings");
-    createTabs("Heirlooms&Perks", "Heirloom & Perk Settings");
-    createTabs("Magma", "Dimensional Generator Settings");
+    createTabs("Heirlooms", "Heirloom & Perk Settings");
+    createTabs("Magma", "Dimensional Generator & Magmite Settings");
     createTabs("Golden", "Golden Upgrade Settings");
     createTabs("Nature", "Nature Settings");
-    createTabs("Spam", "Autotrimps Spam Settings");
+    createTabs("Display", "UI Addons & Spam Settings");
     createTabs("Import Export", "Import & Export Settings");
     //add a minimize button:
     var li_0 = document.createElement('li');
@@ -183,8 +183,8 @@ initializeAllTabs();
 function initializeAllSettings() {
     //START MAKING BUTTONS IN THE TABS:
 
-    
-    
+
+
 //CORE:
     //Line1:
     createSetting('ManualGather2', ['Gather/Build OFF', 'Auto Gather/Build', 'Science Research OFF', 'Auto Gather/Build #2'], '4-Way Button. Auto Gathering of Food,Wood,Metal(w/turkimp) & Science. Auto speed-Builds your build queue. Now able to turn science researching off for the achievement Reach Z120 without using manual research. The decision between AutoGather 1 or 2 is up to your own discretion and they should be similar.', 'multitoggle', 1, null, "Core");
@@ -195,34 +195,35 @@ function initializeAllSettings() {
     createSetting('GeneticistTimer', 'Geneticist Timer', 'Manages the breed timer by hiring/firing Geneticists for the purpose of setting the ideal anticpation stacks. Disable with -1 to disable the Hiring/Firing of geneticists. <br><b>Info:</b> Potency and Nursery buying behavior is adjusted dynamically (and disabling no longer disables potency). The Automatic Genetecist Hiring Process can best be summarized by: Buy/Wait/Die,Repeat. (if you do not die, no action is taken). Also self-kills (trimpicide) aka force abandon when your anti-stacks arent maxed out (conservatively).<p><B>Controlled automatically (locked) when Auto Breed Timer is on</B>.', 'value', '30', null, "Core");
     createSetting('SpireBreedTimer', 'Spire Breed Timer', 'Set a different breed timer target for the Spire. Use -1 to disable this special setting.', 'value', -1, null, 'Core');
     //Line2
+    createSetting('AutoAllocatePerks', 'Auto Allocate Perks', 'Uses the AutoPerks ratio based preset system to automatically allocate your perks to spend whatever helium you have when you AutoPortal. ', 'boolean', false, null, 'Core');
     createSetting('AutoStartDaily', 'Auto Start Daily', 'With this on, the Auto Portal options will portal you into and auto-start the daily <b>whenever available</b>. Does Yesterday first, followed by Today. Falls back to selected challenge when both are complete.', 'boolean', false, null, 'Core');
     createSetting('AutoFinishDaily', 'Auto Finish Daily', 'With this on, the He/Hr Portal and Custom Auto Portal options will auto-finish the daily <b>whenever they trigger</b> and THEN portal you.', 'boolean', true, null, 'Core');
     createSetting('AutoFinishDailyZone', 'Finish Daily Zone Mod', 'Finish Daily by this # of zones earlier/later than your regular Custom AutoPortal zone or your Helium Dont Portal Before zone. When Auto Finish Daily is on. Tip: Tune your value of He/HrDontPortalBefore to suit the daily, and then tune this. Can accept negative numbers for earlier, ie: -7 means portal 7 zones earlier than normal. Can also use positive numbers to DELAY portaling for later. When used with He/Hr AutoPortal, the number of zones early does not FORCE end the daily at that zone, only ALLOW it to end that early: it will Always end when your HE/hr drops enough to trigger the portal. <b>Use 0 to disable.</b>', 'valueNegative', 0, null, 'Core');
     createSetting('FinishC2', 'Finish Challenge2', 'Finish / Abandon Challenge2 (any) when this zone is reached, if you are running one. For manual use. Recommended: Zones ending with 0 for most challenges. Disable with -1.', 'value', -1, null, 'Core');
-    //if (game.worldUnlocks.easterEgg) ------ is this necessary?
+    if (game.worldUnlocks.easterEgg)
     createSetting('AutoEggs', 'AutoEggs', 'Click easter egg if it exists, upon entering a new zone. Warning: Quite overpowered. Please solemnly swear that you are up to no good.', 'boolean', false, null, 'Core');
     createSetting('ManualCoords', 'Don\'t buy Coords', 'Enable it if you know what you\'re doing, disable it if you don\'t know what you\'re doing. For when manually handling coords means a lot on challenges like Trapper.', 'boolean', false, null, 'Core');
-    createSetting('PauseScript', 'Pause AutoTrimps', 'Pause AutoTrimps Script (not including the graphs module)', 'boolean', null, null, 'Core');
-    //Line3
+    //NewLine3
+    document.getElementById('ManualCoords').parentNode.insertAdjacentHTML('afterend','<br>');
     createSetting('AutoPortal', 'Auto Portal', 'Automatically portal. Will NOT auto-portal if you have a challenge active, the challenge setting dictates which challenge it will select for the next run. All challenge settings will portal right after the challenge ends, regardless. Helium Per Hour only <b>portals at cell 1</b> of the first level where your He/Hr went down even slightly compared to the current runs Best He/Hr. Take note, there is a Buffer option, which is like a grace percentage of how low it can dip without triggering. Setting a buffer will portal mid-zone if you exceed 5x of the buffer.  CAUTION: Selecting He/hr may immediately portal you if its lower-(use Pause AutoTrimps button to pause the script first to avoid this)', 'dropdown', 'Off', ['Off', 'Helium Per Hour', 'Balance', 'Decay', 'Electricity', 'Life', 'Crushed', 'Nom', 'Toxicity', 'Watch', 'Lead', 'Corrupted', 'Custom'], "Core");
     createSetting('HeliumHourChallenge', 'Challenge for Helium per Hour and Custom', 'Automatically portal into this challenge when using helium per hour or custom autoportal. Custom portals after cell 100 of the zone specified. ', 'dropdown', 'None', ['None', 'Balance', 'Decay', 'Electricity', 'Life', 'Crushed', 'Nom', 'Toxicity', 'Watch', 'Lead', 'Corrupted'], "Core");
     document.getElementById("HeliumHourChallengeLabel").innerHTML = "Challenge On Autoportal:";
     createSetting('CustomAutoPortal', 'Custom Portal', 'Automatically portal AFTER clearing this level.(ie: setting to 200 would portal when you first reach level 201)', 'value', '999', null, "Core");
     createSetting('HeHrDontPortalBefore', 'He/Hr Dont Portal Before', 'Do NOT allow Helium per Hour AutoPortal setting to portal BEFORE this level is reached. It is an additional check that prevents drops in helium/hr from triggering autoportal. Set to 0 or -1 to completely disable this check.', 'value', '999', null, "Core");
     createSetting('HeliumHrBuffer', 'He/Hr Portal Buffer %', 'IMPORTANT SETTING. When using the He/Hr Autoportal, it will portal if your He/Hr drops by this amount of % lower than your best for current run, default is 0% (ie: set to 5 to portal at 95% of your best). Now with stuck protection - Allows portaling midzone if we exceed set buffer amount by 5x. (ie a normal 2% buffer setting would now portal mid-zone you fall below 10% buffer).', 'value', '0', null, 'Core');
-    
+    createSetting('PauseScript', 'Pause AutoTrimps', 'Pause AutoTrimps Script (not including the graphs module)', 'boolean', null, null, 'Core');
     //code to locate the pause button at lower right
-    //var $pauseScript = document.getElementById('PauseScript');
-    //$pauseScript.parentNode.style.setProperty('float','right');
-    //$pauseScript.parentNode.style.setProperty('margin-right','1vw');
-    //$pauseScript.parentNode.style.setProperty('margin-left','0');
+    var $pauseScript = document.getElementById('PauseScript');
+    $pauseScript.parentNode.style.setProperty('float','right');
+    $pauseScript.parentNode.style.setProperty('margin-right','1vw');
+    $pauseScript.parentNode.style.setProperty('margin-left','0');
 
     
     
     
 //Buildings
     createSetting('BuyStorage', 'Buy Storage', 'Will buy storage when resource is almost full. (like AutoStorage, even anticipates Jestimp)', 'boolean', true, null, "Buildings");
-    createSetting('BuyBuildings', 'Buy Buildings', 'Will buy non storage buildings as soon as they are available', 'boolean', true, null, "Buildings");    
+    createSetting('BuyBuildings', 'Buy Buildings', 'Will buy non storage buildings as soon as they are available', 'boolean', true, null, "Buildings");
     createSetting('WarpstationCap', 'Warpstation Cap', 'Do not level Warpstations past Basewarp+DeltaGiga **. Without this, if a Giga wasnt available, it would level infinitely (wastes metal better spent on prestiges instead.) **The script bypasses this cap each time a new giga is bought, when it insta-buys as many as it can afford (since AT keeps available metal/gems to a low, overbuying beyond the cap to what is affordable at that first moment is not a bad thing). ', 'boolean', true, null, 'Buildings');
     createSetting('WarpstationCoordBuy', 'Buy Warp to Hit Coord', 'If we are very close to hitting the next coordination, and we can afford the warpstations it takes to do it, Do it! (even if we are over the Cap/Wall). Recommended with WarpCap/WarpWall. (has no point otherwise) ', 'boolean', true, null, 'Buildings');
     createSetting('MaxHut', 'Max Huts', 'Huts', 'value', '100', null, "Buildings");
@@ -236,20 +237,20 @@ function initializeAllSettings() {
     createSetting('MaxCollector', 'Max Collectors', 'recommend: -1', 'value', '-1', null, "Buildings");
     createSetting('MaxGym', 'Max Gyms', 'Advanced. recommend: -1', 'value', '-1', null, "Buildings");
     createSetting('MaxTribute', 'Max Tributes', 'Advanced. recommend: -1 ', 'value', '-1', null, "Buildings");
-    createSetting('GymWall', 'Gym Wall', 'Conserves Wood. Only buys 1 Gym when you can afford <b>X</b> gyms wood cost (at the first one\'s price, simple math). -1 or 0 to disable. In other words, only allows gyms that cost less than 1/nth your currently owned wood. (to save wood for nurseries for new z230+ Magma nursery strategy). Takes decimal numbers. (Identical to the Warpstation wall setting which is why its called that). Setting to 1 does nothing besides stopping gyms from being bought 2 at a time due to the mastery.', 'value', -1, null, 'Buildings');    
+    createSetting('GymWall', 'Gym Wall', 'Conserves Wood. Only buys 1 Gym when you can afford <b>X</b> gyms wood cost (at the first one\'s price, simple math). -1 or 0 to disable. In other words, only allows gyms that cost less than 1/nth your currently owned wood. (to save wood for nurseries for new z230+ Magma nursery strategy). Takes decimal numbers. (Identical to the Warpstation wall setting which is why its called that). Setting to 1 does nothing besides stopping gyms from being bought 2 at a time due to the mastery.', 'value', -1, null, 'Buildings');
     //Line3
     createSetting('FirstGigastation', 'First Gigastation', 'How many warpstations to buy before your first gigastation', 'value', '20', null, "Buildings");
     createSetting('DeltaGigastation', 'Delta Gigastation', 'How many extra warpstations to buy for each gigastation. Supports decimal values. For example 2.5 will buy +2/+3/+2/+3...', 'value', '2', null, "Buildings");
-    createSetting('WarpstationWall3', 'Warpstation Wall', 'Conserves Metal. Only buys 1 Warpstation when you can afford <b>X</b> warpstations metal cost (at the first one\'s price, simple math). -1, 0, 1 = disable. In other words, only allows warps that cost less than 1/nth your currently owned metal. (to save metal for prestiges)', 'value', -1, null, 'Buildings');    
-    createSetting('MaxNursery', 'Max Nurseries', 'Advanced. Recommend: -1 until you reach Magma (z230+)', 'value', '-1', null, "Buildings");    
-    createSetting('NoNurseriesUntil', 'No Nurseries Until z', 'For Magma z230+ purposes. Nurseries get shut down, and wasting nurseries early on is probably a bad idea. Might want to set this to 230+ for now. Can use combined with the old Max Nurseries cap setting.', 'value', -1, null, 'Buildings'); 
-    createSetting('PreSpireNurseries', 'Nurseries pre-Spire', 'Set the maximum number of Nurseries to build for Spires. Overrides No Nurseries Until z and Max Nurseries so you can keep them seperate! Will build nurseries before z200 for Spire 1, but only on the zone of Spires 2+ to avoid unnecessary burning. Disable with -1.', 'value', -1, null, 'Buildings');    
+    createSetting('WarpstationWall3', 'Warpstation Wall', 'Conserves Metal. Only buys 1 Warpstation when you can afford <b>X</b> warpstations metal cost (at the first one\'s price, simple math). -1, 0, 1 = disable. In other words, only allows warps that cost less than 1/nth your currently owned metal. (to save metal for prestiges)', 'value', -1, null, 'Buildings');
+    createSetting('MaxNursery', 'Max Nurseries', 'Advanced. Recommend: -1 until you reach Magma (z230+)', 'value', '-1', null, "Buildings");
+    createSetting('NoNurseriesUntil', 'No Nurseries Until z', 'For Magma z230+ purposes. Nurseries get shut down, and wasting nurseries early on is probably a bad idea. Might want to set this to 230+ for now. Can use combined with the old Max Nurseries cap setting.', 'value', -1, null, 'Buildings');
+    createSetting('PreSpireNurseries', 'Nurseries pre-Spire', 'Set the maximum number of Nurseries to build for Spires. Overrides No Nurseries Until z and Max Nurseries so you can keep them seperate! Will build nurseries before z200 for Spire 1, but only on the zone of Spires 2+ to avoid unnecessary burning. Disable with -1.', 'value', -1, null, 'Buildings');
 
-    
-       
-    
+
+
+
 //Jobs
-    createSetting('BuyJobs', 'Buy Jobs', 'Buys jobs based on ratios configured below. CAUTION: you cannot manually assign jobs with this. Toggle if you need to.', 'boolean', true, null, "Jobs");    
+    createSetting('BuyJobs', 'Buy Jobs', 'Buys jobs based on ratios configured below. CAUTION: you cannot manually assign jobs with this. Toggle if you need to.', 'boolean', true, null, "Jobs");
     createSetting('HireScientists', 'Hire Scientists', 'Enable or disable hiring of scientists. Math: ScientistRatio=(FarmerRatio+LumberjackRatio+MinerRatio)/25 and stops hiring scientists after 250k Farmers.', 'boolean', true, null, "Jobs");
     createSetting('WorkerRatios', 'Auto Worker Ratios', 'Automatically changes worker ratios based on current progress. WARNING: overrides worker ratio settings. Settings: 1/1/1 up to 300k trimps, 3/3/5 up to 3mil trimps, then 3/1/4 above 3 mil trimps, then 1/1/10 above 1000 tributes, then 1/2/22 above 1500 tributes, then 1/12/12 above 3000 tributes.', 'boolean', true, null, "Jobs");
     createSetting('AutoMagmamancers', 'Auto Magmamancers', 'Auto Magmamancer Management. Hires Magmamancers when the Current Zone time goes over 10 minutes. Does a one-time spend of at most 10% of your gem resources. Every increment of 10 minutes after that repeats the 10% hiring process. Magmamancery mastery is accounted for, with that it hires them at 5 minutes instead of 10. Disclaimer: May negatively impact Gem count.', 'boolean', true, null, 'Jobs');    createSetting('FarmerRatio', 'Farmer Ratio', '', 'value', '1', null, "Jobs");
@@ -259,12 +260,12 @@ function initializeAllSettings() {
     //Line2
     createSetting('MaxExplorers', 'Max Explorers', 'Advanced. Cap your explorers. recommend: -1', 'value', '-1', null, "Jobs");
     createSetting('MaxTrainers', 'Max Trainers', 'Advanced. Cap your trainers. recommend: -1', 'value', '-1', null, "Jobs");
-    createSetting('TrainerCaptoTributes', 'Cap Trainers %', 'Only Buy a Trainer when its cost is LESS than X% of cost of a tribute. This setting can work in combination with the other one, or set the other one to -1 and this will take full control. Default: -1 (Disabled). 50% is close to the point where the cap does nothing. You can go as low as you want but recommended is 10% to 1%. (example: Trainer cost of 5001, Tribute cost of 100000, @ 5%, it would NOT buy the trainer.)', 'value', '-1', null, 'Jobs');    
-    createSetting('BreedFire', 'Breed Fire', 'OPTIONAL. Fire Lumberjacks and Miners to speed up breeding when needed. Basically trades wood/metal to cut the wait between deaths down. Disclaimer: May heavily negatively impact wood-gathering. ', 'boolean', null, null, 'Jobs');     
-    
-    
-    
-    
+    createSetting('TrainerCaptoTributes', 'Cap Trainers %', 'Only Buy a Trainer when its cost is LESS than X% of cost of a tribute. This setting can work in combination with the other one, or set the other one to -1 and this will take full control. Default: -1 (Disabled). 50% is close to the point where the cap does nothing. You can go as low as you want but recommended is 10% to 1%. (example: Trainer cost of 5001, Tribute cost of 100000, @ 5%, it would NOT buy the trainer.)', 'value', '-1', null, 'Jobs');
+    createSetting('BreedFire', 'Breed Fire', 'OPTIONAL. Fire Lumberjacks and Miners to speed up breeding when needed. Basically trades wood/metal to cut the wait between deaths down. Disclaimer: May heavily negatively impact wood-gathering. ', 'boolean', null, null, 'Jobs');
+
+
+
+
 //GEAR:
     createSetting('BuyArmor', 'Buy Armor Levels', 'Auto-Buy/Level-Up the most cost efficient armor available. ', 'boolean', true, null, "Gear");
     createSetting('BuyArmorUpgrades', 'Buy Armor Prestiges', '(Prestiges) & Gymystic. Will buy the most efficient armor upgrade available. ', 'boolean', true, null, "Gear");
@@ -286,12 +287,12 @@ function initializeAllSettings() {
     createSetting('PrestigeSkip2', 'Prestige Skip 2', 'If there are 2 or fewer <b>Unobtained Weapon Prestiges in maps</b>, ie: there are less than 2 types to run for, AutoMaps will not enter Prestige Mode, and/or will exit from it. For users who tends to not need the last few prestiges due to resource gain not keeping up. The amount of unboughts can be configured with MODULES.automaps.UnearnedPrestigesRequired. If PrestigeSkipMode is enabled, both conditions need to be reached before exiting.', 'boolean', false, null, 'Gear');
     createSetting('DelayArmorWhenNeeded', 'Delay Armor Prestige', 'Delays buying armor prestige-upgrades during Want More Damage or Farming automap-modes, Although if you need health AND damage, it WILL buy armor prestiges tho. NOTE: <b>Applies to Prestiges only</b>', 'boolean', null, null, 'Gear');
     createSetting('AlwaysArmorLvl2', 'Always Buy Lvl 2 Armor', 'Always Buy the 2nd point of Armor even if we dont need the HP. Its the most cost effective level, and the need HP decision script isnt always adequate. Forced on during Spire. Recommended On.', 'boolean', true, null, 'Gear');
-    createSetting('WaitTill60', 'Skip Gear Level 58&59', 'Dont Buy Gear during level 58 and 59, wait till level 60, when cost drops down to 10%.', 'boolean', true, null, 'Gear');   
+    createSetting('WaitTill60', 'Skip Gear Level 58&59', 'Dont Buy Gear during level 58 and 59, wait till level 60, when cost drops down to 10%.', 'boolean', true, null, 'Gear');
     createSetting('BuyShieldblock', 'Buy Shield Block', 'Will buy the shield block upgrade. CAUTION: If you are progressing past zone 60, you probably don\'t want this :)', 'boolean', false, null, "Gear");
 
-    
-    
-    
+
+
+
 //AutoMaps + VoidMaps settings:
 //Could combine automaps and run unique maps into one 3 way toggle: Automaps on, Non-unique maps only, Automaps off.
     createSetting('AutoMaps', 'Auto Maps', 'Recommended. Automatically run maps to progress. Very Important. Has multiple modes: <b>Prestige, Voids, Want more Damage, Want more Health, Want Health & Damage, and Farming.</b>Prestige takes precedence and does equal level maps until it gets what is needed as per Autotrimps Prestige dropdown setting. Voids is self explanatory: use the Void Difficulty Check setting to control the amount of farming. If \'want more damage\', it will only do 10 maps for 200% mapbonus damage bonus. If \'Farming\', it does maps beyond 10 if the displayed number is over >16x. \'Want more health[or and damage]\' is basically just a status message telling you need more health, theres not much that can be done besides tell AutoLevelEquipment to keep buying stuff. If you \'want health\' but your damage is OK to continue, invest in more HP perks.', 'boolean', true, null, "Maps");
@@ -318,49 +319,49 @@ function initializeAllSettings() {
     createSetting('MaxTox', 'Max Toxicity Stacks', 'Get maximum toxicity stacks before killing the improbability in each zone 60 and above. Generally only recommended for 1 run to maximize bone portal value. This setting will revert to disabled after a successful Max-Tox run + Toxicity Autoportal.', 'boolean', null, null, 'Maps');
     createSetting('TrimpleZ', 'Trimple Z', 'I don\'t really think doing this automatically is a good idea. You might want to farm for a bit before this, but I\'m not sure if it\'s meaningful at all to make a \'farm X minutes before trimple\' parameter to go along with it. Set it to the zone you want and it will run Trimple of Doom for Ancient Treasure AFTER farming and getting map stacks. If it is a negative number, this will be disabled after a successful run so you can set it differently next time.', 'valueNegative', 0, null, 'Maps');
 
-    
 
-    
-    
+
+
+
 //Combat
+    //Subsection1Line1
     createSetting('BetterAutoFight', ['Better AutoFight OFF', 'Better Auto Fight 1', 'Better Auto Fight 2'], '3-Way Button, Recommended. Will automatically handle fighting. The decision between BetterAutoFight 1 or 2 is up to your own discretion. The new BAF#2 does: A)Click fight anyway if we are dead and stuck in a loop due to Dimensional Generator and we can get away with adding time to it.(RemainingTime + ArmyAdd.Time &lt; GeneTimer) and B) Clicks fight anyway if we are dead and have &gt;=31 NextGroupTimer and deal with the consequences by firing genetecists afterwards. WARNING: If you autoportal with BetterAutoFight disabled, the game sits there doing nothing until you click FIGHT. (not good for afk) ', 'multitoggle', 1, null, "Combat");
-    createSetting('AutoStance', ['Auto Stance OFF', 'Auto Stance 1', 'Auto Stance 2'], 'Automatically swap stances to avoid death. The decision between AutoStance 1 or 2 is up to your own discretion and they should be similar. ', 'multitoggle', 1, null, "Combat");   
-    createSetting('IgnoreCrits', ['Safety First', 'Ignore Void Strength', 'Ignore All Crits'], 'No longer switches to B against corrupted precision and/or void strength. <b>Basically we now treat \'crit things\' as regular in both autoStance and autoStance2</b>. In fact it no longer takes precision / strength into account and will manage like a normal enemy, thus retaining X / D depending on your needs. If you\'re certain your block is high enough regardless if you\'re fighting a crit guy in a crit daily, use this! Alternatively, manage the stances yourself.', 'multitoggle', 0, null, 'Combat');    
-    createSetting('PowerSaving', ['Don\'t care', 'Power Saving', 'Only Rush Voids'], 'Avoid killing your army impatiently. Don\'t force abandon trimps when prestiging. Will still Die To Use Z and aggressively autostance to aid progression and anything else. Made for Empower daily, you might find it helpful if you\'re doing Workplace Safety feat. Then again with that I strongly recommend doing it fully manually. Anyway, don\'t blame me whatever happens. Only Rush Voids will allow considering abandoning, not force one. <b>Note:</b> AT will no longer be able to fix when your scryer gets stuck!', 'multitoggle', 0, null, 'Combat');    
+    createSetting('AutoStance', ['Auto Stance OFF', 'Auto Stance 1', 'Auto Stance 2'], 'Automatically swap stances to avoid death. The decision between AutoStance 1 or 2 is up to your own discretion and they should be similar. ', 'multitoggle', 1, null, "Combat");
+    createSetting('IgnoreCrits', ['Safety First', 'Ignore Void Strength', 'Ignore All Crits'], 'No longer switches to B against corrupted precision and/or void strength. <b>Basically we now treat \'crit things\' as regular in both autoStance and autoStance2</b>. In fact it no longer takes precision / strength into account and will manage like a normal enemy, thus retaining X / D depending on your needs. If you\'re certain your block is high enough regardless if you\'re fighting a crit guy in a crit daily, use this! Alternatively, manage the stances yourself.', 'multitoggle', 0, null, 'Combat');
+    createSetting('PowerSaving', ['Don\'t care', 'Power Saving', 'Only Rush Voids'], 'Avoid killing your army impatiently. Don\'t force abandon trimps when prestiging. Will still Die To Use Z and aggressively autostance to aid progression and anything else. Made for Empower daily, you might find it helpful if you\'re doing Workplace Safety feat. Then again with that I strongly recommend doing it fully manually. Anyway, don\'t blame me whatever happens. Only Rush Voids will allow considering abandoning, not force one. <b>Note:</b> AT will no longer be able to fix when your scryer gets stuck!', 'multitoggle', 0, null, 'Combat');
     createSetting('ForceAbandon', 'Auto Force-Abandon', '(Trimpicide). If a new fight group is available and anticipation stacks arent maxed, force abandon and grab a new group. Located in the geneticist management script.', 'boolean', true, null, 'Combat');
-    createSetting('DynamicGyms', 'Dynamic Gyms', 'Designed to limit your block to slightly more than however much the enemy attack is. If MaxGyms is capped or GymWall is set, those will still work, and this will NOT override those (works concurrently), but it will further limit them. In the future it may override, but the calculation is not easy to get right so I dont want it undo-ing other things yet. ', 'boolean', false, null, 'Combat'); 
+    createSetting('DynamicGyms', 'Dynamic Gyms', 'Designed to limit your block to slightly more than however much the enemy attack is. If MaxGyms is capped or GymWall is set, those will still work, and this will NOT override those (works concurrently), but it will further limit them. In the future it may override, but the calculation is not easy to get right so I dont want it undo-ing other things yet. ', 'boolean', false, null, 'Combat');
     createSetting('AutoRoboTrimp', 'AutoRoboTrimp', 'Use RoboTrimps ability starting at this level, and every 5 levels thereafter. (set to 0 to disable. default 60.) 60 is a good choice for mostly everybody.', 'value', '60', null, 'Combat');
 
-
-    
-
-// Scryer settings
-    createSetting('UseScryerStance', 'Use Scryer Stance', '<b>MASTER BUTTON</b> Stay in Scryer stance in z181 and above (Overrides Autostance). Falls back to regular Autostance when not in use (so leave that on). Get 2x resources or Dark Essence. <u>All other buttons have no effect if this one is off.</u>', 'boolean', true, null, 'Scryer');
-    createSetting('ScryerUseWhenOverkill', 'Use When Overkill', 'Use when we can Overkill in S stance, for double loot with no speed penalty. Recommend this be on. <b>NOTE:</b> This being on, and being able to overkill in S will override ALL other settings <u>(Except never use in spire)</u>. This is a boolean logic shortcut that disregards all the other settings including Min and Max Zone. If you ONLY want to use S during Overkill, as a workaround: turn this on and Min zone: to 9999 and everything else off(red). ', 'boolean', true, null, 'Scryer');
-    createSetting('ScryerMinZone', 'Min Zone', 'Minimum zone to start using scryer in.(inclusive) Recommend:(60 or 181). This needs to be On & Valid for options other than Overkill to work. Tip: Use 9999 to disable all other Non-Overkill scryer usage.', 'value', '181', null, 'Scryer');
-    createSetting('ScryerMaxZone', 'Max Zone', 'Zone to STOP using scryer at.(not inclusive) Recommend: Leave off (0 or -1 to disable: doesnt prevent options other than Overkill from working.) Positive numbers DO disable it past that zone. ', 'value', '230', null, 'Scryer');
-    createSetting('ScryerUseinMaps2', ['Maybe Use in Maps', 'Force Use in Maps'], 'Maybe/Force Use in Maps. Overkill overrides this setting. Does not have to be on for Overkill Button to use S in maps. (Obeys zone settings)', 'multitoggle', 0, null, 'Scryer');
-    createSetting('ScryerUseinVoidMaps2', ['Maybe Use in VoidMaps', 'Force Use in VoidMaps', 'Never Use in VoidMaps'], 'Maybe/Force/Never Use in Void Maps. <b>Never WILL override the Overkill setting, and never use S in Void Maps.</b> Maybe means default - treat Void Maps like any other cell (something else has to be ON to trigger Scryer). Force = Always use S.', 'multitoggle', 0, null, 'Scryer');
-    createSetting('ScryerUseinSpire2', ['Maybe Use in Spire', 'Force Use in Spire', 'Never Use in Spire'], 'Maybe/Force/Never Use in Spire. <b>Never WILL override the Overkill setting, and never use S in Spire.</b> Maybe means default - treat Spire like any other cell (something else has to be ON to trigger Scryer). Force = Always use S.', 'multitoggle', 0, null, 'Scryer');
-    //Line2
-    createSetting('ScryerSkipBoss2', ['Default on Cell 100', 'Never Use on Cell 100 above VoidLevel', 'Never Use on Cell 100 (ALL Levels)'], 'On cell 100: Default/Never Use(above VoidLevel)/Never Use(ALL Levels). Overkill overrides this setting. Doesnt use Scrying stance for world Improbabilities/Bosses (cell 100) if you are past the level you have your VoidMaps set to run at. (or all levels, if set.) Default treats cell 100 like any other cell.', 'multitoggle', 0, null, 'Scryer');
-    createSetting('ScryerSkipCorrupteds2', ['Maybe Use S on Corrupteds', 'Dont Use S on Corrupteds'], 'Overkill overrides this setting, even on Dont Use. Turning this Green doesnt use S stance for corrupted cells UNLESS you can overkill them. Red/Maybe just means default (corrupteds are treated like normal cells), so something else has to be ON to trigger Scryer to be used. <b>Magma maps and Corrupted Voidmaps are classified under this box as corrupted</b> and Green-DontUse here will override the ForceMaps/ForceVoidmaps (for now)', 'multitoggle', 0, null, 'Scryer');
-    createSetting('ScryerDieToUseS', 'Die To Use S', 'Turning this on will switch you back to S even when doing so would kill you. Happens in scenarios where you used Skip Corrupteds that took you into regular Autostance X/H stance, killed the corrupted and reached a non-corrupted enemy that you wish to use S on, but you havent bred yet and you are too low on health to just switch back to S. So youd rather die, wait to breed, then use S for the full non-corrupted enemy, to maximize DE. This feature was added for 1 person, use at your own risk.', 'boolean', false, null, 'Scryer');
-    createSetting('ScryerDieZ', 'Scryer Suicide Z', 'You know, Die To Use S is helpful and all, but sometimes it doesn\'t matter in early zones. Don\'t you think so? That was a rhetorical question, don\'t answer it. Like Void Maps config, you can put a decimal value for cell, like 230.60 for after zone 230 for >= 60th cell.', 'value', 230.60, null, 'Scryer');
+    document.getElementById('AutoRoboTrimp').parentNode.insertAdjacentHTML('afterend','<hr>');
+    //Subsection2Line1
+    createSetting('UseScryerStance', 'Use Scryer Stance', '<b>MASTER BUTTON</b> Stay in Scryer stance in z181 and above (Overrides Autostance). Falls back to regular Autostance when not in use (so leave that on). Get 2x resources or Dark Essence. <u>All other buttons have no effect if this one is off.</u>', 'boolean', true, null, 'Combat');
+    createSetting('ScryerUseWhenOverkill', 'Use When Overkill', 'Use when we can Overkill in S stance, for double loot with no speed penalty. Recommend this be on. <b>NOTE:</b> This being on, and being able to overkill in S will override ALL other settings <u>(Except never use in spire)</u>. This is a boolean logic shortcut that disregards all the other settings including Min and Max Zone. If you ONLY want to use S during Overkill, as a workaround: turn this on and Min zone: to 9999 and everything else off(red). ', 'boolean', true, null, 'Combat');
+    createSetting('ScryerMinZone', 'Min Zone', 'Minimum zone to start using scryer in.(inclusive) Recommend:(60 or 181). This needs to be On & Valid for options other than Overkill to work. Tip: Use 9999 to disable all other Non-Overkill scryer usage.', 'value', '181', null, 'Combat');
+    createSetting('ScryerMaxZone', 'Max Zone', 'Zone to STOP using scryer at.(not inclusive) Recommend: Leave off (0 or -1 to disable: doesnt prevent options other than Overkill from working.) Positive numbers DO disable it past that zone. ', 'value', '230', null, 'Combat');
+    createSetting('ScryerUseinMaps2', ['Maybe Use in Maps', 'Force Use in Maps'], 'Maybe/Force Use in Maps. Overkill overrides this setting. Does not have to be on for Overkill Button to use S in maps. (Obeys zone settings)', 'multitoggle', 0, null, 'Combat');
+    createSetting('ScryerUseinVoidMaps2', ['Maybe Use in VoidMaps', 'Force Use in VoidMaps', 'Never Use in VoidMaps'], 'Maybe/Force/Never Use in Void Maps. <b>Never WILL override the Overkill setting, and never use S in Void Maps.</b> Maybe means default - treat Void Maps like any other cell (something else has to be ON to trigger Scryer). Force = Always use S.', 'multitoggle', 0, null, 'Combat');
+    createSetting('ScryerUseinSpire2', ['Maybe Use in Spire', 'Force Use in Spire', 'Never Use in Spire'], 'Maybe/Force/Never Use in Spire. <b>Never WILL override the Overkill setting, and never use S in Spire.</b> Maybe means default - treat Spire like any other cell (something else has to be ON to trigger Scryer). Force = Always use S.', 'multitoggle', 0, null, 'Combat');
+    //Subsection2Line2
+    createSetting('ScryerSkipBoss2', ['Default on Cell 100', 'Never Use on Cell 100 above VoidLevel', 'Never Use on Cell 100 (ALL Levels)'], 'On cell 100: Default/Never Use(above VoidLevel)/Never Use(ALL Levels). Overkill overrides this setting. Doesnt use Scrying stance for world Improbabilities/Bosses (cell 100) if you are past the level you have your VoidMaps set to run at. (or all levels, if set.) Default treats cell 100 like any other cell.', 'multitoggle', 0, null, 'Combat');
+    createSetting('ScryerSkipCorrupteds2', ['Maybe Use S on Corrupteds', 'Dont Use S on Corrupteds'], 'Overkill overrides this setting, even on Dont Use. Turning this Green doesnt use S stance for corrupted cells UNLESS you can overkill them. Red/Maybe just means default (corrupteds are treated like normal cells), so something else has to be ON to trigger Scryer to be used. <b>Magma maps and Corrupted Voidmaps are classified under this box as corrupted</b> and Green-DontUse here will override the ForceMaps/ForceVoidmaps (for now)', 'multitoggle', 0, null, 'Combat');
+    createSetting('ScryerDieToUseS', 'Die To Use S', 'Turning this on will switch you back to S even when doing so would kill you. Happens in scenarios where you used Skip Corrupteds that took you into regular Autostance X/H stance, killed the corrupted and reached a non-corrupted enemy that you wish to use S on, but you havent bred yet and you are too low on health to just switch back to S. So youd rather die, wait to breed, then use S for the full non-corrupted enemy, to maximize DE. This feature was added for 1 person, use at your own risk.', 'boolean', false, null, 'Combat');
+    createSetting('ScryerDieZ', 'Scryer Suicide Z', 'You know, Die To Use S is helpful and all, but sometimes it doesn\'t matter in early zones. Don\'t you think so? That was a rhetorical question, don\'t answer it. Like Void Maps config, you can put a decimal value for cell, like 230.60 for after zone 230 for >= 60th cell.', 'value', 230.60, null, 'Combat');
     //createSetting('ScryUseinPoison', ' Scry in Poison', ['Maybe Use in Poison', 'Force Use in Poison', 'Never Use in Poison']
-    
-    
-    
-    
-//(He & Nu) Settings (Perks & Heirlooms)
-    createSetting('AutoHeirlooms', 'Auto Heirlooms', 'Automatically evaluate and carry the best heirlooms, and recommend upgrades for equipped items. AutoHeirlooms will only change carried items when the heirlooms window is not open. Carried items will be compared and swapped with the types that are already carried. If a carry spot is empty, it will be filled with the best shield (if available). Evaluation is based ONLY on the following mods (listed in order of priority, high to low): Void Map Drop Chance/Trimp Attack, Crit Chance/Crit Damage, Miner Efficiency/Metal Drop, Gem Drop/Dragimp Efficiency, Farmer/Lumberjack Efficiency. For the purposes of carrying, rarity trumps all of the stat evaluations. Empty mod slots are valued at the average value of the best missing mod.', 'boolean', false, null, "Heirlooms&Perks");    
-    createSetting('AutoHeirlooms2', 'Auto Heirlooms2', 'IMPORTANT SETTING. New algorithm for Heirlooms. While enabled, the old AutoHeirlooms algorithm will be disabled (the button will stay lit or you can turn that one off). CAUTION: Turning this on will immediately re-sort your heirlooms according to the new algorithm, and turning it off again DOES revert to the original algorithm even though it may NOT have a visible result on your heirlooms. (fyi: This lack of action highlights one of the problems with the old one.) ', 'boolean', null, null, 'Heirlooms&Perks');
-    createSetting('AutoUpgradeHeirlooms', 'Auto Upgrade Heirlooms', 'Automatically buys the upgrades the script advises for the Equipped shield and staff, until we are out of nullifium.', 'boolean', null, null, 'Heirlooms&Perks');
-    createSetting('AutoAllocatePerks', 'Auto Allocate Perks', 'Uses the AutoPerks ratio based preset system to automatically allocate your perks to spend whatever helium you have when you AutoPortal. ', 'boolean', false, null, 'Heirlooms&Perks');
 
     
     
     
+    
+//Heirloom Settings
+    createSetting('AutoHeirlooms', 'Auto Heirlooms', 'Automatically evaluate and carry the best heirlooms, and recommend upgrades for equipped items. AutoHeirlooms will only change carried items when the heirlooms window is not open. Carried items will be compared and swapped with the types that are already carried. If a carry spot is empty, it will be filled with the best shield (if available). Evaluation is based ONLY on the following mods (listed in order of priority, high to low): Void Map Drop Chance/Trimp Attack, Crit Chance/Crit Damage, Miner Efficiency/Metal Drop, Gem Drop/Dragimp Efficiency, Farmer/Lumberjack Efficiency. For the purposes of carrying, rarity trumps all of the stat evaluations. Empty mod slots are valued at the average value of the best missing mod.', 'boolean', false, null, "Heirlooms");    
+    createSetting('AutoHeirlooms2', 'Auto Heirlooms2', 'IMPORTANT SETTING. New algorithm for Heirlooms. While enabled, the old AutoHeirlooms algorithm will be disabled (the button will stay lit or you can turn that one off). CAUTION: Turning this on will immediately re-sort your heirlooms according to the new algorithm, and turning it off again DOES revert to the original algorithm even though it may NOT have a visible result on your heirlooms. (fyi: This lack of action highlights one of the problems with the old one.) ', 'boolean', null, null, 'Heirlooms');
+    createSetting('AutoUpgradeHeirlooms', 'Auto Upgrade Heirlooms', 'Automatically buys the upgrades the script advises for the Equipped shield and staff, until we are out of nullifium.', 'boolean', null, null, 'Heirlooms');
+
+
+
+
+
 // Dimensional Generator settings:
     createSetting('UseAutoGen', ['Auto Generator OFF', 'Auto Generator ON'], '<b>MASTER BUTTON</b> Dynamically switch generator modes. Required for the following mode management configurations to work. The Dimensional Generator is a building unlocked in The Magma, from z230.', 'multitoggle', 0, null, 'Magma');
     createSetting('AutoGen2', ['Default', 'Microtick', 'Max Cap', 'Overclock'], 'Before Z is reached, Microtick and Max Cap will switch between [Hybrid / Gain Fuel] to get EXACTLY one / FULL stacks of Capacity (not Storage) before using [Gain Mi]. Default will respect whatever you set it to and won\'t fiddle with it unless challenge overriding is on. Overclock will Gain Fuel until Z.', 'multitoggle', 2, null, 'Magma');
@@ -371,52 +372,54 @@ function initializeAllSettings() {
     createSetting('AutoGenC2', ['c2: Normal', 'c2: Fuel', 'c2: Hybrid'], 'Use a special mode when running challenge2s to make the most out of it. Overrides AutoGen3 unless Strong Override is on.', 'multitoggle', 1, null, 'Magma');
     createSetting('AutoGen2Override', ['Override Final Only', 'Strong Override'], 'Overrides apply to the final mode (always use early mode), or also to early mode (will stop microtick etc). Normal will not change anything.', 'multitoggle', 1, null, 'Magma');
 
-    document.getElementById('AutoGen2Override').parentNode.insertAdjacentHTML('afterend','<hr>');
+    document.getElementById('AutoGen2Override').parentNode.insertAdjacentHTML('afterend','<br>');
     createSetting('AutoMagmiteSpender2', ['Spend Magmite OFF', 'Spend Magmite (Portal)', 'Spend Magmite Always'], 'Auto Spends any unspent Magmite immediately before portaling. (Or Always, if toggled). Part 1 buys any permanent one-and-done upgrades in order from most expensive to least. Part 2 then analyzes Efficiency vs Capacity for cost/benefit, and buys Efficiency if its BETTER than Capacity. If not, if the PRICE of Capacity is less than the price of Supply, it buys Capacity. If not, it buys Supply. And then it repeats itself until you run out of Magmite and cant buy anymore. For Magma z230+ purposes.', 'multitoggle', 1, null, 'Magma');
     createSetting('SupplyWall', 'Throttle Supply (or Capacity)', 'Positive number NOT 1 e.g. 2.5: Consider Supply when its cost * 2.5 is < Capacity, instead of immediately when < Cap. Effectively throttles supply for when you don\'t need too many.<br><br>Negative number (-1 is ok) e.g. -2.5: Consider Supply if it costs < Capacity * 2.5, buy more supplys! Effectively throttling capacity instead.<br><br><b>Set to 1: DISABLE SUPPLY only spend magmite on Efficiency, Capacity and Overclocker. (For some end game players, supply is worth probably figuratively nothing.)<br>Set to 0: IGNORE SETTING and use old behaviour (will still try to buy overclocker)</b>', 'valueNegative', 2, null, 'Magma');
     createSetting('OneTimeOnly', 'One Time / Overclock Only', 'Makes the magmite spending sequence only buy one time upgrades and overclock, ignoring Efficiency, Capacity and Supply. Intended for manual use. Does not disable itself.', 'boolean', false, null, 'Magma');
     createSetting('BuyOvclock', 'Buy Overclock', 'Turn this off to not buy anymore overclocks. Will still buy the first level if you don\'t already own it.', 'boolean', true, null, 'Magma');
-    createSetting('MagmiteExplain', 'Magmite spending behaviour', '1. Buy one-and-done upgrades, expensive first, then consider 1st level of Overclocker;<br>2. Buy Overclocker IF AND ONLY IF we can afford it;<br>2.5. Exit if OneTimeOnly<br>3. Buy Efficiency if it is better than capacity;<br>4. Buy Capacity or Supply depending on which is cheaper, or based on SupplyWall', 'infoclick', 'MagmiteExplain', null, 'Magma');    
-    
-    
-    
+    createSetting('MagmiteExplain', 'Magmite spending behaviour', '1. Buy one-and-done upgrades, expensive first, then consider 1st level of Overclocker;<br>2. Buy Overclocker IF AND ONLY IF we can afford it;<br>2.5. Exit if OneTimeOnly<br>3. Buy Efficiency if it is better than capacity;<br>4. Buy Capacity or Supply depending on which is cheaper, or based on SupplyWall', 'infoclick', 'MagmiteExplain', null, 'Magma');
+
+
+
 //Golden Upgrade Strategies:
     createSetting('AutoGoldenUpgrades', 'AutoGolden', 'IMPORTANT SETTING. Automatically Buy the specified Golden Upgrades as they become available. <b>Void</b> unlocks some intelligent settings from Dzugavili Mod and Derskagg Mod.', 'dropdown', 'Off', ["Off", "Helium", "Battle", "Void"], 'Golden');
     createSetting('goldStrat', 'OnceVoidMaxed', 'VOID ONLY: After max void golden upgrades, alternate between buying helium and battle upgrades. Or Choose a Zone to switch over completely at (picking a low zone will buy only battle, and a high zone only helium).', 'dropdown', 'Off', ["Off", "Alternating", "Zone"], 'Golden');
     createSetting('goldAlternating', 'goldAlternating', 'Buy a helium upgrade after X-1 battle upgrades have been purchased', 'value', '2', null, 'Golden');
     createSetting('goldZone', 'goldZone', 'Buy a helium upgrade until zone X, then buy battle upgrades.', 'value', '200', null, 'Golden');
 
-    
-    
-    
+
+
+
 // Nature settings:
     createSetting('AutoNatureTokens', 'Spend Nature Tokens', '<b>MASTER BUTTON</b> Automatically spend or convert nature tokens.', 'boolean', false, null, 'Nature');
     createSetting('AutoPoison', 'Poison', 'Spend/convert Poison tokens', 'dropdown', 'Off', ['Off', 'Empowerment', 'Transfer', 'Convert to Wind', 'Convert to Ice', 'Convert to Both'], 'Nature');
     createSetting('AutoWind', 'Wind', 'Spend/convert Wind tokens', 'dropdown', 'Off', ['Off', 'Empowerment', 'Transfer', 'Convert to Poison', 'Convert to Ice', 'Convert to Both'], 'Nature');
     createSetting('AutoIce', 'Ice', 'Spend/convert Ice tokens', 'dropdown', 'Off', ['Off', 'Empowerment', 'Transfer', 'Convert to Poison', 'Convert to Wind', 'Convert to Both'], 'Nature');
 
-    
-    
-    
-//Spam settings:
-    createSetting('SpamGeneral', 'General Spam', 'General Spam = Starting Zone, Auto He/Hr, AutoMagmiteSpender ', 'boolean', true, null, 'Spam');
-    createSetting('SpamUpgrades', 'Upgrades Spam', 'Upgrades Spam', 'boolean', true, null, 'Spam');
-    createSetting('SpamEquipment', 'Equipment Spam', 'Equipment Spam', 'boolean', true, null, 'Spam');
-    createSetting('SpamMaps', 'Maps Spam', 'Maps Spam = Buy,Pick,Run Maps,Recycle,CantAfford', 'boolean', true, null, 'Spam');
-    createSetting('SpamOther', 'Other Spam', 'Other Spam = Better Auto Fight, Trimpicide, Robotrimp ', 'boolean', true, null, 'Spam');
-    createSetting('SpamBuilding', 'Building Spam', 'Building Spam = all buildings, even storage', 'boolean', false, null, 'Spam');
-    createSetting('SpamJobs', 'Job Spam', 'Job Spam = All jobs, in scientific notation', 'boolean', false, null, 'Spam');
-    //Line2
-    createSetting('SpamGraphs', 'Starting Zone Spam', 'Disables \'Starting new Zone ###\' and any future Graph Spam that comes from graph logs.', 'boolean', true, null, 'Spam');
-    createSetting('SpamMagmite', 'Magmite/Magma Spam', 'Everything in Magmite Module and Magmamancers', 'boolean', true, null, 'Spam');
-    createSetting('SpamPerks', 'AutoPerks Spam', 'Everything in related to AutoPerks', 'boolean', true, null, 'Spam');
 
+//Display settings:
+    //Subsection1Line1
+    createSetting('EnhanceGrids', 'Enhance Grids', 'Apply visual enhancements to world and map grids', 'boolean', false, null, 'Display');
+    createSetting('EnableAFK', 'Enable AFK', 'Enables CPU and RAM saving AFK-mode', 'action', null, null, 'Display');
     
-    
-    
+    document.getElementById('#EnableAFK').parentNode.insertAdjacentHTML('afterend','<br>');
+    //Subsection2Line1
+    createSetting('SpamGeneral', 'General Spam', 'General Spam = Starting Zone, Auto He/Hr, AutoMagmiteSpender ', 'boolean', true, null, 'Display');
+    createSetting('SpamUpgrades', 'Upgrades Spam', 'Upgrades Spam', 'boolean', true, null, 'Display');
+    createSetting('SpamEquipment', 'Equipment Spam', 'Equipment Spam', 'boolean', true, null, 'Display');
+    createSetting('SpamMaps', 'Maps Spam', 'Maps Spam = Buy,Pick,Run Maps,Recycle,CantAfford', 'boolean', true, null, 'Display');
+    createSetting('SpamOther', 'Other Spam', 'Other Spam = Better Auto Fight, Trimpicide, Robotrimp ', 'boolean', true, null, 'Display');
+    createSetting('SpamBuilding', 'Building Spam', 'Building Spam = all buildings, even storage', 'boolean', false, null, 'Display');
+    createSetting('SpamJobs', 'Job Spam', 'Job Spam = All jobs, in scientific notation', 'boolean', false, null, 'Display');
+    //Line2
+    createSetting('SpamGraphs', 'Starting Zone Spam', 'Disables \'Starting new Zone ###\' and any future Graph Spam that comes from graph logs.', 'boolean', true, null, 'Display');
+    createSetting('SpamMagmite', 'Magmite/Magma Spam', 'Everything in Magmite Module and Magmamancers', 'boolean', true, null, 'Display');
+    createSetting('SpamPerks', 'AutoPerks Spam', 'Everything in related to AutoPerks', 'boolean', true, null, 'Display');
+
+
 // Export/Import/Default settings
     createSetting('ExportAutoTrimps', 'Export AutoTrimps', 'Export your Settings.', 'infoclick', 'ExportAutoTrimps', null, 'Import Export');
-    settingsProfileMakeGUI();   //Settings Profile dropdown and Delete button. 
+    settingsProfileMakeGUI();   //Settings Profile dropdown and Delete button.
     createSetting('ImportAutoTrimps', 'Import AutoTrimps', 'Import your Settings.', 'infoclick', 'ImportAutoTrimps', null, 'Import Export');
     createSetting('DefaultAutoTrimps', 'Reset to Default', 'Reset everything to the way it was when you first installed the script.', 'infoclick', 'DefaultAutoTrimps', null, 'Import Export');
     createSetting('CleanupAutoTrimps', 'Cleanup Saved Settings ', 'Deletes old values from previous versions of the script from your AutoTrimps Settings file.', 'infoclick', 'CleanupAutoTrimps', null, 'Import Export');
@@ -576,6 +579,30 @@ function createSetting(id, name, description, type, defaultValue, list, containe
         if (container) document.getElementById(container).appendChild(btnParent);
         else document.getElementById("autoSettings").appendChild(btnParent);
     }
+    else if(type === 'action')
+    {
+        if (!(loaded && id == loaded.id))
+            autoTrimpSettings[id] =
+            {
+                id: id,
+                name: name,
+                description: description,
+                type: type,
+                value: 1
+            };
+
+        btn.setAttribute("style", "font-size: 1.1vw;");
+        btn.setAttribute('class', 'noselect settingsBtn settingBtntrue');
+        btn.setAttribute('onclick', 'MODULES["performance"].EnableAFKMode()');
+        btn.setAttribute("onmouseover", 'tooltip(\"' + name + '\", \"customText\", event, \"' + description + '\")');
+        btn.setAttribute("onmouseout", 'tooltip("hide")');
+        btn.textContent = name;
+        btnParent.appendChild(btn);
+        if (container) document.getElementById(container).appendChild(btnParent);
+        else document.getElementById("autoSettings").appendChild(btnParent);
+
+
+    }
     //make sure names/descriptions match what we have stored.
     if (autoTrimpSettings[id].name != name)
         autoTrimpSettings[id].name = name;
@@ -710,9 +737,9 @@ function updateCustomButtons() {
     //auto portal setting, hide until player has unlocked the balance challenge
     (game.challenges.Balance.filter()) ? turnOn("AutoPortal") : turnOff("AutoPortal");
     //auto Daily settings, hide until player has unlocked the Daily challenges
-    //(game.challenges.Daily.filter()) ? turnOn("AutoStartDaily") : turnOff("AutoStartDaily");
-    //(game.challenges.Daily.filter()) ? turnOn("AutoFinishDaily") : turnOff("AutoFinishDaily");
-    //(game.challenges.Daily.filter() && getPageSetting('AutoFinishDaily')) ? turnOn("AutoFinishDailyZone") : turnOff("AutoFinishDailyZone");
+    (game.challenges.Daily.filter()) ? turnOn("AutoStartDaily") : turnOff("AutoStartDaily");
+    (game.challenges.Daily.filter()) ? turnOn("AutoFinishDaily") : turnOff("AutoFinishDaily");
+    (game.challenges.Daily.filter() && getPageSetting('AutoFinishDaily')) ? turnOn("AutoFinishDailyZone") : turnOff("AutoFinishDailyZone");
     //if custom auto portal is not selected, remove the custom value settingsbox
     (autoTrimpSettings.AutoPortal.selected == "Custom") ? turnOn("CustomAutoPortal") : turnOff("CustomAutoPortal");
     //if HeHr is not selected, remove HeliumHourChallenge settingsbox
@@ -749,7 +776,7 @@ function updateCustomButtons() {
     //stop disable farming from needing a refresh
     if (getPageSetting('DisableFarm'))
         shouldFarm = false;
-    
+
     // handle metal preference
     MODULES["automaps"] && (MODULES["automaps"].preferGardens = !getPageSetting('PreferMetal'));
     //if player has selected arbalest or gambeson but doesn't have them unlocked, just unselect it for them! It's magic!
@@ -813,7 +840,7 @@ function findOutCurrentPortalLevel() {
             portalLevel = 191;
             break;
     }
-    return {level:portalLevel,lead:leadCheck};   
+    return {level:portalLevel,lead:leadCheck};
 }
 
 //Checks portal related UI settings
