@@ -775,6 +775,7 @@ function autoSetValue(id,negative) {
 }
 
 function updateCustomButtons() {
+    
     //console.log("GUI: CustomButtons Updated");
     function toggleElem(elem, showHide) {
         var state = showHide ? '' : 'none';
@@ -842,7 +843,8 @@ function updateCustomButtons() {
         shouldFarm = false;
 
     // handle metal preference
-    MODULES["automaps"] && (MODULES["automaps"].preferGardens = !getPageSetting('PreferMetal'));
+    MODULES["maps"] && (MODULES["maps"].preferGardens = !getPageSetting('PreferMetal'));
+    
     //if player has selected arbalest or gambeson but doesn't have them unlocked, just unselect it for them! It's magic!
     if (document.getElementById('Prestige').selectedIndex > 11 && game.global.slowDone == false) {
         document.getElementById('Prestige').selectedIndex = 11;
@@ -851,6 +853,7 @@ function updateCustomButtons() {
     //Bionic Before Spire - Auto turns on RunUniqueMaps
     if (autoTrimpSettings.RunBionicBeforeSpire.enabled && !autoTrimpSettings.RunUniqueMaps.enabled)
         setPageSetting("RunUniqueMaps",true);
+    
     //make sure value buttons are set accurately.
     for (var setting in autoTrimpSettings) {
         if (autoTrimpSettings[setting].type == 'value' || autoTrimpSettings[setting].type == 'valueNegative') {
