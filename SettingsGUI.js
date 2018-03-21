@@ -159,7 +159,7 @@ function initializeAllTabs() {
     createTabs("Magma", "Dimensional Generator & Magmite Settings");
     createTabs("Golden", "Golden Upgrade Settings");
     createTabs("Nature", "Nature Settings");
-    createTabs("Display", "UI Addons & Spam Settings");
+    createTabs("Display", "Display & Spam Settings");
     createTabs("Import Export", "Import & Export Settings");
     //add a minimize button:
     var li_0 = document.createElement('li');
@@ -333,20 +333,22 @@ function initializeAllSettings() {
     createSetting('DynamicGyms', 'Dynamic Gyms', 'Designed to limit your block to slightly more than however much the enemy attack is. If MaxGyms is capped or GymWall is set, those will still work, and this will NOT override those (works concurrently), but it will further limit them. In the future it may override, but the calculation is not easy to get right so I dont want it undo-ing other things yet. ', 'boolean', false, null, 'Combat');
     createSetting('AutoRoboTrimp', 'AutoRoboTrimp', 'Use RoboTrimps ability starting at this level, and every 5 levels thereafter. (set to 0 to disable. default 60.) 60 is a good choice for mostly everybody.', 'value', '60', null, 'Combat');
 
-    document.getElementById('AutoRoboTrimp').parentNode.insertAdjacentHTML('afterend','<hr>');
-    //Subsection2Line1
-    createSetting('UseScryerStance', 'Use Scryer Stance', '<b>MASTER BUTTON</b> Stay in Scryer stance in z181 and above (Overrides Autostance). Falls back to regular Autostance when not in use (so leave that on). Get 2x resources or Dark Essence. <u>All other buttons have no effect if this one is off.</u>', 'boolean', true, null, 'Combat');
-    createSetting('ScryerUseWhenOverkill', 'Use When Overkill', 'Use when we can Overkill in S stance, for double loot with no speed penalty. Recommend this be on. <b>NOTE:</b> This being on, and being able to overkill in S will override ALL other settings <u>(Except never use in spire)</u>. This is a boolean logic shortcut that disregards all the other settings including Min and Max Zone. If you ONLY want to use S during Overkill, as a workaround: turn this on and Min zone: to 9999 and everything else off(red). ', 'boolean', true, null, 'Combat');
-    createSetting('ScryerMinZone', 'Min Zone', 'Minimum zone to start using scryer in.(inclusive) Recommend:(60 or 181). This needs to be On & Valid for options other than Overkill to work. Tip: Use 9999 to disable all other Non-Overkill scryer usage.', 'value', '181', null, 'Combat');
-    createSetting('ScryerMaxZone', 'Max Zone', 'Zone to STOP using scryer at.(not inclusive) Recommend: Leave off (0 or -1 to disable: doesnt prevent options other than Overkill from working.) Positive numbers DO disable it past that zone. ', 'value', '230', null, 'Combat');
-    createSetting('ScryerUseinMaps2', ['Maybe Use in Maps', 'Force Use in Maps'], 'Maybe/Force Use in Maps. Overkill overrides this setting. Does not have to be on for Overkill Button to use S in maps. (Obeys zone settings)', 'multitoggle', 0, null, 'Combat');
-    createSetting('ScryerUseinVoidMaps2', ['Maybe Use in VoidMaps', 'Force Use in VoidMaps', 'Never Use in VoidMaps'], 'Maybe/Force/Never Use in Void Maps. <b>Never WILL override the Overkill setting, and never use S in Void Maps.</b> Maybe means default - treat Void Maps like any other cell (something else has to be ON to trigger Scryer). Force = Always use S.', 'multitoggle', 0, null, 'Combat');
-    createSetting('ScryerUseinSpire2', ['Maybe Use in Spire', 'Force Use in Spire', 'Never Use in Spire'], 'Maybe/Force/Never Use in Spire. <b>Never WILL override the Overkill setting, and never use S in Spire.</b> Maybe means default - treat Spire like any other cell (something else has to be ON to trigger Scryer). Force = Always use S.', 'multitoggle', 0, null, 'Combat');
-    //Subsection2Line2
-    createSetting('ScryerSkipBoss2', ['Default on Cell 100', 'Never Use on Cell 100 above VoidLevel', 'Never Use on Cell 100 (ALL Levels)'], 'On cell 100: Default/Never Use(above VoidLevel)/Never Use(ALL Levels). Overkill overrides this setting. Doesnt use Scrying stance for world Improbabilities/Bosses (cell 100) if you are past the level you have your VoidMaps set to run at. (or all levels, if set.) Default treats cell 100 like any other cell.', 'multitoggle', 0, null, 'Combat');
-    createSetting('ScryerSkipCorrupteds2', ['Maybe Use S on Corrupteds', 'Dont Use S on Corrupteds'], 'Overkill overrides this setting, even on Dont Use. Turning this Green doesnt use S stance for corrupted cells UNLESS you can overkill them. Red/Maybe just means default (corrupteds are treated like normal cells), so something else has to be ON to trigger Scryer to be used. <b>Magma maps and Corrupted Voidmaps are classified under this box as corrupted</b> and Green-DontUse here will override the ForceMaps/ForceVoidmaps (for now)', 'multitoggle', 0, null, 'Combat');
-    createSetting('ScryerDieToUseS', 'Die To Use S', 'Turning this on will switch you back to S even when doing so would kill you. Happens in scenarios where you used Skip Corrupteds that took you into regular Autostance X/H stance, killed the corrupted and reached a non-corrupted enemy that you wish to use S on, but you havent bred yet and you are too low on health to just switch back to S. So youd rather die, wait to breed, then use S for the full non-corrupted enemy, to maximize DE. This feature was added for 1 person, use at your own risk.', 'boolean', false, null, 'Combat');
-    createSetting('ScryerDieZ', 'Scryer Suicide Z', 'You know, Die To Use S is helpful and all, but sometimes it doesn\'t matter in early zones. Don\'t you think so? That was a rhetorical question, don\'t answer it. Like Void Maps config, you can put a decimal value for cell, like 230.60 for after zone 230 for >= 60th cell.', 'value', 230.60, null, 'Combat');
+    
+    
+    
+//Scryer
+    createSetting('UseScryerStance', 'Use Scryer Stance', '<b>MASTER BUTTON</b> Stay in Scryer stance in z181 and above (Overrides Autostance). Falls back to regular Autostance when not in use (so leave that on). Get 2x resources or Dark Essence. <u>All other buttons have no effect if this one is off.</u>', 'boolean', true, null, 'Scryer');
+    createSetting('ScryerUseWhenOverkill', 'Use When Overkill', 'Use when we can Overkill in S stance, for double loot with no speed penalty. Recommend this be on. <b>NOTE:</b> This being on, and being able to overkill in S will override ALL other settings <u>(Except never use in spire)</u>. This is a boolean logic shortcut that disregards all the other settings including Min and Max Zone. If you ONLY want to use S during Overkill, as a workaround: turn this on and Min zone: to 9999 and everything else off(red). ', 'boolean', true, null, 'Scryer');
+    createSetting('ScryerMinZone', 'Min Zone', 'Minimum zone to start using scryer in.(inclusive) Recommend:(60 or 181). This needs to be On & Valid for options other than Overkill to work. Tip: Use 9999 to disable all other Non-Overkill scryer usage.', 'value', '181', null, 'Scryer');
+    createSetting('ScryerMaxZone', 'Max Zone', 'Zone to STOP using scryer at.(not inclusive) Recommend: Leave off (0 or -1 to disable: doesnt prevent options other than Overkill from working.) Positive numbers DO disable it past that zone. ', 'value', '230', null, 'Scryer');
+    createSetting('ScryerUseinMaps2', ['Maybe Use in Maps', 'Force Use in Maps'], 'Maybe/Force Use in Maps. Overkill overrides this setting. Does not have to be on for Overkill Button to use S in maps. (Obeys zone settings)', 'multitoggle', 0, null, 'Scryer');
+    createSetting('ScryerUseinVoidMaps2', ['Maybe Use in VoidMaps', 'Force Use in VoidMaps', 'Never Use in VoidMaps'], 'Maybe/Force/Never Use in Void Maps. <b>Never WILL override the Overkill setting, and never use S in Void Maps.</b> Maybe means default - treat Void Maps like any other cell (something else has to be ON to trigger Scryer). Force = Always use S.', 'multitoggle', 0, null, 'Scryer');
+    createSetting('ScryerUseinSpire2', ['Maybe Use in Spire', 'Force Use in Spire', 'Never Use in Spire'], 'Maybe/Force/Never Use in Spire. <b>Never WILL override the Overkill setting, and never use S in Spire.</b> Maybe means default - treat Spire like any other cell (something else has to be ON to trigger Scryer). Force = Always use S.', 'multitoggle', 0, null, 'Scryer');
+    //Line2
+    createSetting('ScryerSkipBoss2', ['Default on Cell 100', 'Never Use on Cell 100 above VoidLevel', 'Never Use on Cell 100 (ALL Levels)'], 'On cell 100: Default/Never Use(above VoidLevel)/Never Use(ALL Levels). Overkill overrides this setting. Doesnt use Scrying stance for world Improbabilities/Bosses (cell 100) if you are past the level you have your VoidMaps set to run at. (or all levels, if set.) Default treats cell 100 like any other cell.', 'multitoggle', 0, null, 'Scryer');
+    createSetting('ScryerSkipCorrupteds2', ['Maybe Use S on Corrupteds', 'Dont Use S on Corrupteds'], 'Overkill overrides this setting, even on Dont Use. Turning this Green doesnt use S stance for corrupted cells UNLESS you can overkill them. Red/Maybe just means default (corrupteds are treated like normal cells), so something else has to be ON to trigger Scryer to be used. <b>Magma maps and Corrupted Voidmaps are classified under this box as corrupted</b> and Green-DontUse here will override the ForceMaps/ForceVoidmaps (for now)', 'multitoggle', 0, null, 'Scryer');
+    createSetting('ScryerDieToUseS', 'Die To Use S', 'Turning this on will switch you back to S even when doing so would kill you. Happens in scenarios where you used Skip Corrupteds that took you into regular Autostance X/H stance, killed the corrupted and reached a non-corrupted enemy that you wish to use S on, but you havent bred yet and you are too low on health to just switch back to S. So youd rather die, wait to breed, then use S for the full non-corrupted enemy, to maximize DE. This feature was added for 1 person, use at your own risk.', 'boolean', false, null, 'Scryer');
+    createSetting('ScryerDieZ', 'Scryer Suicide Z', 'You know, Die To Use S is helpful and all, but sometimes it doesn\'t matter in early zones. Don\'t you think so? That was a rhetorical question, don\'t answer it. Like Void Maps config, you can put a decimal value for cell, like 230.60 for after zone 230 for >= 60th cell.', 'value', 230.60, null, 'Scryer');
     //createSetting('ScryUseinPoison', ' Scry in Poison', ['Maybe Use in Poison', 'Force Use in Poison', 'Never Use in Poison']
 
     
@@ -371,8 +373,6 @@ function initializeAllSettings() {
     createSetting('AutoGenDC', ['Daily: Normal', 'Daily: Fuel', 'Daily: Hybrid'], 'Use a special mode in dailies to make the most out of it. Overrides AutoGen3 unless Strong Override is on.', 'multitoggle', 1, null, 'Magma');
     createSetting('AutoGenC2', ['c2: Normal', 'c2: Fuel', 'c2: Hybrid'], 'Use a special mode when running challenge2s to make the most out of it. Overrides AutoGen3 unless Strong Override is on.', 'multitoggle', 1, null, 'Magma');
     createSetting('AutoGen2Override', ['Override Final Only', 'Strong Override'], 'Overrides apply to the final mode (always use early mode), or also to early mode (will stop microtick etc). Normal will not change anything.', 'multitoggle', 1, null, 'Magma');
-
-    document.getElementById('AutoGen2Override').parentNode.insertAdjacentHTML('afterend','<br>');
     createSetting('AutoMagmiteSpender2', ['Spend Magmite OFF', 'Spend Magmite (Portal)', 'Spend Magmite Always'], 'Auto Spends any unspent Magmite immediately before portaling. (Or Always, if toggled). Part 1 buys any permanent one-and-done upgrades in order from most expensive to least. Part 2 then analyzes Efficiency vs Capacity for cost/benefit, and buys Efficiency if its BETTER than Capacity. If not, if the PRICE of Capacity is less than the price of Supply, it buys Capacity. If not, it buys Supply. And then it repeats itself until you run out of Magmite and cant buy anymore. For Magma z230+ purposes.', 'multitoggle', 1, null, 'Magma');
     createSetting('SupplyWall', 'Throttle Supply (or Capacity)', 'Positive number NOT 1 e.g. 2.5: Consider Supply when its cost * 2.5 is < Capacity, instead of immediately when < Cap. Effectively throttles supply for when you don\'t need too many.<br><br>Negative number (-1 is ok) e.g. -2.5: Consider Supply if it costs < Capacity * 2.5, buy more supplys! Effectively throttling capacity instead.<br><br><b>Set to 1: DISABLE SUPPLY only spend magmite on Efficiency, Capacity and Overclocker. (For some end game players, supply is worth probably figuratively nothing.)<br>Set to 0: IGNORE SETTING and use old behaviour (will still try to buy overclocker)</b>', 'valueNegative', 2, null, 'Magma');
     createSetting('OneTimeOnly', 'One Time / Overclock Only', 'Makes the magmite spending sequence only buy one time upgrades and overclock, ignoring Efficiency, Capacity and Supply. Intended for manual use. Does not disable itself.', 'boolean', false, null, 'Magma');
@@ -396,13 +396,15 @@ function initializeAllSettings() {
     createSetting('AutoWind', 'Wind', 'Spend/convert Wind tokens', 'dropdown', 'Off', ['Off', 'Empowerment', 'Transfer', 'Convert to Poison', 'Convert to Ice', 'Convert to Both'], 'Nature');
     createSetting('AutoIce', 'Ice', 'Spend/convert Ice tokens', 'dropdown', 'Off', ['Off', 'Empowerment', 'Transfer', 'Convert to Poison', 'Convert to Wind', 'Convert to Both'], 'Nature');
 
+    
+    
 
 //Display settings:
     //Subsection1Line1
     createSetting('EnhanceGrids', 'Enhance Grids', 'Apply visual enhancements to world and map grids', 'boolean', false, null, 'Display');
     createSetting('EnableAFK', 'Enable AFK', 'Enables CPU and RAM saving AFK-mode', 'action', null, null, 'Display');
     
-    document.getElementById('#EnableAFK').parentNode.insertAdjacentHTML('afterend','<br>');
+    document.getElementById('EnableAFK').parentNode.insertAdjacentHTML('afterend','<br>');
     //Subsection2Line1
     createSetting('SpamGeneral', 'General Spam', 'General Spam = Starting Zone, Auto He/Hr, AutoMagmiteSpender ', 'boolean', true, null, 'Display');
     createSetting('SpamUpgrades', 'Upgrades Spam', 'Upgrades Spam', 'boolean', true, null, 'Display');
