@@ -160,6 +160,7 @@ function initializeAllTabs() {
     createTabs("Golden", "Golden Upgrade Settings");
     createTabs("Nature", "Nature Settings");
     createTabs("Spam", "Autotrimps Spam Settings");
+    createTabs("UI", "UI addons and optimizations");
     createTabs("Import Export", "Import & Export Settings");
     //add a minimize button:
     var li_0 = document.createElement('li');
@@ -210,6 +211,15 @@ function initializeAllSettings() {
     createSetting('CustomAutoPortal', 'Custom Portal', 'Automatically portal AFTER clearing this level.(ie: setting to 200 would portal when you first reach level 201)', 'value', '999', null, "Core");
     createSetting('HeHrDontPortalBefore', 'He/Hr Dont Portal Before', 'Do NOT allow Helium per Hour AutoPortal setting to portal BEFORE this level is reached. It is an additional check that prevents drops in helium/hr from triggering autoportal. Set to 0 or -1 to completely disable this check.', 'value', '999', null, "Core");
     createSetting('HeliumHrBuffer', 'He/Hr Portal Buffer %', 'IMPORTANT SETTING. When using the He/Hr Autoportal, it will portal if your He/Hr drops by this amount of % lower than your best for current run, default is 0% (ie: set to 5 to portal at 95% of your best). Now with stuck protection - Allows portaling midzone if we exceed set buffer amount by 5x. (ie a normal 2% buffer setting would now portal mid-zone you fall below 10% buffer).', 'value', '0', null, 'Core');
+
+    createSetting('AutoFinishDaily', 'Auto Finish Daily', 'With this on, the He/Hr Portal and Custom Auto Portal options will auto-finish the daily <b>whenever they trigger</b> and THEN portal you.', 'boolean', false, null, 'Core');
+    createSetting('AutoFinishDailyZone', 'Finish Daily Zone Mod', 'Finish Daily by this # of zones earlier/later than your regular Custom AutoPortal zone or your Helium Dont Portal Before zone. When Auto Finish Daily is on. Tip: Tune your value of He/HrDontPortalBefore to suit the daily, and then tune this. Can accept negative numbers for earlier, ie: -7 means portal 7 zones earlier than normal. Can also use positive numbers to DELAY portaling for later. When used with He/Hr AutoPortal, the number of zones early does not FORCE end the daily at that zone, only ALLOW it to end that early: it will Always end when your HE/hr drops enough to trigger the portal. <b>Use 0 to disable.</b>', 'valueNegative', -2, null, 'Core');
+    createSetting('AutoStartDaily', 'Auto Start Daily', 'With this on, the Auto Portal options will portal you into and auto-start the daily <b>whenever available</b>. Does Yesterday first, followed by Today. Falls back to selected challenge when both are complete.', 'boolean', false, null, 'Core');
+    createSetting('PauseScript', 'Pause AutoTrimps', 'Pause AutoTrimps Script (not including the graphs module)', 'boolean', null, null, 'Core');
+
+    document.getElementById('PauseScript').parentNode.style.setProperty('float','right');
+    document.getElementById('PauseScript').parentNode.style.setProperty('margin-right','1vw');
+    document.getElementById('PauseScript').parentNode.style.setProperty('margin-left','0');
     
     //code to locate the pause button at lower right
     //var $pauseScript = document.getElementById('PauseScript');
@@ -395,9 +405,10 @@ function initializeAllSettings() {
     createSetting('AutoWind', 'Wind', 'Spend/convert Wind tokens', 'dropdown', 'Off', ['Off', 'Empowerment', 'Transfer', 'Convert to Poison', 'Convert to Ice', 'Convert to Both'], 'Nature');
     createSetting('AutoIce', 'Ice', 'Spend/convert Ice tokens', 'dropdown', 'Off', ['Off', 'Empowerment', 'Transfer', 'Convert to Poison', 'Convert to Wind', 'Convert to Both'], 'Nature');
 
-    
-    
-    
+//UI settings:
+    createSetting('EnhanceGrids', 'Enhance Grids', 'Apply visual enhancements to world and map grids', 'boolean', false, null, 'UI');
+    createSetting('EnableAFK', 'Enable AFK', 'Enables CPU and RAM saving AFK-mode', 'action', MODULES["performance"].EnableAFKMode, null, 'UI');
+
 //Spam settings:
     createSetting('SpamGeneral', 'General Spam', 'General Spam = Starting Zone, Auto He/Hr, AutoMagmiteSpender ', 'boolean', true, null, 'Spam');
     createSetting('SpamUpgrades', 'Upgrades Spam', 'Upgrades Spam', 'boolean', true, null, 'Spam');
@@ -575,6 +586,39 @@ function createSetting(id, name, description, type, defaultValue, list, containe
         btnParent.appendChild(btn);
         if (container) document.getElementById(container).appendChild(btnParent);
         else document.getElementById("autoSettings").appendChild(btnParent);
+    }
+    else if(type === 'action')
+    {
+        if (!(loaded && id == loaded.id))
+            autoTrimpSettings[id] = 
+            {
+                id: id,
+                name: name,
+                description: description,
+                type: type,
+                value: 1
+            };
+
+        btn.setAttribute("style", "font-size: 1.1vw;");
+        btn.setAttribute('class', 'noselect settingsBtn settingBtntrue');
+        (function(button, func)
+        {
+            btn.addEventListener('click', function()
+            {
+                if(typeof defaultValue !== 'undefined' && typeof defaultValue === 'function')
+                    defaultValue();
+            });
+        })(btn, defaultValue);
+        
+
+        btn.setAttribute("onmouseover", 'tooltip(\"' + name + '\", \"customText\", event, \"' + description + '\")');
+        btn.setAttribute("onmouseout", 'tooltip("hide")');
+        btn.textContent = name;
+        btnParent.appendChild(btn);
+        if (container) document.getElementById(container).appendChild(btnParent);
+        else document.getElementById("autoSettings").appendChild(btnParent);
+
+        
     }
     //make sure names/descriptions match what we have stored.
     if (autoTrimpSettings[id].name != name)

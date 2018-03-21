@@ -791,3 +791,41 @@ function updateAutoMapsStatus() {
     var lifetime = (game.resources.helium.owned / (game.global.totalHeliumEarned-game.resources.helium.owned))*100;
     area51.innerHTML = 'He/hr: ' + getPercent.toFixed(3) + '%<br>&nbsp;&nbsp;&nbsp;He: ' + lifetime.toFixed(3) +'%';
 }
+
+function getAutoMapsStatus()
+{
+    var ret = [];
+
+    var minSp = getPageSetting('MinutestoFarmBeforeSpire');
+    if(!autoTrimpSettings.AutoMaps.enabled) ret[0] = 'Off';
+    else if (game.global.challengeActive == "Mapology" && game.challenges.Mapology.credits < 1) ret[0] = 'Out of Map Credits';
+    else if (preSpireFarming) {
+        var secs = Math.floor(60 - (spireTime*60)%60).toFixed(0)
+        var mins = Math.floor(minSp - spireTime).toFixed(0);
+        var hours = minSp - (spireTime / 60).toFixed(2);
+        var spiretimeStr = (spireTime>=60) ? 
+            (hours + 'h') : (mins + 'm:' + (secs>=10 ? secs : ('0'+secs)) + 's');
+        ret[0] = 'Farming for Spire ' + spiretimeStr + ' left';
+    }
+    else if (spireMapBonusFarming) ret[0] = 'Getting Spire Map Bonus';
+    else if (doMaxMapBonus) ret[0] = 'Max Map Bonus After Zone';
+    else if (!game.global.mapsUnlocked) ret[0] = '&nbsp;';
+    else if (needPrestige && !doVoids) ret[0] = 'Prestige';
+    else if (doVoids && voidCheckPercent == 0) ret[0] = 'Void Maps: ' + game.global.totalVoidMaps + ' remaining';
+    else if (stackingTox) ret[0] = 'Getting Tox Stacks';
+    else if (needToVoid && !doVoids && game.global.totalVoidMaps > 0) ret[0] = 'Prepping for Voids';
+    else if (doVoids && voidCheckPercent > 0) ret[0] = 'Farming to do Voids: ' + voidCheckPercent + '%';
+    else if (shouldFarm && !doVoids) ret[0] = 'Farming: ' + HDratio.toFixed(4) + 'x';
+    else if (scryerStuck) ret[0] = 'Scryer Got Stuck, Farming';
+    else if (!enoughHealth && !enoughDamage) ret[0] = 'Want Health & Damage';
+    else if (!enoughDamage) ret[0] = 'Want ' + HDratio.toFixed(4) + 'x &nbspmore damage';
+    else if (!enoughHealth) ret[0] = 'Want more health';
+    else if (enoughHealth && enoughDamage) ret[0] = 'Advancing';
+
+    ret[1] = (game.stats.heliumHour.value() / (game.global.totalHeliumEarned - (game.global.heliumLeftover + game.resources.helium.owned)))*100;
+    ret[2] = (game.resources.helium.owned / (game.global.totalHeliumEarned-game.resources.helium.owned))*100;
+    ret[1] = 'He/hr: ' + ret[1].toFixed(3) + '%';
+    ret[2] = 'He: ' + ret[2].toFixed(3) + '%';
+
+    return ret;
+}
