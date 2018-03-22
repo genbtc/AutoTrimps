@@ -1,0 +1,29 @@
+How AutoPerks Works:
+----------------------
+Get list of Ratio'ed Perks. 
+Create an Efficiency queue of each of the 16 perks. 
+ - Current Level
+ - Current Price @ that level
+ - Current Stat Increase @ that Level.
+ - Current Efficiency (price / stat increase).
+Then the list of 16 perks is sorted by Efficiency, and the 1st one on the list is purchased.
+Repeat ad nauseum 36 million iterations.
+
+for (var e in effQueue.array) { console.log("Effiency@ " + effQueue.array[e].efficiency + " Perk name: " + effQueue.array[e].name);} 
+
+Effiency@ 30.00000000000003 Perk name: power
+Effiency@ 4.0000000000000036 Perk name: toughness
+Effiency@ 3.200000000000003e-9 Perk name: cunning
+Effiency@ 1.3333333333333346 Perk name: pheromones
+Effiency@ 1.0000000000000009 Perk name: motivation
+Effiency@ 0.36 Perk name: carpentry
+Effiency@ 0.13333333333333333 Perk name: artisanistry
+Effiency@ 0.08 Perk name: resilience
+Effiency@ 0.00030000000000000024 Perk name: power_II
+Effiency@ 0.00014999999999999682 Perk name: looting_II
+Effiency@ 0.00011333333333333333 Perk name: coordinated
+Effiency@ 0.00004000000000000004 Perk name: toughness_II
+Effiency@ 0.000008000000000000006 Perk name: motivation_II
+Effiency@ 0.000002249999999999952 Perk name: carpentry_II
+Effiency@ 0.000002 Perk name: resourceful
+Effiency@ 0.000001 Perk name: overkill

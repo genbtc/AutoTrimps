@@ -1,20 +1,6 @@
-*.bak
-https.py
-server.pem
-AutoTrimps2 - Copy.js
-AutoTrimps2 - Copy (2).js
-AutoTrimps2.js.orig
-.gitignore.orig
-NewUI.js.orig
-SIMPLEHTTPSERVER.bat
-AutoTrimps2.js-hider
-TODOcode.js
-freshgamestartcode.js
-AutoPerks.js2
-List-of-userscripts.js
-main-doc.txt
-evaluateheirloom2.js
-breedfix.txt
-buildingfix.js
-SpireDiffCheck.txt
-debugdynamicprestige.txt
+/sparecode/
+/AutoTrimps.PEM
+/https.py
+/https2.py
+/server.pem
+/SIMPLEHTTPSERVER.bat

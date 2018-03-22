@@ -8,7 +8,7 @@ div#logConfigHolder.btn-group {
 #logConfigBtn {
     padding: 6px 0px!important;
 }
-/*For the NEWUI2.js settings window*/
+/*For the SettingsGUI.js settings window*/
 
 /* Style the list */
 ul.tab {
@@ -46,6 +46,7 @@ ul.tab li a:hover {background-color: #ddd;}
     border-top: none;
     -webkit-animation: fadeEffect 1s;
     animation: fadeEffect 1s; /* Fading effect takes 1 second */
+    transform: translateZ(0);
 }
 
 @-webkit-keyframes fadeEffect {
@@ -56,4 +57,36 @@ ul.tab li a:hover {background-color: #ddd;}
 @keyframes fadeEffect {
     from {opacity: 0;}
     to {opacity: 1;}
+}
+
+#tipText b.AutoEggs,
+#AutoEggs.settingBtntrue {
+  -webkit-animation: eggGradient 3s infinite;
+  animation: eggGradient 3s infinite;
+  color: black;
+}
+
+@keyframes eggGradient {
+  0% { background-color: #83ddd6; }
+  25% { background-color: #f4c7c7; }
+  50% { background-color: #8beab7; }
+  75% { background-color: #f6f297; }
+  100% { background-color: #83ddd6; }
+}
+
+/* stop the additional breed timer we added from pushing down the whole Breeding area and pushing Traps out */
+#trapArea {
+    border: 1px solid white;
+    display: inline-block;
+    margin-bottom: 2%;
+    margin-top: 0;
+    padding: 0;
+}
+
+/* stop the Traps building progress from showing through the AT settings screen */
+#animationDiv {
+   z-index: -1!important;
+}
+.queueItemName, #queueTimeRemaining {
+   z-index: 0!important;
 }

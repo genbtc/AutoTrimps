@@ -1,3 +1,4 @@
+//MODULES["query"] = {};
 
 function getPerSecBeforeManual(job) {
     var perSec = 0;
@@ -158,7 +159,7 @@ function getCorruptedCellsNum() {
     }
     return corrupteds;
 }
-function getPotencyMod() {
+function getPotencyMod(howManyMoreGenes) {
     var potencyMod = game.resources.trimps.potency;
     //Add potency (book)
     if (game.upgrades.Potency.done > 0) potencyMod *= Math.pow(1.1, game.upgrades.Potency.done);
@@ -171,7 +172,8 @@ function getPotencyMod() {
     //Pheromones
     potencyMod *= 1+ (game.portal.Pheromones.level * game.portal.Pheromones.modifier);
     //Geneticist
-    if (game.jobs.Geneticist.owned > 0) potencyMod *= Math.pow(.98, game.jobs.Geneticist.owned);
+    if (!howManyMoreGenes) howManyMoreGenes=0;
+    if (game.jobs.Geneticist.owned > 0) potencyMod *= Math.pow(.98, game.jobs.Geneticist.owned + howManyMoreGenes);
     //Quick Trimps
     if (game.unlocks.quickTrimps) potencyMod *= 2;
     //Daily mods
@@ -193,11 +195,11 @@ function getPotencyMod() {
     return potencyMod;
 }
 
-function getBreedTime(remaining) {
+function getBreedTime(remaining,howManyMoreGenes) {
     var trimps = game.resources.trimps;
     var trimpsMax = trimps.realMax();
 
-    var potencyMod = getPotencyMod();
+    var potencyMod = getPotencyMod(howManyMoreGenes);
     // <breeding per second> would be calced here without the following line in potencymod
     potencyMod = (1 + (potencyMod / 10));
     var timeRemaining = log10((trimpsMax - trimps.employed) / (trimps.owned - trimps.employed)) / log10(potencyMod);
@@ -234,8 +236,10 @@ function setScienceNeeded() {
     for (var upgrade in upgradeList) {
         upgrade = upgradeList[upgrade];
         if (game.upgrades[upgrade].allowed > game.upgrades[upgrade].done) { //If the upgrade is available
-            if (game.global.world == 1 && game.global.totalHeliumEarned<=300 && upgrade.startsWith("Speed")) continue;  //skip speed upgrades on fresh game until level 2
+            if (game.global.world == 1 && game.global.totalHeliumEarned<=1000 && upgrade.startsWith("Speed")) continue;  //skip speed upgrades on fresh game until level 2
             scienceNeeded += getScienceCostToUpgrade(upgrade);
         }
     }
+    if (needGymystic)
+        scienceNeeded += getScienceCostToUpgrade('Gymystic');
 }

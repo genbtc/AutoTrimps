@@ -1,7 +1,8 @@
-
+//MODULES["utils"] = {};
 ////////////////////////////////////////
 //Utility Functions/////////////////////
 ////////////////////////////////////////
+
 //polyfill for includes function
 if (!String.prototype.includes) {
     String.prototype.includes = function(search, start) {
@@ -27,17 +28,16 @@ function loadPageVariables() {
     }
 }
 
-//Saves automation settings to browser cache
-function saveSettings() {
-    // debug('Saved');
+//Safe Set a single generic item into localstorage (
+function safeSetItems(name,data) {
     try {
-        localStorage.setItem('autoTrimpSettings', JSON.stringify(autoTrimpSettings));
+        localStorage.setItem(name, data);
     } catch(e) {
       if (e.code == 22) {
         // Storage full, maybe notify user or do some clean-up
         debug("Error: LocalStorage is full, or error. Attempt to delete some portals from your graph or restart browser.");
       }
-    }        
+    }
 }
 
 //returns true if old is older than testcase
@@ -65,11 +65,35 @@ function parseVersion(version) {
 function updateOldSettings(oldSettings) {
     var oldVer = oldSettings[ATversion];
     
-    if (versionIsOlder(oldVer, '2.1.3.9-genbtc-12-9-2016+Modular')) {
+    if (versionIsOlder(oldVer, '2.1.6.8-genbtc-3-22-2018+Mod+Uni+coderpatsy')) {
         //do something
     }
     
     autoTrimpSettings = oldSettings;
+}
+
+//The Overall Export function to output an autoTrimpSettings file.
+//Serializes automation settings, remove long descriptions in autoTrimpSettings and only keep valid data.
+function serializeSettings() {
+    return JSON.stringify(Object.keys(autoTrimpSettings).reduce((v, k) => {
+        const el = autoTrimpSettings[k];
+        switch (el.type) {
+        case 'boolean':
+            return v[k] = el.enabled, v;
+        case 'value':
+        case 'valueNegative':
+        case 'multitoggle':
+            return v[k] = el.value, v;
+        case 'dropdown':
+            return v[k] = el.selected, v;
+        }
+        return v[k] = el, v; // ATversion, anything else unhandled by SettingsGUI
+    }, {}));
+}
+
+//Saves autoTrimpSettings to browser cache
+function saveSettings() {
+    safeSetItems('autoTrimpSettings', serializeSettings());
 }
 
 //Grabs the automation settings from the page
@@ -80,12 +104,15 @@ function getPageSetting(setting) {
     if (autoTrimpSettings[setting].type == 'boolean') {
         // debug('found a boolean');
         return autoTrimpSettings[setting].enabled;
-    } else if (autoTrimpSettings[setting].type == 'value') {
+    } else if (autoTrimpSettings[setting].type == 'value' || autoTrimpSettings[setting].type == 'valueNegative') {
         // debug('found a value');
         return parseFloat(autoTrimpSettings[setting].value);
     } else if (autoTrimpSettings[setting].type == 'multitoggle') {
         // debug('found a multitoggle');
         return parseInt(autoTrimpSettings[setting].value);
+    } else if (autoTrimpSettings[setting].type == 'dropdown') {
+        // debug('found a dropdown')
+        return autoTrimpSettings[setting].selected;
     }
 }
 
@@ -98,7 +125,7 @@ function setPageSetting(setting, value) {
         // debug('found a boolean');
         autoTrimpSettings[setting].enabled = value;
         document.getElementById(setting).setAttribute('class', 'noselect settingsBtn settingBtn' + autoTrimpSettings[setting].enabled);
-    } else if (autoTrimpSettings[setting].type == 'value') {
+    } else if (autoTrimpSettings[setting].type == 'value' || autoTrimpSettings[setting].type == 'valueNegative') {
         // debug('found a value');
         autoTrimpSettings[setting].value = value;
     } else if (autoTrimpSettings[setting].type == 'multitoggle') {
@@ -109,29 +136,27 @@ function setPageSetting(setting, value) {
         // debug('found a dropdown');
         autoTrimpSettings[setting].selected = value;
     }
-    updateCustomButtons();
-    saveSettings();
-    checkPortalSettings();
 }
 
 //Global debug message
+//type: general, upgrades, equips, buildings, jobs, maps, other, graphs
 function debug(message, type, lootIcon) {
-    var buildings = getPageSetting('SpamBuilding');
-    var jobs = getPageSetting('SpamJobs');
+    var general = getPageSetting('SpamGeneral');
     var upgrades = getPageSetting('SpamUpgrades');
     var equips = getPageSetting('SpamEquipment');
     var maps = getPageSetting('SpamMaps');
     var other = getPageSetting('SpamOther');
-    var general = getPageSetting('SpamGeneral');
+    var buildings = getPageSetting('SpamBuilding');
+    var jobs = getPageSetting('SpamJobs');
+    var graphs = getPageSetting('SpamGraphs');
+    var magmite = getPageSetting('SpamMagmite');
+    var perks = getPageSetting('SpamPerks');
     var output = true;
     switch (type) {
         case null:
             break;
-        case "buildings":
-            output = buildings;
-            break;
-        case "jobs":
-            output = jobs;
+        case "general":
+            output = general;
             break;
         case "upgrades":
             output = upgrades;
@@ -139,18 +164,31 @@ function debug(message, type, lootIcon) {
         case "equips":
             output = equips;
             break;
+        case "buildings":
+            output = buildings;
+            break;
+        case "jobs":
+            output = jobs;
+            break;
         case "maps":
             output = maps;
             break;
         case "other":
             output = other;
             break;
-        case "general":
-            output = general;
+        case "graphs":
+            output = graphs;
+            break;
+        case "magmite":
+            output = magmite;
+            break;
+        case "perks":
+            output = perks;
             break;
     }
-    if (enableDebug && output) {
-        console.log(timeStamp() + ' ' + message);
+    if (output) {
+        if (enableDebug)
+            console.log(timeStamp() + ' ' + message);
         message2(message, "AutoTrimps", lootIcon, type);
     }
 }
@@ -186,25 +224,31 @@ function postBuy() {
     game.global.lockTooltip = preBuyTooltip;
     game.global.maxSplit = preBuymaxSplit;
 }
+//#2 Called before buying things that can be purchased in bulk
+function preBuy2() {
+    return [game.global.buyAmt,game.global.firing,game.global.lockTooltip,game.global.maxSplit];
+}
+
+//#2 Called after buying things that can be purchased in bulk
+function postBuy2(old) {
+    game.global.buyAmt = old[0];
+    game.global.firing = old[1];
+    game.global.lockTooltip = old[2];
+    game.global.maxSplit = old[3];
+}
 
 function getCorruptScale(type) {
     switch (type) {
         case "attack":
             return mutations.Corruption.statScale(3);
-
         case "health":
             return mutations.Corruption.statScale(10);
     }
 }
 
-
 function setTitle() {
-    if (aWholeNewWorld) {
+    if (aWholeNewWorld)
         document.title = '(' + game.global.world + ')' + ' Trimps ' + document.getElementById('versionNumber').innerHTML;
-        //for the dummies like me who always forget to turn automaps back on after portaling
-        if(getPageSetting('RunUniqueMaps') && !game.upgrades.Battle.done && autoTrimpSettings.AutoMaps.enabled == false)
-            settingChanged("AutoMaps");
-    }
 }
 
 //we copied message function because this was not able to be called from function debug() without getting a weird scope? related "cannot find function" error.
@@ -212,7 +256,7 @@ var lastmessagecount = 1;
 function message2(messageString, type, lootIcon, extraClass) {
     var log = document.getElementById("log");
     var needsScroll = ((log.scrollTop + 10) > (log.scrollHeight - log.clientHeight));
-    var displayType = (AutoTrimpsDebugTabVisible) ? "block" : "none";
+    var displayType = (ATmessageLogTabVisible) ? "block" : "none";
     var prefix = "";
     if (lootIcon && lootIcon.charAt(0) == "*") {
         lootIcon = lootIcon.replace("*", "");
@@ -268,8 +312,8 @@ document.getElementById('logBtnGroup').appendChild(tab);
 function filterMessage2(what){
     var log = document.getElementById("log");
 
-    displayed = (AutoTrimpsDebugTabVisible) ? false : true;
-    AutoTrimpsDebugTabVisible = displayed;
+    displayed = (ATmessageLogTabVisible) ? false : true;
+    ATmessageLogTabVisible = displayed;
 
     var toChange = document.getElementsByClassName(what + "Message");
     var btnText = (displayed) ? what : what + " off";
@@ -304,4 +348,27 @@ function formatMinutesForDescriptions(number){
         text = hours + " hour" + hs + " " + minutes + " minute" + ms + " " + seconds + " second" + ss;
     }
     return text;
+}
+
+//Log all javascript errors and catch them.
+window.onerror = function catchErrors(msg, url, lineNo, columnNo, error) {
+    var message = [
+        'Message: ' + msg,
+        'URL: ' + url,
+        'Line: ' + lineNo,
+        'Column: ' + columnNo,
+        'Error object: ' + JSON.stringify(error)
+    ].join(' - ');
+    console.log("AT logged error: " + message);
+    //ATServer.Upload(message);
+};
+/*
+window.addEventListener('error', function(event) {
+    var message = JSON.stringify(event);
+    console.log("logged error: " + message);
+    //ATServer.Upload(message);
+});
+*/
+function throwErrorfromModule() {
+    throw new Error("We have successfully read the thrown error message out of a module");
 }

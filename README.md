@@ -1,12 +1,29 @@
 # AutoTrimps + genBTC
 ![Donate](https://blockchain.info/Resources/buttons/donate_64.png)
-<a href="bitcoin://1genbtcPLjAEk6RnfC66chYniFKfP7vAS">1genbtcPLjAEk6RnfC66chYniFKfP7vAS</a><br />
-Automation script for the idle incremental game Trimps, based on the zininzinin script and modified by genBTC (genr8_ on discord)<br />
+<a href="bitcoin:1genbtcPLjAEk6RnfC66chYniFKfP7vAS">1genbtcPLjAEk6RnfC66chYniFKfP7vAS</a>No one has donated bitcoin yet - be the first and I will be ever eternally grateful<br />
+Automation script for the idle incremental game Trimps, originally based on the zininzinin fork and modified by genBTC (genr8_ on discord)<br />
 
 [![Join the chat at https://gitter.im/AutoTrimps/Lobby](https://badges.gitter.im/AutoTrimps/Lobby.svg)](https://gitter.im/AutoTrimps/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 ## Discussion / Discord Channel
 <a href="https://discord.gg/0VbWe0dxB9kIfV2C"><img src="https://pbs.twimg.com/profile_images/568588143226413056/9Lwrixxj.png" width=48></a>
 Discord is a chat program. Come to talk about AutoTrimps, for help, or suggestions for new features : https://discord.gg/0VbWe0dxB9kIfV2C (same one as zininzinin)
+
+## Current Version (full changes below)
+Ongoing Development!
+- v2.1.6.8 - March 22, New: Multiple small commits for Settings, make GUI better. Up/Down graph buttons. Warning messages on import/export. Internal code fixes, gameplay unchanged.
+- v2.1.6.7 - March 20, Moved all the Settings around on you :) Enjoy the new layout. Display Tab: EnhanceGrid + Go AFK Mode. Pinned AT Tab menu bar to top when scrolling.  Graph: Graph: FluffyXP . Continue Development on long TODO list... 
+- v2.1.6.6 - March 13, Geneticist management changes. Equipment code improvements. scriptLoad improvements. attempt to track errors.
+- v2.1.6.5 - March 7, Save/Reload Profiles in Import/Export. Magmamancer graph. Magmite/Magma Spam disableable. 
+- v2.1.6.4 - March 4, 2018 Basic Analytics are now being collected. Read about it in the tooltip of the new button on the Import/Export tab . Overkill Graph fixed for Liquification.  Setting Max Explorers to infinity as they are not that useless anymore. Update battlecalc for Fluffy & Ice on Autostance2.
+- v2.1.6.3 - March 3, 2018 AutoPerks: Capable/Curious/Cunning, BaseDamageCalc: C2,StillRowing,Strength in Health,Ice,Fluffy,Magmamancer - Fix bugs in autoperks around capable/fluffy allocating looting + more bugs\
+- v2.1.6.2 - March 2, 2018
+- v2.1.6.1 - March 1, 2018
+- v2.1.6.0 - December 23, 2018
+- v2.1.5.7 - November 7,2017 = Merge in DerSkagg's GoldenUpgrades Mod (Pull request #90) (thanks Derskagg)
+- v2.1.5.6 - August 26, 2017 = Merge ALL of Unihedro branch back into genBTC branch. (thanks UniHedro)
+- v2.1.5.4 - August 26, 2017 = Added AutoDimGen + little fixes (FirenX)
+took a break
+- v2.1.5.3 - January 10, 2017 genbtc-1-10-2016+Modular (meant 2017 lol)
 
 ## Script Installation
 **Please backup your game via export before and during use to prevent losing your save due to corruption!**
@@ -47,13 +64,76 @@ Notes:
 If you would like to use only the graphs module, replace `AutoTrimps2.js` with `Graphs.js` in the bookmark or your userscript.
 Feel free to submit any bugs/suggestions as issues here on github.
 
-***LowLevel Notes:***
+***LowLevelPlayer Notes:***
 
 ***PSA: AutoTrimps was not designed for  new/low-level players.***
 
 The fact that it works at all is misleading new players into thinking its perfect. Its not. If your highest zone is under z60, you have not unlocked the stats required, and have not experienced the full meta with its various paradigm shifts. If you are just starting, my advice is to play along naturally and use AutoTrimps as a tool, not a crutch. Play with the settings as if it was the game, Dont expect to go unattended, if AT chooses wrong, and make the RIGHT choice yourself. Additionally, its not coded to run one-time challenges for you, only repeatable ones for helium. During this part of the game, content is king - automating literally removes the fun of the game. If you find that many flaws in the automation exist for you, level up. Keep in mind the challenge of maintaining the code is that it has to work for everyone. AT cant see the future and doesnt run simulations, it exists only in the present moment. Post any suggestions on how it can be better, or volunteer to adapt the code, or produce some sort of low-level player guide with what youve learned. Happy scripting! -genBTC
 
-## Current feature changes by genBTC (up to date as of 12/4/2016):
+## Current feature changes by genBTC
+- Current as of :
+- *** 11/7/2017, v2.1.5.7 Merge DerSkagg PullRequest In*** 
+- New AutoGoldenUpgrades - After max void golden upgrades, alternate between buying helium and battle upgrades. Or Choose a Zone to switch over completely at.
+- *** 8/26/2017, v2.1.5.6 Merge Unihedro Branch In*** 
+- Uni changes include: Dont buy Coords, Trimple Z#, Scryer Suicide Z#, Safety First, Forced Prestige Z#, Prefer Metal Maps, Nursery Count Pre-Spire, Finish Challenge2, DontCare/PowerSaving/DontRushVoids, Prestige Skip 2, Auto Eggs.
+- See his branch here @  https://github.com/Unihedro/AutoTrimps
+- Past Changes: 
+- *** April Unihedro Branch Changes ***
+- 4/17 v2.1.5.5u3 - fix improvedautostorage hijack
+- Fixed a certain specific stupid bug caused by how graph overwrites some functions unnecessarily
+- 4/16 v2.1.5.5u2 - do more map stacks if not enoughHealth
+- No longer forces Buy Storage off
+- 4/15 v2.1.5.5u1 - new settings BuyOvclock
+- 4/14 v2.1.5.4u6 - Improved nurseries map and betterautostorage 
+- 4/14 v2.1.5.4u5 - Auto Eggs</b>, some more 4.3 support 
+- 4/12 v2.1.5.4u4 - AutoTrimps lifecycle changes
+- 4/11 v2.1.5.4u3 - fixed spire farming, autogen supply zone
+- 4/10 v2.1.5.4u2 - PrestigeSkip2 
+- 4/09 v2.1.5.4u1 - Magma: AutoGen, AutoGen2
+- 4/08 v2.1.5.3u6 - ForcePresZ 
+- 4/07 + 4/06: 
+- U5: FinishC2, PowerSaving 
+- U4: PreferMetal, PreSpireNurseries 
+- U3: LinearZ, SupplyWall, OneTimeOnly 
+- U2: TrimpleZ, ScryerDieZ, IgnoreCrits 
+- U1: Don't buy Coords / Skip challenge maps
+- ***1/10/2017***
+- new setting Buy Warp to Hit Coord (genbtc page)
+- AutoStance support for Plague/Bogged Daily
+- Update Map Sliders decisions - less loot% reduction
+- ***12/23/2016***
+- v2.1.5.2-genbtc-12-23-2016+Modular
+- ***12/20***
+- Gear tab to Settings UI. Customize your equip level cap.
+- Internally Disable Farm mode if we have nothing left to farm for (no prestiges,capped equip) to prevent infinite farming.
+- ***12/19***
+- Skip prestige if >=2 unbought prestiges (maps settings)
+- Bug Fixes + redo geneticists buying again.
+- NEW: Add Map Bonus Graph
+- ***12/18*** 
+- Fixed: dynamic prestige not reverting to dagger after the target zone is reached
+- Graphs - clear time, removed #2s, (essence graph might be messed up but its fixed now)
+- Change forceAbandonTrimps "sitting around breeding forever when not on full anti stacks" from 60 seconds to 31.
+- Fix BAF2 #4 for players without geneticists.
+- Buildings cost efficiency + jobs low level fixes
+- Some low level jobs and Buildings fixes.
+- ***12/14***
+- NEW: AutoAllocatePerks (genbtc settings) - uses AutoPerks ratio system to Auto Spend Helium during AutoPortal
+- ***12/12***
+- Fix: HeHrBuffer will now portal midzone if you exceed 5x your buffer
+- ***12/10***
+- New: AutoStartDaily option (read tooltip)
+- New way to buy geneticists (fast)
+- ***12/9***
+- Fixed: DynamicPrestige=-1 wasnt disabling it
+- Fixed: needPrestige conflicting with needFarmSpire
+- ***12/8***
+- FarmWithNomStacks changes (read tooltip)
+- Nom stacks now calced by Autostance1
+- Default VoidDifficultyCheck is now defaulting to 6
+- ***12/6***
+- AutoMagmiteSpender now has a new cost efficiency algorithm.(read new tooltip)
+- AT now does its Nursery map for Blacksmithery owners at z50 not z60, to prevent breeding time-stalls.(+fixed bug)
 - ***12/4***
 - Completely rewrite lots of the Graphs.js code.
 - Converted the codebase into individual files, to help people find stuff.
@@ -202,6 +282,7 @@ See changelog at the original version's github page: https://github.com/zininzin
 
 
 ## Detailed Code Documentation:
+Read docs/main-doc.txt or docs/TODO.md for more complete info, the below is somewhat outdated.
 
 Since javascript is easily human readable, Much can be learned by reading the source code, starting with this knowledge:
 

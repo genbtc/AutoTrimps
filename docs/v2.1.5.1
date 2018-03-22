@@ -1,0 +1,72 @@
+v2.1.5.1 - 12/23/2016
+AutoTrimps2.js:
+internals: fix module load order bug
+move automaps re-enable after portal to mainCleanup
+NEW: make AT use betterautofight on Zone 1 before Battle upgrade even when better autofight is disabled
+internals: Change ATrunning variable
+
+docs/TODO.md:
+Add a conversation about Void map difficulty so I dont forget
+
+Graphs.js
+NEW: Add Magmite Graph
+dont push updates if the game is paused. fix import on pause Clear Time problem
+Change Loot Sources graph to 60 datapoints, every 15 seconds.
+internals: refactor time graph functions
+Change Dark Essence graph to be Total owned, not gained that run.
+internals: refactor code for Dark Essence per Hour graph, adjust 0's zone alignment
+internals: tried to change Loot Sources from having 0.5 tick lengths on the x-axis but failed.
+
+Autofight.js - Refactor;
+betterAutoFight2 use lowLevelFight when scientist 1 is incomplete, not complete.
+IMPORTANT: betterAutoFight2 dont use #3 when VoidMap is first ran (so it waits and loads your full Anticipation stacks)
+
+Automaps.js
+add MODULE variable for SpireFarm199Maps
+NEW: add a more efficient health check to make sure you can in fact kill the enemy on that specific cell you're on and you arent stuck on it due to it being fast and lack of health etc.
+TODO: Account for magmated voidmaps.
+TODO: Account for dailymods in voidmaps.
+NEW: Change entire system of map sliders: 
+  fixed bug where it was picking Metal maps at low level.
+  start all map sliders on 9/9/9 and decrement cost if needed based on priority that is assigned based on which situation.
+
+Autostance.js
+Fix rare case when your enemyHealth == baseDamage
+Fix some bugs in Autostance2 with Crit
+Start fixing the scryer checkOnly thing but didnt finish.
+NEW: (mentioned in automaps) autoStanceCheck now handles individual cell health checks that follow all the autostance rules (for automap)
+
+Battlecalc.js
+Allow functions to be called with variables to disable stance correction and min/max damage range fluctuation.
+
+Buildings 1 & 2.js
+Fix Green highlighting
+NEW: Delay buying Gyms if we NEED gymystic
+
+Equipment.js
+NEW: Skip buying shields (w/ shieldblock) if we NEED gymystic
+Uncap Equipment levels during Metal Challenge
+
+Gather.js
+Change Trapping Behavior, make it identical between gather1 and gather2. 
+Make sure watch challenge doesnt get stuck. 
+
+Jobs.js
+Only try to buy jobs (and therefore print message) if we can afford them. (reduce spam)
+Add Auto Worker Ratios for Metal Challenge (acts somewhat weird but better than nothing)
+
+Other.js
+TODO: coding the Auto Dimensional Generator (determined which functions to use)
+TODO: start coding for Overclocker upgrade (need help/advice)
+
+Portal.js
+NEW: AutoFinishDailyZone : Finish Daily by this # of zones earlier/later than your regular Custom AutoPortal zone or your Helium Dont Portal Before zone
+
+Utils.js
+moved to mainLoop in AutoTrimps2.js
+
+SettingsGUI.js
+Change wording to "Better" Auto Fight
+AutoFinishDailyZone 
+TODO: Start coding the importModuleVars stuff for "Import your custom MODULES variables "
+Create a way to make negative value boxes.

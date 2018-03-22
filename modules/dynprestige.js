@@ -1,4 +1,4 @@
-// MODULES["dynprestige"] = {};
+//MODULES["dynprestige"] = {};
 //These can be changed (in the console) if you know what you're doing:
 // MODULES["dynprestige"]
 
@@ -17,6 +17,8 @@ function prestigeChanging2(){
      //find out the last zone
     var lastzone = getPageSetting("DynamicPrestige2");
 
+    var extra = maxPrestigeIndex > 10 ? maxPrestigeIndex - 10 : 0;
+
     // Find total prestiges needed by determining current prestiges versus the desired prestiges by the end of the run
     var neededPrestige = 0;
     for (i = 1; i <= maxPrestigeIndex ; i++){
@@ -25,7 +27,7 @@ function prestigeChanging2(){
             var rem = lastzone - lastp;
             var addto = Math.floor(rem/5);
             // For Scientist IV bonus, halve the required prestiges to farm
-            if (game.global.sLevel > 3)
+            if (game.global.sLevel >= 4)
                 addto = Math.ceil(addto/2);
             neededPrestige += addto;
         }
@@ -37,7 +39,7 @@ function prestigeChanging2(){
     // Determine the number of zones we want to farm.  We will farm 4 maps per zone, then ramp up to 9 maps by the final zone
     var zonesToFarm = 0;
     if (neededPrestige == 0){
-        autoTrimpSettings.Prestige.selected = "Dagadder";
+        autoTrimpSettings.Prestige.selected = document.getElementById('Prestige').value;    //revert to selection after final zone reached
         return;
     }
 

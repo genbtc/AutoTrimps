@@ -1,0 +1,283 @@
+AutoTrimps - A Highly Extensive Idle Clicker Game Script
+
+Code Execution Structure,Behavior/Explanation:
+==============================================
+A script bootstrap file userscript "install.user.js" is ran by Tampermonkeyed/Greasemonkeyed and installed into permanence on the browser extension. This loads AutoTrimps2.js. First it loads utils.js for some tools, then it loads the Settings UI and then it Loads the Graphs, This loads all the 17 submodules *.js files in the modules/ dir, in a particular order as listed. From that point, a timeout/interval loop is set up to launch the Main Game and Re-run the "Main Loop" every 100ms (10x a second) in sync with the Game Loop. Also the Graphs has its own identical tick count and loop. Each module function is called during the "Main Loop" generally one by one, sequentially, in a particular order, each cycle. There is no future state, just current. The past state is limited to anything we explicitly choose to keep around like in the graphs db or other variables.
+The main files are: AutoTrimps2.js, SettingsGUI.js, Graphs.js - Keep reading for details. The separate modules are documented below.
+
+MODULES (2018):
+===============
+battlecalc.js
+breedtimer.js
+buildings.js
+client-server.js
+dimgen.js (not used anymore?)
+dynprestige.js
+equipment.js
+fight.js
+gather.js
+heirlooms.js
+import-export.js
+jobs.js
+magmite.js
+maps.js
+other.js
+perks.js
+portal.js
+query.js
+scryer.js
+stance.js
+upgrades.js
+utils.js
+
+EXTERNAL FILES:
+================
+FastPriorityQueue.js - AutoPerks - uses a 3rd party library for data queues
+HighCharts.js - Graphs - uses a 3rd party library to draw the graphs...
+tabs.css - User Interface - mandatory css styles for the settings tab or to rewrite or style the UI
+dark-graph.css - Graphs - needed some tweaks to work for dark theme.
+
+GUI:
+=====
+Consists of SettingsGUI.js is the Settings section + styles of tabs.css
+
+SETTINGS:
+=========
+AlwaysArmorLvl2
+AutoFight
+AutoGoldenUpgrades
+AutoHeirlooms
+AutoHeirlooms2
+AutoMaps
+AutoPortal
+AutoRoboTrimp
+AutoStance
+AutoUpgradeHeirlooms
+BreedFire
+BuyArmor
+BuyArmorUpgrades
+BuyBuildings
+BuyJobs
+BuyShieldblock
+BuyStorage
+BuyUpgrades
+BuyWeapons
+BuyWeaponUpgrades
+CapEquip
+CorruptionCalc
+CustomAutoPortal
+DefaultAutoTrimps
+DelayArmorWhenNeeded
+DeltaGigastation
+DisableFarm
+DynamicPrestige
+DynamicSiphonology
+ExitSpireCell
+ExportAutoTrimps
+FarmerRatio
+FarmWhenNomStacks7
+FirstGigastation
+GeneticistTimer
+HeliumHourChallenge
+HeliumHrBuffer
+HireScientists
+ImportAutoTrimps
+LimitEquipment
+LumberjackRatio
+ManageBreedtimer
+ManualGather
+MaxCollector
+MaxExplorers
+MaxGateway
+MaxGym
+MaxHotel
+MaxHouse
+MaxHut
+MaxMansion
+MaxNursery
+MaxResort
+MaxTox
+MaxTrainers
+MaxTribute
+MaxWormhole
+MinerRatio
+MinutestoFarmBeforeSpire
+PauseScript
+Prestige
+RunBionicBeforeSpire
+RunNewVoids
+RunNewVoidsUntil
+RunUniqueMaps
+ScryerMaxZone
+ScryerMinZone
+ScryerSkipBoss2
+ScryerSkipCorrupteds2
+ScryerUseinMaps2
+ScryerUseinSpire2
+ScryerUseinVoidMaps2
+ScryerUseWhenOverkill
+TrainerCaptoTributes
+TrapTrimps
+UseScryerStance
+VoidCheck
+VoidMaps
+WaitTill60
+WarpstationCap
+WarpstationWall
+WorkerRatios
+
+GRAPHS - Graphs.js is the graphs section: + dark-graph.css (maybe need to darkify the css on the perks too window)
+=======
+HeliumPerHour
+Helium
+HeliumPerHour Instant
+HeliumPerHour Delta
+HeHr % / LifetimeHe
+He % / LifetimeHe
+Clear Time
+Cumulative Clear Time
+Run Time
+Map Bonus
+Void Maps
+Void Map History
+Loot Sources
+Coords
+Gigas
+UnusedGigas
+Lastwarp
+Trimps
+Nullifium Gained
+DarkEssence
+DarkEssencePerHour
+OverkillCells
+Magmite
+Magmamancers
+
+AutoTrimps2.js Detailed Main Function Documentation (from 2016):
+===================================================
+The main loop consists of the following subroutines, all of which are enable-able/disable-able by their buttons.:
+    workerRatios();         //"Auto Worker Ratios"
+    buyUpgrades();          //"Buy Upgrades"
+    autoGoldenUpgrades();   //"AutoGoldenUpgrades" (genBTC settings area)
+    buyStorage();           //"Buy Storage"
+    buyBuildings();         //"Buy Buildings"
+    buyJobs();              //"Buy Jobs"
+    manualLabor();          //"Auto Gather/Build"
+    autoMap();              //"Auto Maps"
+    manageGenes();          //"Genetecist Timer" / "Manage Breed Timer"
+    autoPortal();           //"Auto Portal" (hidden until level 60)
+    autoHeirlooms2();  or  autoHeirlooms(); //"Auto Heirlooms 2" (genBTC settings area) or //"Auto Heirlooms"
+    toggleAutoTrap();       //"Trap Trimps"
+    autoRoboTrimp();        //"AutoRoboTrimp" (genBTC settings area)
+    autoNull();             //"Auto Upgrade Heirlooms" (genBTC settings area)
+    autoLevelEquipment();   //"Buy Armor", "Buy Armor Upgrades", "Buy Weapons","Buy Weapons Upgrades"
+    autoStance();           //"Auto Stance"
+    betterAutoFight();      //"Better Auto Fight"
+    prestigeChanging2();    //"Dynamic Prestige" (genBTC settings area)
+    userscripts();          //Runs any user provided scripts - by copying and pasting a function named userscripts() into the Chrome Dev console. (F12)
+
+
+Version Numbered Files (files needing version string during minor upgrades):
+======================
+.user.js
+user.js
+install.user.js
+AutoTrimps2.js
+Graphs.js
+TODO: Should invent a tool/script to advance the version numbers, generate changelogs, auto-link docs.
+
+HOWTO = Become an AutoTrimps developer
+======================================
+The script is setup to be able to be bootstrapped from Tampermonkey/Greasemonkey. 
+If you paste the AutoTrimps2.js into your Tampermonkey window directly, you can attempt to run a local developer copy and edit it in the tampermonkey edit window. This pulls from a repo and loads all the sub-modules .js files.
+The point to understand is HTTPS and SSL is required. It has to be served over an actual HTTPS web-server so chrome can successfully load the secure content resources since https://trimps.github.io is technically the origin and any non-secure javascript resources will be flagged,denied and not-executed...
+Simply, You can fork the project on github, find&replace my github URL with yours and upload all your changes to your own repo. And every time you make a change you will have to re-upload / defeat caching / reload to host the file. But this is non-ideal from a "agile" or "live" developer POV.
+A better way is to set up a local HTTPS server, mirror my github repo to a local folder, and tell the webserver to run out of that folder, serving it up on https://localhost:4443 or some port number. 
+So instead of downloading Apache or a full complicated webserver or something, download python - or most computers these days have Python installed. You can use python to be a simple HTTP server with the following scripts, applicable to either Python2.x or Python3.x.
+There are multiple ways to achieve the webserver, but this is the best way i've found (if it doesnt do HTTPS it wont work). 
+These scripts let you open a folder, double click the script, and start serving files out of that local dir instantly over HTTPS.
+//(make sure you generate a self-signed .PEM cert to serve.) - this Cert is what provides the necessary SSL functionality
+
+# generate the cert with the following command (should be an openssl binary exe somewhere on the system)
+#    openssl req -new -x509 -keyout AutoTrimps.pem -out AutoTrimps.pem -days 365 -nodes
+# run as follows:
+#    python https.py
+# then in your browser, visit:
+#    https://localhost:4443
+#
+
+Choose the right version of https.py for your System:
+----------------------------------------
+https.py = HTTPS Localhost Self serve - With Python 2:
+----------------------------------------
+import BaseHTTPServer, SimpleHTTPServer
+import ssl
+httpd = BaseHTTPServer.HTTPServer(('localhost', 4443), SimpleHTTPServer.SimpleHTTPRequestHandler)
+httpd.socket = ssl.wrap_socket (httpd.socket, certfile='./AutoTrimps.pem', server_side=True)
+httpd.serve_forever()
+
+----------------------------------------
+https.py = HTTPS Localhost Self serve - With Python 3:
+----------------------------------------
+import logging
+import os
+import sys
+import http.server
+import socketserver
+import ssl
+logging.info('Server running...')
+httpd = socketserver.TCPServer(('localhost', 4443), http.server.SimpleHTTPRequestHandler)
+httpd.socket = ssl.wrap_socket(httpd.socket, certfile='./AutoTrimps.pem', server_side=True)
+httpd.serve_forever()
+
+//(make sure you generate a self-signed .PEM cert to serve.) - this Cert is what provides the necessary SSL functionality
+
+Make this batch script to double click to easily run the .py file from windows explorer without going to command line (mac/linux make a .sh file im sure you know how):
+--------------------
+SIMPLEHTTPSERVER.BAT
+--------------------
+@echo off
+cd C:\Users\EOFL\Documents\GitHub\AutoTrimps
+rem Infinite loop, counting from 1 to 10 with increment of 0. (just makes it restart on errors)
+for /L %%n in (1,0,10) do (
+    C:\Python36\python.exe https.py
+)
+
+
+HOWTO = Add A Button
+=====================
+All the buttons are created in SettingsGUI.js @ line 410 - with a function createSetting(): 
+This function takes 7 parameters and can make about 6 types of buttons: (boolean, value, valueNegative, dropdown, infoclick, multitoggle). The visual style will match similar. First determine the type of button, then copy a similar button. This explains the parameters:
+function createSetting(id, name, description, type, defaultValue, list, container) 
+id = settings variable name
+name = text on the button
+description = tooltip when hovering inside the button.
+type = boolean, value, valueNegative, dropdown, infoclick, multitoggle
+defaultValue = pick the most common desirable setting
+list = Only for dropdowns, the list of choices in ["one", "two", "three"] form
+container = IMPORTANT: this will position the button in any of the tabbable sections "Main, Gear, Maps, Settings, Scryer" etc.
+
+    These container tabs are what we will learn next:
+
+HOWTO = Add a New Tab (to the settings area.)
+=============================================
+All the tabs are created in SettingsGUI.js @ line 143 - the function is: initializeAllTabs():
+Inside there, follow the existing pattern and create a new line in the form of:
+    createTabs("Tab Name", "Tab Sub Heading");
+
+Then you can use this new "Tab Name" as the container variable when you createSetting() and the button will go in there.
+
+HOWTO = Add a New Script Module
+===============================
+AutoTrimps2.js is the module loader. Line 32:
+var ATmodules = ['query', 'import-export', 'upgrades', 'heirlooms', 'buildings', 'jobs', 'equipment', 'gather', 'stance', 'battlecalc', 'maps', 'breedtimer', 'dynprestige', 'fight', 'scryer', 'magmite', 'portal', 'other', 'client-server', 'perks'];
+They refer to .js files of the same name in the "modules" directory. 
+All you have to do is create a new file in modules/ named something.js and add ,'something' to the end of that list. 
+The script will then load it on startup, so it either has to run itself self-sufficiently, or you need to use ATs userscripts functionality to run it, something like this:
+function userscripts()
+{
+    runModuleWhatever.FunctionFromThatModuleFile();
+}
+Any function named userscripts will execute 10 times per second at the final portion of each game cycle. 
+This way means you can add your own code without contaminating AutoTrimps files directly.
+Some Files contain/require game-code overwrites that need to be periodically checked and maintained. These are undocumented. Some are for the GUI and some are in utils.js maybe some for the heirlooms, and also graph loot...

@@ -1,0 +1,29 @@
+[id^='highcharts'] rect.highcharts-background,
+[id^='highcharts'] .highcharts-tooltip > path:last-of-type {
+  fill: rgba(0, 0, 0, 0.5) !important;
+}
+[id^='highcharts'] rect.highcharts-selection-marker {
+  fill: rgba(255, 255, 255, 0.5);
+}
+[id^='highcharts'] .highcharts-xaxis > path,
+[id^='highcharts'] .highcharts-yaxis-grid > path {
+  stroke: #404040;
+}
+[id^='highcharts'] .highcharts-xaxis > path:last-of-type {
+  stroke: rgba(204, 214, 235, 0.5);
+}
+[id^='highcharts'] text[style*='weight:bold'] {
+  fill: #a0a0a0 !important;
+}
+[id^='highcharts'] text[style*='weight:bold'][style$='fill:#000000;'] {
+  fill: #707070 !important;
+  text-shadow: 0 0 2px #333,0 0 5px #333;
+}
+[id^='highcharts'] text {
+  fill: #707070 !important;
+}
+[id^='highcharts'] text:hover {
+  fill: #a0a0a0 !important;
+  text-shadow: 0 0 2px #333,0 0 5px #333;
+}
+
