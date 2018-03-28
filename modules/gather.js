@@ -14,7 +14,7 @@ function manualLabor() {
     var trapTrimpsOK = getPageSetting('TrapTrimps');
     var targetBreed = getPageSetting('GeneticistTimer');
     var trapperTrapUntilFull = game.global.challengeActive == "Trapper" && notFullPop;
-    var watchJumpstartTraps  = game.global.challengeActive == "Watch"  && notFullPop;    
+    var watchJumpstartTraps  = game.global.challengeActive == "Watch"  && notFullPop;
     var hasTurkimp = game.talents.turkimp4.purchased || game.global.turkimpTimer > 0;
 
     //FRESH GAME NO HELIUM CODE.
@@ -37,7 +37,7 @@ function manualLabor() {
         if (trapperTrapUntilFull && (game.global.buildingsQueue.length == 0 || game.buildings.Trap.owned == 1) && !game.global.trapBuildAllowed  && canAffordBuilding('Trap'))
             safeBuyBuilding('Trap'); //get ahead on trap building since it is always needed for Trapper
     }
-    else if (getPageSetting('ManualGather2') != 2 && game.resources.science.owned < MODULES["gather"].minScienceAmount && document.getElementById('scienceCollectBtn').style.display != 'none' && document.getElementById('science').style.visibility != 'hidden')
+    else if (getPageSetting('ManualGather2') != 3 && game.resources.science.owned < MODULES["gather"].minScienceAmount && document.getElementById('scienceCollectBtn').style.display != 'none' && document.getElementById('science').style.visibility != 'hidden')
         setGather('science');
     //if we have more than 2 buildings in queue, or (our modifier is real fast and trapstorm is off), build
     else if (!game.talents.foreman.purchased && (game.global.buildingsQueue.length ? (game.global.buildingsQueue.length > 1 || game.global.autoCraftModifier == 0 || (getPlayerModifier() > 1000 && game.global.buildingsQueue[0] != 'Trap.1')) : false)) {
@@ -50,11 +50,11 @@ function manualLabor() {
     //if we have some upgrades sitting around which we don't have enough science for, gather science
     else if (game.resources.science.owned < scienceNeeded && document.getElementById('scienceCollectBtn').style.display != 'none' && document.getElementById('science').style.visibility != 'hidden') {
         // debug('Science needed ' + scienceNeeded);
-        if ((getPlayerModifier() < getPerSecBeforeManual('Scientist') && hasTurkimp)||getPageSetting('ManualGather2') == 2){
+        if ((getPlayerModifier() < getPerSecBeforeManual('Scientist') && hasTurkimp)||getPageSetting('ManualGather2') == 3){
             //if manual is less than science production, switch on turkimp
             setGather('metal');
         }
-        else if (getPageSetting('ManualGather2') != 2){
+        else if (getPageSetting('ManualGather2') != 3){
             setGather('science');
         }
     }
@@ -106,7 +106,7 @@ function manualLabor() {
             else
                 setGather(lowestResource);//gather the lowest resource
         //This stuff seems to be repeated from above. Should be refactored and fixed so this is not confusing.
-        } else if (getPageSetting('ManualGather2') != 2 && document.getElementById('scienceCollectBtn').style.display != 'none' && document.getElementById('science').style.visibility != 'hidden') {
+      } else if (getPageSetting('ManualGather2') != 3 && document.getElementById('scienceCollectBtn').style.display != 'none' && document.getElementById('science').style.visibility != 'hidden') {
             if (game.resources.science.owned < getPsString('science', true) * MODULES["gather"].minScienceSeconds && game.global.turkimpTimer < 1 && haveWorkers)
                 setGather('science');
             else if (hasTurkimp)
@@ -183,15 +183,15 @@ function manualLabor2() {
         //if we have less than (100) science or less than a minute of science
         if (game.resources.science.owned < MODULES["gather"].minScienceAmount ||
            (game.resources.science.owned < getPsString('science', true) * MODULES["gather"].minScienceSeconds && game.global.turkimpTimer < 1))
-            if (getPageSetting('ManualGather2') != 2) {
+            if (getPageSetting('ManualGather2') != 3) {
                 setGather('science');
                 return;
             }
         if (game.resources.science.owned < scienceNeeded) {
             //if manual is less than science production and turkimp, metal. (or science is set as disallowed)
-            if ((getPlayerModifier() < getPerSecBeforeManual('Scientist') && hasTurkimp) || getPageSetting('ManualGather2') == 2)
+            if ((getPlayerModifier() < getPerSecBeforeManual('Scientist') && hasTurkimp) || getPageSetting('ManualGather2') == 3)
                 setGather('metal');
-            else if (getPageSetting('ManualGather2') != 2) {
+            else if (getPageSetting('ManualGather2') != 3) {
                 setGather('science');
                 return;
             }

@@ -44,7 +44,7 @@ function safeSetItems(name,data) {
 function versionIsOlder(old, testcase) {
     var oldVer = parseVersion(old);
     var testVer = parseVersion(testcase);
-    
+
     if (oldVer.length == 0) return true;
     //compare major to minor numbers, if older it's older, if newer it's not
     for (var i=0; i < oldVer.length; i++) {
@@ -74,7 +74,7 @@ function updateOldSettings(oldSettings) {
           oldSettings['AutoMaps']++;
       delete oldSettings['RunUniqueMaps'];
     }
-    
+
     autoTrimpSettings = oldSettings;
 }
 

@@ -42,7 +42,7 @@ settingsProfileMakeGUI();
 
 //This switches into the new profile when the dropdown is selected.
 //it is the "onchange" handler of the settingsProfiles dropdown
-//Asks them do a confirmation check tooltip first. The 
+//Asks them do a confirmation check tooltip first. The
 function settingsProfileDropdownHandler() {
     if ($settingsProfiles == null) return;
     var index = $settingsProfiles.selectedIndex;

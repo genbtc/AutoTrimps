@@ -22,6 +22,10 @@ function autoRoboTrimp() {
 function autoGoldenUpgradesAT(setting) {
     var num = getAvailableGoldenUpgrades();
     if (num == 0) return;       //if we have nothing to buy, exit.
+    //Challenge^2 cant Get/Buy Helium, so adapt - do Derskagg mod.
+    var challSQ = game.global.runningChallengeSquared;
+    if (setting == ("Helium" || "Void") && ChallSQ)
+      buyGoldenUpgrade("Battle");
     //Try to achieve 60% Void
     //Default: True = Always get 60% void by skipping the 12% upgrade then buying 14%/16%
     var goldStrat = getPageSetting('goldStrat');
@@ -32,11 +36,10 @@ function autoGoldenUpgradesAT(setting) {
     }
     //buy one upgrade per loop.
     var success = buyGoldenUpgrade(setting);
-    //Challenge^2 cant Get/Buy Helium, so adapt - do Derskagg mod.
-    var challSQ = game.global.runningChallengeSquared;        
+
     var doDerskaggChallSQ = false;
-    if (setting == "Helium" && challSQ && !success)
-        doDerskaggChallSQ = true;
+    if (setting == ("Helium" || "Void") && challSQ)
+        {doDerskaggChallSQ = true; setting = (challSQ) ? "Battle" : "Helium"}
     // DZUGAVILI MOD - SMART VOID GUs
     // Assumption: buyGoldenUpgrades is not an asynchronous operation and resolves completely in function execution.
     // Assumption: "Locking" game option is not set or does not prevent buying Golden Void
@@ -53,7 +56,7 @@ function autoGoldenUpgradesAT(setting) {
             var goldZone = getPageSetting('goldZone');
             setting = (game.global.world <= goldZone || noBat) ? "Helium" : "Battle";
         } else if (goldStrat == "Max then Helium") {
-            setting = "Helium";
+            setting = (challSQ) ? "Battle" : "Helium";
         } else
             setting = (challSQ) ? "Battle" : "Helium";
         buyGoldenUpgrade(setting);

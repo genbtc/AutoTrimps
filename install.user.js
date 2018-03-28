@@ -13,7 +13,7 @@
 var script = document.createElement('script');
 script.id = 'AutoTrimps-script';
 //This can be edited to be your own Github Repository URL.
-script.src = 'https://genbtc.github.io/AutoTrimps/AutoTrimps2.js';
+script.src = 'https://kfrowde.github.io/AutoTrimps/AutoTrimps2.js';
 //script.setAttribute('crossorigin',"use-credentials");
 script.setAttribute('crossorigin',"anonymous");
 document.head.appendChild(script);

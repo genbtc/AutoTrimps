@@ -95,7 +95,7 @@ function removeDarkGraphs() {
     document.head.removeChild($link);
     debug("Removing dark-graph.css file","graphs");
 }
-function toggleDarkGraphs() { 
+function toggleDarkGraphs() {
     if (game) {
         var $link = document.getElementById("dark-graph.css");
         var blackCB = document.getElementById('blackCB').checked;
@@ -108,9 +108,9 @@ function toggleDarkGraphs() {
 //Runs once on startup to color the graph footer elements Black.
 //Then every time the theme is changed. Called out of updateCustomButtons() loop in SettingsGUI.
 var lastTheme=-1;
-MODULES["graphs"].themeChanged = function() { 
+MODULES["graphs"].themeChanged = function() {
     //Everything else in Settings, (for now: all Inputs, Dropdowns)
-    if (game && game.options.menu.darkTheme.enabled != lastTheme) { 
+    if (game && game.options.menu.darkTheme.enabled != lastTheme) {
         //GRAPHS:
         toggleDarkGraphs();
         debug("Theme change - AutoTrimps styles updating...");
@@ -313,7 +313,7 @@ function autoToggleGraph() {
     var $item = document.getElementById('autoTrimpsTabBarMenu');
     if ($item) {
     if ($item.style.display === 'block') $item.style.display = 'none';
-    }    
+    }
     var $graph = document.getElementById('graphParent');
     if ($graph.style.display === 'block') $graph.style.display = 'none';
     else {
@@ -335,7 +335,7 @@ function escapeATWindows() {
     var $item = document.getElementById('autoTrimpsTabBarMenu');
     if ($item.style.display === 'block') $item.style.display = 'none';
     var $graph = document.getElementById('graphParent');
-    if ($graph.style.display === 'block') $graph.style.display = 'none';    
+    if ($graph.style.display === 'block') $graph.style.display = 'none';
 }
 document.addEventListener("keydown",function (event) {
     //Hotkeys have to be enabled, and all these conditions have to be met or else we cant use the hotkey.
@@ -381,7 +381,7 @@ function pushData() {
         magmite: game.global.magmite,
         magmamancers: game.jobs.Magmamancer.owned,
         fluffy: game.global.fluffyExp,
-        nursery: game.buildings.Nursery.purchased 
+        nursery: game.buildings.Nursery.purchased
     });
     //only keep 15 portals worth of runs to prevent filling storage
     clearData(15);
@@ -572,7 +572,7 @@ function drawGraph(minus,plus) {
         if ($item.selectedIndex < 0)
             $item.selectedIndex = 0;
     }
-    else if (plus) { 
+    else if (plus) {
         if ($item.selectedIndex != ($item.options.length-1))
             $item.selectedIndex++;
     }
@@ -1036,6 +1036,14 @@ function setGraphData(graph) {
                         loop--;
                     }
                 }*/
+                    if (currentZone != allSaveData[i].world - 1) {
+                        //console.log(allSaveData[i].totalPortals + " / " + allSaveData[i].world);
+                        var loop = allSaveData[i].world - 1 - currentZone;
+                        while (loop > 0) {
+                            graphData[graphData.length - 1].data.push(allSaveData[i-1][item]*1);
+                            loop--;
+                        }
+                    }
                 //write datapoint (one of 3 ways)
                 if (currentZone != 0) {
                     graphData[graphData.length - 1].data.push(Math.floor((allSaveData[i].fluffy - startFluffy) / ((allSaveData[i].currentTime - allSaveData[i].portalTime) / 3600000)));

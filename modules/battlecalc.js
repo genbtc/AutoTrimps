@@ -122,7 +122,7 @@ function getBattleStats(what,form,crit) {
 	}
 	if (what == "attack" && game.global.challengeActive == "Life"){
 		currentCalc *= game.challenges.Life.getHealthMult();
-	}    
+	}
     if (what == "health" && game.global.challengeActive == "Balance"){
         currentCalc *= game.challenges.Balance.getHealthMult();
     }
@@ -196,8 +196,8 @@ function getBattleStats(what,form,crit) {
 	//Pumpkimp buff
 	if (game.global.sugarRush > 0 && what == "attack"){
 		currentCalc *= sugarRush.getAttackStrength();
-		textString += "<tr class='pumpkimpRow'><td class='bdTitle'>Sugar Rush</td><td>&nbsp;</td><td>&nbsp;</td><td>x " + sugarRush.getAttackStrength() + "</td><td class='bdNumberSm'>" + prettify(currentCalc) + "</td>" + ((what == "attack") ? getFluctuation(currentCalc, minFluct, maxFluct) : "") + "</tr>";		
-	}    
+		textString += "<tr class='pumpkimpRow'><td class='bdTitle'>Sugar Rush</td><td>&nbsp;</td><td>&nbsp;</td><td>x " + sugarRush.getAttackStrength() + "</td><td class='bdNumberSm'>" + prettify(currentCalc) + "</td>" + ((what == "attack") ? getFluctuation(currentCalc, minFluct, maxFluct) : "") + "</tr>";
+	}
     //Magma
     if (mutations.Magma.active() && (what == "attack" || what == "health")){
         var mult = mutations.Magma.getTrimpDecay();
@@ -217,8 +217,8 @@ function getBattleStats(what,form,crit) {
 	//Fluffy
 	if (what == "attack" && Fluffy.isActive()){
 		var amt = Fluffy.getDamageModifier();
-		currentCalc *= amt;		
-	}    
+		currentCalc *= amt;
+	}
     if (crit) {
         var critChance = getPlayerCritChance();
         if (what == "attack" && critChance){

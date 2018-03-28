@@ -8,7 +8,7 @@
 //The ATServer{} object has 3 commands: GetID(), SaveData(), Upload()
 //All Data is uncompressed, unencrypted, plaintext for clarity. No private info is leaked.
 
-var ATServer = 
+var ATServer =
 {
 	//SERVER_IP: '207.246.77.188',
     SERVER_HOSTNAME: 'https://autotrimps.site/ATendpoint.php'
@@ -18,9 +18,9 @@ ATServer.GetID = function(callback)
 {
 	var req = new XMLHttpRequest();
 
-	req.onreadystatechange = function() 
+	req.onreadystatechange = function()
 	{
-		if (this.readyState == 4 && this.status == 200) 
+		if (this.readyState == 4 && this.status == 200)
 		{
 			callback(JSON.parse(req.responseText).data.id);
 		}
@@ -35,9 +35,9 @@ ATServer.SaveData = function(id, data, callback)
 {
 	var req = new XMLHttpRequest();
 
-	req.onreadystatechange = function() 
+	req.onreadystatechange = function()
 	{
-		if (this.readyState == 4 && this.status == 200) 
+		if (this.readyState == 4 && this.status == 200)
 		{
 			callback(JSON.parse(req.responseText));
 		}
@@ -51,12 +51,12 @@ ATServer.SaveData = function(id, data, callback)
 
 ATServer.Upload = function(data)
 {
-    ATServer.GetID(function(id) 
-    { 
+    ATServer.GetID(function(id)
+    {
         autoTrimpSettings.analyticsID = autoTrimpSettings.analyticsID || id;
         //debug("Server generated ID: " + autoTrimpSettings.analyticsID, "other");
-        ATServer.SaveData(autoTrimpSettings.analyticsID, data, function(response) 
-        { 
+        ATServer.SaveData(autoTrimpSettings.analyticsID, data, function(response)
+        {
             debug("Submitted analytics data w/ ID: " + autoTrimpSettings.analyticsID, "other");
         });
     });

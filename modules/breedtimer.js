@@ -58,9 +58,9 @@ function controlGeneticistassist(targetTime) {
     if (hasGA) {
         //The targetTime GA setting has to match one in the list. [use the last slot]
         game.global.GeneticistassistSetting = targetTime;
-        game.global.GeneticistassistSteps = [-1,10,30,targetTime];        
+        game.global.GeneticistassistSteps = [-1,10,30,targetTime];
         toggleGeneticistassist(true);   //true means updateOnly
-    }    
+    }
 }
 //controlGeneticistassist(45);
 
@@ -72,7 +72,7 @@ function autoBreedTimer() {
     var defaultBreedTimer = game.talents.patience.purchased && getPageSetting('UsePatience') ? 45 : 30;
     var targetBreed = getPageSetting('GeneticistTimer');
     var newGeneTimerSetting=0;
-//TIMER MANAGEMENT SECTION: 
+//TIMER MANAGEMENT SECTION:
     var manageBreedTimer = getPageSetting('ManageBreedtimer');
     if (manageBreedTimer) {
         if(game.portal.Anticipation.level == 0) newGeneTimerSetting = 0;
@@ -86,7 +86,7 @@ function autoBreedTimer() {
         }
         else if (getPageSetting('SpireBreedTimer') > -1 && isActiveSpireAT())
             newGeneTimerSetting = getPageSetting('SpireBreedTimer');
-        else 
+        else
             newGeneTimerSetting = defaultBreedTimer;
         if (newGeneTimerSetting != targetBreed) {
             setPageSetting('GeneticistTimer',newGeneTimerSetting);
@@ -117,9 +117,9 @@ function autoBreedTimer() {
             boughtGenRound1 = true;
         }
     }
-//FIRING SECTION:    
+//FIRING SECTION:
     var time = getBreedTime();
-    var timeLeft = getBreedTime(true);    
+    var timeLeft = getBreedTime(true);
     var fire1 = targetBreed*1.02 < time;
     var fire2 = targetBreed*1.02 < timeLeft;
     var fireobj = fire1 ? time : timeLeft;

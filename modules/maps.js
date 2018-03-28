@@ -25,7 +25,7 @@ MODULES["maps"].watchChallengeMaps = [15, 25, 35, 50];  //during 'watch' challen
 MODULES["maps"].shouldFarmCell = 59;
 MODULES["maps"].SkipNumUnboughtPrestiges = 2;   //exceeding this number of unbought prestiges will trigger a skip of prestige mode.
 MODULES["maps"].UnearnedPrestigesRequired = 2;
-MODULES["maps"].maxMapBonusAfterZ = MODULES["maps"].maxMapBonus;   //Max Map Bonus After Zone uses this many stacks 
+MODULES["maps"].maxMapBonusAfterZ = MODULES["maps"].maxMapBonus;   //Max Map Bonus After Zone uses this many stacks
                                                                  //- init as default value (10). user can set if they want.
 
 //Initialize Global Vars (dont mess with these ones, nothing good can come from it).
@@ -97,7 +97,7 @@ function autoMap() {
     needPrestige = prestige != "Off" && game.mapUnlocks[prestige] && game.mapUnlocks[prestige].last <= (game.global.world+extraMapLevels) - 5 && game.global.challengeActive != "Frugal";
     //dont need prestige if we are caught up, and have (2) unbought prestiges:
     skippedPrestige = false;
-    if (needPrestige && getPageSetting('PrestigeSkipMode')) {
+    if (needPrestige && (getPageSetting('PrestigeSkip1_2')==1 || getPageSetting('PrestigeSkip1_2')==2)) {
         var prestigeList = ['Dagadder','Megamace','Polierarm','Axeidic','Greatersword','Harmbalest','Bootboost','Hellishmet','Pantastic','Smoldershoulder','Bestplate','GambesOP'];
         var numUnbought = 0;
         for (var i in prestigeList) {
@@ -111,7 +111,7 @@ function autoMap() {
         }
     }
     // Don't need prestige if there aren't many weapon prestiges left
-    if ((needPrestige || skippedPrestige) && getPageSetting('PrestigeSkip2')) {
+    if ((needPrestige || skippedPrestige) && (getPageSetting('PrestigeSkip1_2')==1 || getPageSetting('PrestigeSkip1_2')==3)) {
         const prestigeList = ['Dagadder','Megamace','Polierarm','Axeidic','Greatersword','Harmbalest'];
         const numLeft = prestigeList.filter(pres => game.mapUnlocks[pres].last <= (game.global.world+extraMapLevels) - 5);
         const shouldSkip = numLeft <= customVars.UnearnedPrestigesRequired;
@@ -230,7 +230,7 @@ function autoMap() {
     }
     //Check our graph history and - Estimate = The zone should take around this long in milliseconds.
     mapTimeEstimate = mapTimeEstimater();
-    
+
     var shouldDoHealthMaps = false;
     //if we are at max map bonus (10), and we don't need to farm, don't do maps
     if (game.global.mapBonus >= customVars.maxMapBonus && !shouldFarm)
@@ -322,7 +322,7 @@ function autoMap() {
     //Farm X Minutes Before Spire:
     var shouldDoSpireMaps = false;
     preSpireFarming = (isActiveSpireAT()) && (spireTime = (new Date().getTime() - game.global.zoneStarted) / 1000 / 60) < getPageSetting('MinutestoFarmBeforeSpire');
-    spireMapBonusFarming = getPageSetting('MaxStacksForSpire') && isActiveSpireAT() && game.global.mapBonus < customVars.maxMapBonus;    
+    spireMapBonusFarming = getPageSetting('MaxStacksForSpire') && isActiveSpireAT() && game.global.mapBonus < customVars.maxMapBonus;
     if (preSpireFarming || spireMapBonusFarming) {
         shouldDoMaps = true;
         shouldDoSpireMaps = true;
@@ -346,7 +346,7 @@ function autoMap() {
     vanillaMapatZone = (game.options.menu.mapAtZone.enabled && game.options.menu.mapAtZone.setZone == game.global.world);
     if (vanillaMapatZone)
         shouldDoMaps = true;
-    
+
 
     //Dynamic Siphonology section (when necessary)
     //Lower Farming Zone = Lowers the zone used during Farming mode. Starts 10 zones below current and Finds the minimum map level you can successfully one-shot
@@ -456,7 +456,7 @@ function autoMap() {
           }
        }
     }
-            
+
 //VOIDMAPS:
     //Only proceed if we needToVoid right now.
     if (needToVoid) {
@@ -594,7 +594,7 @@ function autoMap() {
             if (shouldDoWatchMaps)
                 repeatClicked();
             //turn repeat off on the last WantHealth map.
-            if (shouldDoHealthMaps && game.global.mapBonus >= customVars.wantHealthMapBonus - 1) { 
+            if (shouldDoHealthMaps && game.global.mapBonus >= customVars.wantHealthMapBonus - 1) {
                 repeatClicked();
                 shouldDoHealthMaps = false;
             }
@@ -655,7 +655,7 @@ function autoMap() {
             $mapLevelInput.value = needPrestige ? game.global.world : siphlvl;
             //choose spire level 199 or 200
             if (preSpireFarming && MODULES["maps"].SpireFarm199Maps)
-                $mapLevelInput.value = game.talents.mapLoot.purchased ? game.global.world - 1 : game.global.world;            
+                $mapLevelInput.value = game.talents.mapLoot.purchased ? game.global.world - 1 : game.global.world;
             var decrement;  //['size','diff','loot']
             var tier;   //taken from MODULES vars at the top of this file.
             //instead of normal map locations, use Plentiful (Gardens) if the Decay challenge has been completed. (for +25% better loot)
@@ -729,10 +729,10 @@ function autoMap() {
                 sizeAdvMapsRange.value -= 1;
             }
 
-        //run the Advanced Special Modifier script, bring 
+        //run the Advanced Special Modifier script, bring
             if (getPageSetting('AdvMapSpecialModifier'))
                 testMapSpecialModController();
-            
+
         //if we can't afford the map we designed, pick our highest existing map
         //TODO Debug Output the mods we made.
             var maplvlpicked = parseInt($mapLevelInput.value) + (getPageSetting('AdvMapSpecialModifier') ? getExtraMapLevels() : 0);
@@ -777,7 +777,7 @@ function updateAutoMapsStatus(get) {
         var secs = Math.floor(60 - (spireTime*60)%60).toFixed(0)
         var mins = Math.floor(minSp - spireTime).toFixed(0);
         var hours = minSp - (spireTime / 60).toFixed(2);
-        var spiretimeStr = (spireTime>=60) ? 
+        var spiretimeStr = (spireTime>=60) ?
             (hours + 'h') : (mins + 'm:' + (secs>=10 ? secs : ('0'+secs)) + 's');
         status = 'Farming for Spire ' + spiretimeStr + ' left';
     }
@@ -803,7 +803,7 @@ function updateAutoMapsStatus(get) {
     var getPercent = (game.stats.heliumHour.value() / (game.global.totalHeliumEarned - (game.global.heliumLeftover + game.resources.helium.owned)))*100;
     var lifetime = (game.resources.helium.owned / (game.global.totalHeliumEarned-game.resources.helium.owned))*100;
     var hiderStatus = 'He/hr: ' + getPercent.toFixed(3) + '%<br>&nbsp;&nbsp;&nbsp;He: ' + lifetime.toFixed(3) +'%';
-    
+
     if (get) {
         return [status,getPercent,lifetime];
     } else {
@@ -815,9 +815,9 @@ function updateAutoMapsStatus(get) {
 
 //New Code for Map Special Mods dropdown. (only the first dropdown for now)
 //
-//PLAN: 
+//PLAN:
 //1. lmc when you can afford it, or cycle down the list sequentially until one can be afforded.
-//2. prestigious when you need prestiges, 
+//2. prestigious when you need prestiges,
 //NEW IDEA:
 //+lmc when you need more lvls in your eq
 //+perfect sliders when you can afford it
@@ -854,7 +854,7 @@ function testMapSpecialModController() {
             $advSpecialMod.selectedIndex=1;
         else if (needPrestige)
             $advSpecialMod.selectedIndex=0;
-        if (game.global.mapExtraBonus != "fa" && $advSpecialMod.selectedIndex==1) ;        
+        if (game.global.mapExtraBonus != "fa" && $advSpecialMod.selectedIndex==1) ;
         //map frag cost is stored in: document.getElementById("mapCostFragmentCost").innerHTML
         var mc = updateMapCost(true);
         var my = game.resources.fragments.owned;
@@ -874,7 +874,7 @@ function testMapSpecialModController() {
     var perfectChecked = checkPerfectChecked();                     //Perfect Checkboxes
     var $advPerfect = document.getElementById('advPerfectCheckbox');
     var extraMapLevels = getPageSetting('AdvMapSpecialModifier') ? getExtraMapLevels() : 0;                          //Extra Levels
-     
+
     //Set the extra level to max ( 3 )
     var extraAllowed = (game.global.highestLevelCleared >= 209);
     if (extraAllowed) {

@@ -497,7 +497,7 @@ AutoPerks.FixedPerk = function(name, base, level, max, fluffy) {
     this.max = max || Number.MAX_VALUE;
     if (fluffy == "fluffy") {
     //This affects cost calculation on "Capable" fixed perk (during line 273)
-       this.fluffy = true; 
+       this.fluffy = true;
        this.type = "linear";
        this.increase = 10;
    }

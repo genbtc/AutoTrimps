@@ -11,7 +11,7 @@
 
 	// AFK OVERLAY CSS Style
 	document.head.appendChild(document.createElement('style')).innerHTML = `
-	.at-afk-overlay 
+	.at-afk-overlay
 	{
 		position: absolute;
 		left: 0px;
@@ -116,7 +116,7 @@
 	M["performance"].AFKOverlay.appendChild(M["performance"].AFKOverlayHelium);
 	M["performance"].AFKOverlay.appendChild(M["performance"].AFKOverlayStatus);
 	M["performance"].AFKOverlay.appendChild(M["performance"].AFKOverlayDisable);
-    
+
     // Insert the afk page, at the top level <body> tag
 	document.body.appendChild(M["performance"].AFKOverlay);
 

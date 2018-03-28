@@ -234,7 +234,7 @@ function buyBuildings() {
     //Activate dynamic Nurseries to buy nurseries from NoNurseriesUntilZone up to portal before zone.
     function dynamicNurseries() {
         var maxNursery = getPageSetting('MaxNursery');
-        var finalZone = getPageSetting('HeHrDontPortalBefore') 
+        var finalZone = getPageSetting('HeHrDontPortalBefore')
         var numZ = finalZone - nursminlvl;
         var perZ = maxNursery / ((numZ / 10 + 1));
         return perZ;
