@@ -26,6 +26,7 @@ head.appendChild(queuescript);
 //--------------------------------------
 //Ratio Presets - Perk proportions:
 // (in perk order): [looting,toughness,power,motivation,pheromones,artisanistry,carpentry,resilience,coordinated,resourceful,overkill,cunning,curious];
+var preset_null3 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 var preset_ZXV = [20, 0.5, 1, 1.5, 0.5, 1.5, 8, 1, 25, 2, 3, 1, 1];
 var preset_ZXVnew = [50, 0.75, 1, 3, 0.75, 3, 10, 1.5, 60, 2, 5, 1, 1];
 var preset_ZXV3 = [100, 1, 3, 3, 1, 3, 40, 2, 100, 1, 3, 1, 1];
@@ -38,29 +39,50 @@ var preset_HiderBalance = [75, 4, 8, 4, 1, 4, 24, 1, 75, 0.5, 3, 1, 1];
 var preset_HiderMore = [20, 4, 10, 12, 1, 8, 8, 1, 40, 0.1, 0.5, 1, 1];
 var preset_genBTC = [100, 8, 8, 4, 4, 5, 18, 8, 14, 1, 1, 1, 1];
 var preset_genBTC2 = [96, 19, 15.4, 8, 8, 7, 14, 19, 11, 1, 1, 1, 1];
-var preset_Zek450 = [300, 1, 30, 2, 4, 2, 9, 8, 17, 0.1, 1, 320, 1];
-var preset_Zek4502 = [350, 1, 40, 2, 3, 2, 5, 8, 2, 0.1, 1, 300, 20];    //Will update again in few days, this seems to be more optimal for more helium for now
-var preset_Zek4503 = [450, 0.9, 48, 3.35, 1, 2.8, 7.8, 1.95, 4, 0.04, 1, 120, 175];    //Final change till perky(?) integration
+//
+var preset_space = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+var preset_null = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+var preset_Zek59 = [7, 0.6, 3, 0.8, 0.3, 3, 25, 0.6, 0, 0, 0, 0, 0];
+var preset_Zek100 = [9.8, 1.8, 3.2, 2.6, 0.7, 2.9, 25, 1.8, 0, 0, 0, 0, 0];
+var preset_Zek180 = [13, 1.3, 4, 2.6, 0.7, 2.9, 25, 1.3, 35, 0.05, 1, 0, 0];
+var preset_Zek229 = [11.2, 0.58, 2.37, 1.464, 0.3, 2.02, 12.2, 0.58, 37, 0.22, 2.2, 0, 0];
+var preset_Zek299 = [16.8, 3, 1.9, 1.1, 1.2, 1, 17.1, 3, 100, 0.06, 0.8, 0, 0];
+var preset_Zek399 = [135, 6.1, 18.5, 6.5, 2.5, 6, 17, 6.1, 25, 0.08, 1, 0, 0];
+var preset_Zek449 = [245, 5.85, 29, 1.95, 2.8, 6, 6.1, 5.85, 15, 0.05, 1, 57, 0];  
+var preset_Zek450 = [450, 0.9, 48, 3.35, 1, 2.8, 7.8, 1.95, 4, 0.04, 1, 120, 175];
+var preset_space2 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+var preset_null2 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 //gather these into an array of objects. this is one important object.
-var presetList = [preset_ZXV,preset_ZXVnew,preset_ZXV3,preset_TruthEarly,preset_TruthLate,preset_nsheetz,preset_nsheetzNew,preset_HiderHehr,preset_HiderBalance,preset_HiderMore,preset_genBTC,preset_genBTC2,preset_Zek450,preset_Zek4502,preset_Zek4503];
+var presetList = [preset_null3,preset_ZXV,preset_ZXVnew,preset_ZXV3,preset_TruthEarly,preset_TruthLate,preset_nsheetz,preset_nsheetzNew,preset_HiderHehr,preset_HiderBalance,preset_HiderMore,preset_genBTC,preset_genBTC2,preset_space,preset_null,preset_Zek59,preset_Zek100,preset_Zek180,preset_Zek229,preset_Zek299,preset_Zek399,preset_Zek449,preset_Zek450,preset_space2,preset_null2];
 //Specific ratios labeled above must be given the matching ID below.
 //Ratio preset dropdown list
-var presetListHtml = "<option id='preset_ZXV'>ZXV</option>\
-<option id='preset_ZXVnew'>ZXV (new)</option>\
-<option id='preset_ZXV3'>ZXV 3</option>\
-<option id='preset_TruthEarly'>Truth (early)</option>\
-<option id='preset_TruthLate'>Truth (late)</option>\
-<option id='preset_nsheetz'>nSheetz</option>\
-<option id='preset_nsheetzNew'>nSheetz(new)</option>\
-<option id='preset_HiderHehr'>Hider* (He/hr)</option>\
-<option id='preset_HiderBalance'>Hider (Balance)</option>\
-<option id='preset_HiderMore'>Hider* (More Zones)</option>\
-<option id='preset_genBTC'>genBTC</option>\
-<option id='preset_genBTC2'>genBTC2</option>\
-<option id='preset_Zek450'>Zeker0#1 (z450+)</option>\
-<option id='preset_Zek4502'>Zeker0#2 (z450+)</option>\
-<option id='preset_Zek4503'>Zeker0#3 (z450+)</option>\
-<option id='customPreset'>Custom</option></select>";
+var presetListHtml =
+"<option id='preset_null3'>---Outdated Ratios---</option>\
+ <option id='preset_ZXV'>ZXV</option>\
+ <option id='preset_ZXVnew'>ZXV (new)</option>\
+ <option id='preset_ZXV3'>ZXV 3</option>\
+ <option id='preset_TruthEarly'>Truth (early)</option>\
+ <option id='preset_TruthLate'>Truth (late)</option>\
+ <option id='preset_nsheetz'>nSheetz</option>\
+ <option id='preset_nsheetzNew'>nSheetz(new)</option>\
+ <option id='preset_HiderHehr'>Hider* (He/hr)</option>\
+ <option id='preset_HiderBalance'>Hider (Balance)</option>\
+ <option id='preset_HiderMore'>Hider* (More Zones)</option>\
+ <option id='preset_genBTC'>genBTC</option>\
+ <option id='preset_genBTC2'>genBTC2</option>\
+ <option id='preset_space'> </option>\
+ <option id='preset_null'>---Zeker0 Perks (Trimps 4.72)---</option>\
+ <option id='preset_Zek59'>Zeker0 (z1-59)</option>\
+ <option id='preset_Zek100'>Zeker0 (z60-100)</option>\
+ <option id='preset_Zek180'>Zeker0 (z101-180)</option>\
+ <option id='preset_Zek229'>Zeker0 (z181-229)</option>\
+ <option id='preset_Zek299'>Zeker0 (z230-299)</option>\
+ <option id='preset_Zek399'>Zeker0 (z300-399)</option>\
+ <option id='preset_Zek449'>Zeker0 (z400-449)</option>\
+ <option id='preset_Zek450'>Zeker0 (z450+)</option>\
+ <option id='preset_space2'> </option>\
+ <option id='preset_null2'>---Enter your own ratio---</option>\
+ <option id='customPreset'>Custom</option></select>";
 //Custom Creation for all perk customRatio boxes in Trimps Perk Window
 AutoPerks.createInput = function(perkname,div) {
     var perk1input = document.createElement("Input");
