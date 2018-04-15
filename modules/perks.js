@@ -25,34 +25,37 @@ head.appendChild(queuescript);
 
 //--------------------------------------
 //Ratio Presets - Perk proportions:
-// (in perk order): [looting,toughness,power,motivation,pheromones,artisanistry,carpentry,resilience,coordinated,resourceful,overkill,cunning,curious];
-var preset_ZXV = [20, 0.5, 1, 1.5, 0.5, 1.5, 8, 1, 25, 2, 3, 1, 1];
-var preset_ZXVnew = [50, 0.75, 1, 3, 0.75, 3, 10, 1.5, 60, 2, 5, 1, 1];
-var preset_ZXV3 = [100, 1, 3, 3, 1, 3, 40, 2, 100, 1, 3, 1, 1];
-var preset_TruthEarly = [30, 4, 4, 4, 4, 2, 24, 8, 60, 2, 3, 1, 1];
-var preset_TruthLate = [120, 4, 4, 4, 4, 2, 24, 8, 60, 2, 3, 1, 1];
+// (in perk order): [looting,toughness,power,motivation,pheromones,artisanistry,carpentry,resilience,coordinated,resourceful,overkill,cunning,curious,anticipation,bait,trumps];
+var preset_ZXV = [20, 0.5, 1, 1.5, 0.5, 1.5, 8, 1, 25, 2, 3, 1, 1, 1, 1, 1];
+var preset_ZXVnew = [50, 0.75, 1, 3, 0.75, 3, 10, 1.5, 60, 2, 5, 1, 1, 1, 1, 1];
+var preset_ZXV3 = [100, 1, 3, 3, 1, 3, 40, 2, 100, 1, 3, 1, 1, 1, 1, 1];
+var preset_TruthEarly = [30, 4, 4, 4, 4, 2, 24, 8, 60, 2, 3, 1, 1, 1, 1, 1];
+var preset_TruthLate = [120, 4, 4, 4, 4, 2, 24, 8, 60, 2, 3, 1, 1, 1, 1, 1];
 var preset_nsheetz = [42, 1.75, 5, 4, 1.5, 5, 29, 3.5, 100, 1, 5, 1, 1];
-var preset_nsheetzNew= [160, 1.5, 5, 2.5, 1.5, 3.5, 18, 3, 100, 1, 10, 1, 1];
-var preset_HiderHehr = [90, 4, 12, 10, 1, 8, 8, 1, 20, 0.1, 3, 1, 1];
-var preset_HiderBalance = [75, 4, 8, 4, 1, 4, 24, 1, 75, 0.5, 3, 1, 1];
-var preset_HiderMore = [20, 4, 10, 12, 1, 8, 8, 1, 40, 0.1, 0.5, 1, 1];
-var preset_genBTC = [100, 8, 8, 4, 4, 5, 18, 8, 14, 1, 1, 1, 1];
-var preset_genBTC2 = [96, 19, 15.4, 8, 8, 7, 14, 19, 11, 1, 1, 1, 1];
-var preset_Zek4501 = [300, 1, 30, 2, 4, 2, 9, 8, 17, 0.1, 1, 320, 1];
-var preset_Zek4502 = [350, 1, 40, 2, 3, 2, 5, 8, 2, 0.1, 1, 300, 20];
-var preset_Zek450 = [450, 0.9, 48, 3.35, 1, 2.8, 7.8, 1.95, 4, 0.04, 1, 120, 175];
+var preset_nsheetzNew= [160, 1.5, 5, 2.5, 1.5, 3.5, 18, 3, 100, 1, 10, 1, 1, 1, 1, 1];
+var preset_HiderHehr = [90, 4, 12, 10, 1, 8, 8, 1, 20, 0.1, 3, 1, 1, 1, 1, 1];
+var preset_HiderBalance = [75, 4, 8, 4, 1, 4, 24, 1, 75, 0.5, 3, 1, 1, 1, 1, 1];
+var preset_HiderMore = [20, 4, 10, 12, 1, 8, 8, 1, 40, 0.1, 0.5, 1, 1, 1, 1, 1];
+var preset_genBTC = [100, 8, 8, 4, 4, 5, 18, 8, 14, 1, 1, 1, 1, 1, 1, 1];
+var preset_genBTC2 = [96, 19, 15.4, 8, 8, 7, 14, 19, 11, 1, 1, 1, 1, 1, 1, 1];
+var preset_Zek4501 = [300, 1, 30, 2, 4, 2, 9, 8, 17, 0.1, 1, 320, 1, 1, 1, 1];
+var preset_Zek4502 = [350, 1, 40, 2, 3, 2, 5, 8, 2, 0.1, 1, 300, 20, 1, 1, 1];
+var preset_Zek450 = [450, 0.9, 48, 3.35, 1, 2.8, 7.8, 1.95, 4, 0.04, 1, 120, 175, 1, 0, 0.0005];
 //
-var preset_space = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+var preset_space = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 //
-var preset_Zek059 = [7, 0.6, 3, 0.8, 0.3, 3, 25, 0.6, 0, 0, 0, 0, 0];
-var preset_Zek100 = [9.8, 1.8, 3.2, 2.6, 0.7, 2.9, 25, 1.8, 0, 0, 0, 0, 0];
-var preset_Zek180 = [13, 1.3, 4, 2.6, 0.7, 2.9, 25, 1.3, 35, 0.05, 1, 0, 0];
-var preset_Zek229 = [11.2, 0.58, 2.37, 1.464, 0.3, 2.02, 12.2, 0.58, 37, 0.22, 2.2, 0, 0];
-var preset_Zek299 = [16.8, 3, 1.9, 1.1, 1.2, 1, 17.1, 3, 100, 0.06, 0.8, 0, 0];
-var preset_Zek399 = [135, 6.1, 18.5, 6.5, 2.5, 6, 17, 6.1, 25, 0.08, 1, 0, 0];
-var preset_Zek449 = [245, 5.85, 29, 1.95, 2.8, 6, 6.1, 5.85, 15, 0.05, 1, 57, 0];
+var preset_Zek059 = [7, 0.6, 3, 0.8, 0.3, 3, 25, 0.6, 0, 0, 0, 0, 0, 0, 1, 1];
+var preset_Zek100 = [9.8, 1.8, 3.2, 2.6, 0.7, 2.9, 25, 1.8, 0, 0, 0, 0, 0, 2, 2, 1];
+var preset_Zek180 = [13, 1.3, 4, 2.6, 0.7, 2.9, 25, 1.3, 35, 0.05, 1, 0, 0, 1, 1, 1];
+var preset_Zek229 = [11.2, 0.58, 2.37, 1.464, 0.3, 2.02, 12.2, 0.58, 37, 0.22, 2.2, 0, 0, 1, 0.1, 0.05];
+var preset_Zek299 = [16.8, 3, 1.9, 1.1, 1.2, 1, 17.1, 3, 100, 0.06, 0.8, 0, 0, 1, 0, 0.005];
+var preset_Zek399 = [135, 6.1, 18.5, 6.5, 2.5, 6, 17, 6.1, 25, 0.08, 1, 0, 0, 1, 0, 0.0005];
+var preset_Zek449 = [245, 5.85, 29, 1.95, 2.8, 6, 6.1, 5.85, 15, 0.05, 1, 57, 0, 1, 0, 0.00005];
+var preset_ZekSpire = [0, 20, 10, 0, 7.5, 0.005, 9, 20, 20, 0, 0.005, 0, 0, 1, 0, 0.3];
+var preset_ZekPreTrap = [0, 5e-7, 5e-7, 0, 0, 0, 500, 5e-7, 1, 0, 0, 0, 0, 0, 0, 10];
+var preset_ZekPostTrap = [1.55, 3.7, 13, 0.003, 0, 1, 4.9, 3.7, 6, 0.04, 1, 0, 0, 0, 0.0001, 0.015];
 //gather these into an array of objects. this is one important object.
-var presetList = [preset_ZXV,preset_ZXVnew,preset_ZXV3,preset_TruthEarly,preset_TruthLate,preset_nsheetz,preset_nsheetzNew,preset_HiderHehr,preset_HiderBalance,preset_HiderMore,preset_genBTC,preset_genBTC2,preset_Zek4501,preset_Zek4502,preset_Zek450,preset_space,preset_Zek059,preset_Zek100,preset_Zek180,preset_Zek229,preset_Zek299,preset_Zek399,preset_Zek449,preset_Zek450,preset_space];
+var presetList = [preset_ZXV,preset_ZXVnew,preset_ZXV3,preset_TruthEarly,preset_TruthLate,preset_nsheetz,preset_nsheetzNew,preset_HiderHehr,preset_HiderBalance,preset_HiderMore,preset_genBTC,preset_genBTC2,preset_Zek4501,preset_Zek4502,preset_Zek450,preset_space,preset_Zek059,preset_Zek100,preset_Zek180,preset_Zek229,preset_Zek299,preset_Zek399,preset_Zek449,preset_Zek450,preset_ZekSpire,preset_ZekPreTrap,preset_ZekPostTrap,preset_space];
 //Specific ratios labeled above must be given the matching ID below.
 //Ratio preset dropdown list
 var presetListHtml = "\
@@ -80,6 +83,9 @@ var presetListHtml = "\
 <option id='preset_Zek399'>Zeker0 (z300-399)</option>\
 <option id='preset_Zek449'>Zeker0 (z400-449)</option>\
 <option id='preset_Zek450'>Zeker0 (z450+) (new)</option>\
+<option id='preset_ZekSpire'>Zeker0 (Spire Respec)</option>\
+<option id='preset_ZekPreTrap'>Zeker0 (Trapper Prespec)</option>\
+<option id='preset_ZekPostTrap'>Zeker0 (Trapper Respec)</option>\
 <option id='preset_space'>--------------</option>\
 <option id='customPreset'>CUSTOM ratio</option></select>";
 //Custom Creation for all perk customRatio boxes in Trimps Perk Window
@@ -776,13 +782,10 @@ AutoPerks.initializePerks = function () {
     //Fixed perks:
     //AutoPerks.FixedPerk = function(name, base, level, max, fluffy) {
     var siphonology = new AutoPerks.FixedPerk("siphonology", 100000, 3, 3);
-    var anticipation = new AutoPerks.FixedPerk("anticipation", 1000, 10, 10);
     var meditation = new AutoPerks.FixedPerk("meditation", 75, 7, 7);
     var relentlessness = new AutoPerks.FixedPerk("relentlessness", 75, 10, 10);
     var range = new AutoPerks.FixedPerk("range", 1, 10, 10);
     var agility = new AutoPerks.FixedPerk("agility", 4, 20, 20);
-    var bait = new AutoPerks.FixedPerk("bait", 4, 30);
-    var trumps = new AutoPerks.FixedPerk("trumps", 3, 30);
     var packrat = new AutoPerks.FixedPerk("packrat", 3, 30);
     //Variable perks:
     //AutoPerks.VariablePerk = function(name, base, compounding, value, baseIncrease, max, level) {
@@ -802,6 +805,9 @@ AutoPerks.initializePerks = function () {
     var capable = new AutoPerks.FixedPerk("capable", 100000000, 0, 10, "fluffy");
     var cunning = new AutoPerks.VariablePerk("cunning", 100000000000, false,      11, 0.05);
     var curious = new AutoPerks.VariablePerk("curious", 100000000000000, false,   12, 0.05);
+    var anticipation = new AutoPerks.VariablePerk("anticipation", 1000, false, 13, 0.05, 10, 10);
+    var bait = new AutoPerks.VariablePerk("bait", 4, false, 14, 0.05);
+    var trumps = new AutoPerks.VariablePerk("trumps", 3, false, 15, 0.05);
     //Tier2 perks
     var toughness_II = new AutoPerks.ArithmeticPerk("toughness_II", 20000, 500, 0.01, toughness);
     var power_II = new AutoPerks.ArithmeticPerk("power_II", 20000, 500, 0.01, power);
