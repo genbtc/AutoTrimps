@@ -153,6 +153,7 @@ function setPageSetting(setting, value) {
         // debug('found a dropdown');
         autoTrimpSettings[setting].selected = value;
     }
+    settings.set();
 }
 
 //Global debug message
