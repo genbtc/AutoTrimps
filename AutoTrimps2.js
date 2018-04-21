@@ -58,6 +58,7 @@ function initializeAutoTrimps() {
     }
     //
     debug('AutoTrimps v' + ATversion + ' Loaded!', '*spinner3');
+    settings.set();
 }
 
 var changelogList = [];
