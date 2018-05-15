@@ -1,23 +1,23 @@
 // ==UserScript==
 // @name         AutoTrimpsV2
-// @version      2.2-Sliverz
-// @updateURL    https://github.com/slivermasterz/AutoTrimps/AutoTrimps2.js
+// @version      2.1.6.9b-genbtc-4-2-2018
+// @updateURL    https://github.com/genbtc/AutoTrimps/AutoTrimps2.js
 // @description  Automate all the trimps!
-// @author       zininzinin, spindrjr, belaith, ishakaru, genBTC, Unihedron, coderPatsy, Sliverz
+// @author       zininzinin, spindrjr, belaith, ishakaru, genBTC, Unihedron, coderPatsy
 // @include      *trimps.github.io*
 // @include      *kongregate.com/games/GreenSatellite/trimps
 // @grant        none
 // ==/UserScript==
-var ATversion = '2.2-Sliverz';
+var ATversion = '2.1.6.9b-genbtc-4-2-2018';
 
 ////////////////////////////////////////////////////////////////////////////////
 //Main Loader Initialize Function (loads first, load everything else)///////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////
 var atscript = document.getElementById('AutoTrimps-script')
-  , basepath = 'https://slivermasterz.github.io/AutoTrimps/'
-  , modulepath = 'modules/'
-  ;
+    , basepath = 'AutoTrimps/'
+    , modulepath = 'modules/'
+;
 //This should redirect the script to wherever its being mirrored from.
 if (atscript !== null) {
     basepath = atscript.src.replace(/AutoTrimps2\.js$/, '');
@@ -73,8 +73,8 @@ changelogList.push({date: "3/24", version: "v2.1.6.5-stable", description: "Set 
 
 function assembleChangelog(date,version,description,isNew) {
     return (isNew)
-    ? (`<b class="AutoEggs">${date} ${version} </b><b style="background-color:#32CD32"> New:</b> ${description}<br>`)
-    : (`<b>${date} ${version} </b> ${description}<br>`);
+        ? (`<b class="AutoEggs">${date} ${version} </b><b style="background-color:#32CD32"> New:</b> ${description}<br>`)
+        : (`<b>${date} ${version} </b> ${description}<br>`);
 }
 function printChangelog() {
     var body="";
@@ -87,10 +87,10 @@ function printChangelog() {
         '<b>Ongoing Development</b> - <u>Report any bugs/problems please</u>!\
         <br>Talk with the dev: <b>genr8_#8163</b> @ <a target="#" href="https://discord.gg/0VbWe0dxB9kIfV2C">AutoTrimps Discord Channel</a>\
         <br>See<a target="#" href="https://github.com/genbtc/AutoTrimps/blob/gh-pages/README.md">ReadMe</a> Or check <a target="#" href="https://github.com/genBTC/AutoTrimps/commits/gh-pages" target="#">the commit history</a> (if you want).'
-    ,   action = 'cancelTooltip()'
-    ,   title = 'Script Update Notice<br>' + ATversion
-    ,   acceptBtnText = "Thank you for playing AutoTrimps. Accept and Continue."
-    ,   hideCancel = true;
+        ,   action = 'cancelTooltip()'
+        ,   title = 'Script Update Notice<br>' + ATversion
+        ,   acceptBtnText = "Thank you for playing AutoTrimps. Accept and Continue."
+        ,   hideCancel = true;
     tooltip('confirm', null, 'update', body+footer, action, title, acceptBtnText, null, hideCancel);
 }
 function printLowerLevelPlayerNotice() {
@@ -180,10 +180,10 @@ function mainLoop() {
     addToolTipToArmyCount(); //Add hidden tooltip for army count (SettingsGUI.js @ end)
     //Heirloom:
     if (mainCleanup() // Z1 new world
-            || portalWindowOpen // in the portal screen (for manual portallers)
-            || (!heirloomsShown && heirloomFlag) // closed heirlooms screen
-            || (heirloomCache != game.global.heirloomsExtra.length)) { // inventory size changed (a drop appeared)
-            // also pre-portal: portal.js:111
+        || portalWindowOpen // in the portal screen (for manual portallers)
+        || (!heirloomsShown && heirloomFlag) // closed heirlooms screen
+        || (heirloomCache != game.global.heirloomsExtra.length)) { // inventory size changed (a drop appeared)
+        // also pre-portal: portal.js:111
         if (getPageSetting('AutoHeirlooms2')) autoHeirlooms2(); //"Auto Heirlooms 2" (heirlooms.js)
         else if (getPageSetting('AutoHeirlooms')) autoHeirlooms();//"Auto Heirlooms"      (")
         if (getPageSetting('AutoUpgradeHeirlooms') && !heirloomsShown) autoNull();  //"Auto Upgrade Heirlooms" (heirlooms.js)
