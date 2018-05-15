@@ -56,14 +56,17 @@ function autoMap() {
     // if(game.options.menu.alwaysAbandon.enabled == 1) toggleSetting('alwaysAbandon');
     //if we are prestige mapping, force equip first mode
     var prestige = autoTrimpSettings.Prestige.selected;
-    if(prestige != "Off" && game.options.menu.mapLoot.enabled != 1) toggleSetting('mapLoot');
+    if (prestige != "Off" && game.options.menu.mapLoot.enabled != 1) toggleSetting('mapLoot');
     //Control in-map right-side-buttons for people who can't control themselves. If you wish to use these buttons manually, turn off autoMaps temporarily.
-    if(game.options.menu.repeatUntil.enabled == 2) toggleSetting('repeatUntil');
-    if(game.options.menu.exitTo.enabled != 0) toggleSetting('exitTo');
-    if(game.options.menu.repeatVoids.enabled != 0) toggleSetting('repeatVoids');
+    game.options.menu.repeatUntil.enabled = 2;
+    toggleSetting('repeatUntil');
+    if (game.options.menu.exitTo.enabled != 0) toggleSetting('exitTo');
+    if (game.options.menu.repeatVoids.enabled != 0) toggleSetting('repeatVoids');
     //exit and do nothing if we are prior to zone 6 (maps haven't been unlocked):
     if (!game.global.mapsUnlocked || !(baseDamage > 0)) {   //if we have no damage, why bother running anything? (this fixes weird bugs)
-        enoughDamage = true; enoughHealth = true; shouldFarm = false;
+        enoughDamage = true;
+        enoughHealth = true;
+        shouldFarm = false;
         updateAutoMapsStatus();    //refresh the UI status (10x per second)
         return;
     }
@@ -78,28 +81,28 @@ function autoMap() {
     //FIND VOID MAPS LEVEL:
     var voidMapLevelSetting = getPageSetting('VoidMaps');
     //decimal void maps are possible, using string function to avoid false float precision (0.29999999992). javascript can compare ints to strings anyway.
-    var voidMapLevelSettingZone = (voidMapLevelSetting+"").split(".")[0];
-    var voidMapLevelSettingMap = (voidMapLevelSetting+"").split(".")[1];
+    var voidMapLevelSettingZone = (voidMapLevelSetting + "").split(".")[0];
+    var voidMapLevelSettingMap = (voidMapLevelSetting + "").split(".")[1];
     if (voidMapLevelSettingMap === undefined || (game.global.challengeActive == 'Lead' && !challSQ))
         voidMapLevelSettingMap = 93;
     if (voidMapLevelSettingMap.length == 1) voidMapLevelSettingMap += "0";  //entering 187.70 becomes 187.7, this will bring it back to 187.70
     var voidsuntil = getPageSetting('RunNewVoidsUntil');
     needToVoid = voidMapLevelSetting > 0 && game.global.totalVoidMaps > 0 && game.global.lastClearedCell + 1 >= voidMapLevelSettingMap &&
-                                    (game.global.world == voidMapLevelSettingZone ||
-                                 (game.global.world >= voidMapLevelSettingZone && getPageSetting('RunNewVoids') && (voidsuntil == -1 || game.global.world <= voidsuntil)));
-    if(game.global.totalVoidMaps == 0 || !needToVoid)
+        (game.global.world == voidMapLevelSettingZone ||
+            (game.global.world >= voidMapLevelSettingZone && getPageSetting('RunNewVoids') && (voidsuntil == -1 || game.global.world <= voidsuntil)));
+    if (game.global.totalVoidMaps == 0 || !needToVoid)
         doVoids = false;
     // if force prestige, check if we are behind any first
-    if ((getPageSetting('ForcePresZ') >= 0) && ((game.global.world+extraMapLevels) >= getPageSetting('ForcePresZ'))) {
-        const prestigeList = ['Supershield','Dagadder','Megamace','Polierarm','Axeidic','Greatersword','Harmbalest','Bootboost','Hellishmet','Pantastic','Smoldershoulder','Bestplate','GambesOP'];
-        needPrestige = prestigeList.some(pres => game.mapUnlocks[pres].last <= (game.global.world+extraMapLevels) - 5);
+    if ((getPageSetting('ForcePresZ') >= 0) && ((game.global.world + extraMapLevels) >= getPageSetting('ForcePresZ'))) {
+        const prestigeList = ['Supershield', 'Dagadder', 'Megamace', 'Polierarm', 'Axeidic', 'Greatersword', 'Harmbalest', 'Bootboost', 'Hellishmet', 'Pantastic', 'Smoldershoulder', 'Bestplate', 'GambesOP'];
+        needPrestige = prestigeList.some(pres => game.mapUnlocks[pres].last <= (game.global.world + extraMapLevels) - 5);
     } else
     //calculate if we are behind on unlocking prestiges
-    needPrestige = prestige != "Off" && game.mapUnlocks[prestige] && game.mapUnlocks[prestige].last <= (game.global.world+extraMapLevels) - 5 && game.global.challengeActive != "Frugal";
+        needPrestige = prestige != "Off" && game.mapUnlocks[prestige] && game.mapUnlocks[prestige].last <= (game.global.world + extraMapLevels) - 5 && game.global.challengeActive != "Frugal";
     //dont need prestige if we are caught up, and have (2) unbought prestiges:
     skippedPrestige = false;
     if (needPrestige && getPageSetting('PrestigeSkipMode')) {
-        var prestigeList = ['Dagadder','Megamace','Polierarm','Axeidic','Greatersword','Harmbalest','Bootboost','Hellishmet','Pantastic','Smoldershoulder','Bestplate','GambesOP'];
+        var prestigeList = ['Dagadder', 'Megamace', 'Polierarm', 'Axeidic', 'Greatersword', 'Harmbalest', 'Bootboost', 'Hellishmet', 'Pantastic', 'Smoldershoulder', 'Bestplate', 'GambesOP'];
         var numUnbought = 0;
         for (var i in prestigeList) {
             var p = prestigeList[i];
@@ -113,21 +116,21 @@ function autoMap() {
     }
     // Don't need prestige if there aren't many weapon prestiges left
     if ((needPrestige || skippedPrestige) && getPageSetting('PrestigeSkip2')) {
-        const prestigeList = ['Dagadder','Megamace','Polierarm','Axeidic','Greatersword','Harmbalest'];
-        const numLeft = prestigeList.filter(pres => game.mapUnlocks[pres].last <= (game.global.world+extraMapLevels) - 5);
+        const prestigeList = ['Dagadder', 'Megamace', 'Polierarm', 'Axeidic', 'Greatersword', 'Harmbalest'];
+        const numLeft = prestigeList.filter(pres => game.mapUnlocks[pres].last <= (game.global.world + extraMapLevels) - 5);
         const shouldSkip = numLeft <= customVars.UnearnedPrestigesRequired;
         if (shouldSkip != skippedPrestige) { // not both conditions are met / is met but not already skipped: unskip it / do skip it
-          needPrestige = !needPrestige;
-          skippedPrestige = !skippedPrestige;
+            needPrestige = !needPrestige;
+            skippedPrestige = !skippedPrestige;
         }
     }
 
 //START CALCULATING DAMAGES:
     var AutoStance = getPageSetting('AutoStance');
     //calculate crits (baseDamage was calced in function autoStance)    this is a weighted average of nonCrit + Crit. (somewhere in the middle)
-    ourBaseDamage = (baseDamage * (1-getPlayerCritChance()) + (baseDamage * getPlayerCritChance() * getPlayerCritDamageMult()));
+    ourBaseDamage = (baseDamage * (1 - getPlayerCritChance()) + (baseDamage * getPlayerCritChance() * getPlayerCritDamageMult()));
     //calculate with map bonus
-    var mapbonusmulti = 1 + (0.20*game.global.mapBonus);
+    var mapbonusmulti = 1 + (0.20 * game.global.mapBonus);
     //(autostance2 has mapbonusmulti built in)
     ourBaseDamage2 = ourBaseDamage; //keep a version without mapbonus
     ourBaseDamage *= mapbonusmulti;
@@ -135,14 +138,14 @@ function autoMap() {
     //get average enemyhealth and damage for the next zone, cell 50, snimp type and multiply it by a max range fluctuation of 1.2
     var enemyDamage;
     var enemyHealth;
-    if (AutoStance<=1) {
+    if (AutoStance <= 1) {
         enemyDamage = getEnemyMaxAttack(game.global.world + 1, 50, 'Snimp', 1.2);
         enemyDamage = calcDailyAttackMod(enemyDamage); //daily mods: badStrength,badMapStrength,bloodthirst
     } else {
-        enemyDamage = calcBadGuyDmg(null,getEnemyMaxAttack(game.global.world + 1, 50, 'Snimp', 1.0),true,true); //(enemy,attack,daily,maxormin,[disableFlucts])
+        enemyDamage = calcBadGuyDmg(null, getEnemyMaxAttack(game.global.world + 1, 50, 'Snimp', 1.0), true, true); //(enemy,attack,daily,maxormin,[disableFlucts])
     }
-    enemyHealth = getEnemyMaxHealth(game.global.world + 1,50);
-    if(game.global.challengeActive == "Toxicity") {
+    enemyHealth = getEnemyMaxHealth(game.global.world + 1, 50);
+    if (game.global.challengeActive == "Toxicity") {
         enemyHealth *= 2;
     }
     //Corruption Zone Proportionality Farming Calculator:
@@ -161,20 +164,21 @@ function autoMap() {
         //console.log("enemy dmg:" + enemyDamage + " enemy hp:" + enemyHealth + " base dmg: " + ourBaseDamage);
     }
     // enter farming if it takes over 4 hits in D stance (16) (and exit if under.)
-    if(!getPageSetting('DisableFarm')) {
+    if (!getPageSetting('DisableFarm')) {
         shouldFarm = enemyHealth > (ourBaseDamage * customVars.farmingCutoff);
-        if(game.options.menu.repeatUntil.enabled == 1) toggleSetting('repeatUntil');    //turn repeat forever on if farming is on.
+        game.options.menu.repeatUntil.enabled = 0;
+        toggleSetting('repeatUntil');    //turn repeat forever on if farming is on.
     }
 
     //Lead specific farming calcuation section:
-    if((game.global.challengeActive == 'Lead' && !challSQ)) {
+    if ((game.global.challengeActive == 'Lead' && !challSQ)) {
         ourBaseDamage /= mapbonusmulti;
-        if (AutoStance<=1)
+        if (AutoStance <= 1)
             enemyDamage *= (1 + (game.challenges.Lead.stacks * 0.04));
         enemyHealth *= (1 + (game.challenges.Lead.stacks * 0.04));
         //if the zone is odd:   (skip the +2 calc for the last level.
-        if (game.global.world % 2 == 1 && game.global.world != 179){
-             //calculate for the next level in advance (since we only farm on odd, and evens are very tough)
+        if (game.global.world % 2 == 1 && game.global.world != 179) {
+            //calculate for the next level in advance (since we only farm on odd, and evens are very tough)
             if (AutoStance <= 1) {
                 enemyDamage = getEnemyMaxAttack(game.global.world + 1, 99, 'Snimp', 1.2);
                 enemyDamage = calcDailyAttackMod(enemyDamage); //daily mods: badStrength,badMapStrength,bloodthirst
@@ -188,7 +192,7 @@ function autoMap() {
             ourBaseDamage *= mapbonusmulti;
         }
         //let people disable this if they want.
-        if(!getPageSetting('DisableFarm')) {
+        if (!getPageSetting('DisableFarm')) {
             shouldFarm = enemyHealth > (ourBaseDamage * customVars.LeadfarmingCutoff);
         }
     }
@@ -196,24 +200,24 @@ function autoMap() {
     var pierceMod = (game.global.brokenPlanet && !game.global.mapsActive) ? getPierceAmt() : 0;
     const FORMATION_MOD_1 = game.upgrades.Dominance.done ? 2 : 1;
     //asks if we can survive x number of hits in either D stance or X stance.
-    enoughHealth = (baseHealth/FORMATION_MOD_1 > customVars.numHitsSurvived * (enemyDamage - baseBlock/FORMATION_MOD_1 > 0 ? enemyDamage - baseBlock/FORMATION_MOD_1 : enemyDamage * pierceMod));
+    enoughHealth = (baseHealth / FORMATION_MOD_1 > customVars.numHitsSurvived * (enemyDamage - baseBlock / FORMATION_MOD_1 > 0 ? enemyDamage - baseBlock / FORMATION_MOD_1 : enemyDamage * pierceMod));
     enoughDamage = (ourBaseDamage * customVars.enoughDamageCutoff > enemyHealth);
 
     //remove this in the meantime until it works for everyone.
-/*     if (!wantToScry) {
-        //enough health if we can survive 8 hits in D stance (health/2 and block/2)
-        enoughHealth = (baseHealth/2 > 8 * (enemyDamage - baseBlock/2 > 0 ? enemyDamage - baseBlock/2 : enemyDamage * pierceMod));
-        //enough damage if we can one-shot the enemy in D (ourBaseDamage*4)
-        enoughDamage = (ourBaseDamage * 4) > enemyHealth;
-        scryerStuck = false;
-    } else {
-        //enough health if we can pass all the tests in autostance2 under the best of the worst conditions.
-        //enough damage if we can one-shot the enemy in S (ourBaseDamage/2)
-        var result = autoStanceCheck(true);
-        enoughHealth = result[0];
-        enoughDamage = result[1];
-        scryerStuck = !enoughHealth;
-    } */
+    /*     if (!wantToScry) {
+            //enough health if we can survive 8 hits in D stance (health/2 and block/2)
+            enoughHealth = (baseHealth/2 > 8 * (enemyDamage - baseBlock/2 > 0 ? enemyDamage - baseBlock/2 : enemyDamage * pierceMod));
+            //enough damage if we can one-shot the enemy in D (ourBaseDamage*4)
+            enoughDamage = (ourBaseDamage * 4) > enemyHealth;
+            scryerStuck = false;
+        } else {
+            //enough health if we can pass all the tests in autostance2 under the best of the worst conditions.
+            //enough damage if we can one-shot the enemy in S (ourBaseDamage/2)
+            var result = autoStanceCheck(true);
+            enoughHealth = result[0];
+            enoughDamage = result[1];
+            scryerStuck = !enoughHealth;
+        } */
 
     //Health:Damage ratio: (status)
     HDratio = enemyHealth / ourBaseDamage;
@@ -226,7 +230,7 @@ function autoMap() {
     var shouldFarmLowerZone = false;
     shouldDoMaps = false;
     //prevents map-screen from flickering on and off during startup when base damage is 0.
-    if (ourBaseDamage > 0){
+    if (ourBaseDamage > 0) {
         shouldDoMaps = !enoughDamage || shouldFarm || scryerStuck;
     }
     //Check our graph history and - Estimate = The zone should take around this long in milliseconds.
@@ -246,24 +250,24 @@ function autoMap() {
 
     //FarmWhenNomStacks7
     var restartVoidMap = false;
-    if(game.global.challengeActive == 'Nom' && getPageSetting('FarmWhenNomStacks7')) {
+    if (game.global.challengeActive == 'Nom' && getPageSetting('FarmWhenNomStacks7')) {
         //Get maxMapBonus (10) if we go above (7) stacks on Improbability (boss)
-        if (game.global.gridArray[99].nomStacks > customVars.NomFarmStacksCutoff[0]){
+        if (game.global.gridArray[99].nomStacks > customVars.NomFarmStacksCutoff[0]) {
             if (game.global.mapBonus != customVars.maxMapBonus)
                 shouldDoMaps = true;
         }
         //Go into maps on (30) stacks on Improbability (boss), farm until we fall under (10) H:D ratio
-        if (game.global.gridArray[99].nomStacks == customVars.NomFarmStacksCutoff[1]){
+        if (game.global.gridArray[99].nomStacks == customVars.NomFarmStacksCutoff[1]) {
             shouldFarm = (HDratio > customVars.NomfarmingCutoff);
             shouldDoMaps = true;
         }
         //If we ever hit (100) nomstacks in the world, farm.
-        if(!game.global.mapsActive && game.global.gridArray[game.global.lastClearedCell + 1].nomStacks >= customVars.NomFarmStacksCutoff[2]) {
+        if (!game.global.mapsActive && game.global.gridArray[game.global.lastClearedCell + 1].nomStacks >= customVars.NomFarmStacksCutoff[2]) {
             shouldFarm = (HDratio > customVars.NomfarmingCutoff);
             shouldDoMaps = true;
         }
         //If we ever hit (100) nomstacks in a map (likely a voidmap), farm, (exit the voidmap and prevent void from running, until situation is clear)
-        if(game.global.mapsActive && game.global.mapGridArray[game.global.lastClearedMapCell + 1].nomStacks >= customVars.NomFarmStacksCutoff[2]) {
+        if (game.global.mapsActive && game.global.mapGridArray[game.global.lastClearedMapCell + 1].nomStacks >= customVars.NomFarmStacksCutoff[2]) {
             shouldFarm = (HDratio > customVars.NomfarmingCutoff);
             shouldDoMaps = true;
             restartVoidMap = true;
@@ -283,9 +287,9 @@ function autoMap() {
             prestigeitemsleft = addSpecials(true, true, lastMapWeWereIn);
         }
         //check if we have unbought+available prestiges
-        var prestigeList = ['Dagadder','Megamace','Polierarm','Axeidic','Greatersword','Harmbalest'];
+        var prestigeList = ['Dagadder', 'Megamace', 'Polierarm', 'Axeidic', 'Greatersword', 'Harmbalest'];
         var numUnbought = 0;
-        for (var i=0,len=prestigeList.length; i < len; i++) {
+        for (var i = 0, len = prestigeList.length; i < len; i++) {
             var p = prestigeList[i];
             if (game.upgrades[p].allowed - game.upgrades[p].done > 0)
                 numUnbought++;
@@ -299,14 +303,14 @@ function autoMap() {
     }
 
     //stack tox stacks if we are doing max tox, or if we need to clear our void maps
-    if(game.global.challengeActive == 'Toxicity' && game.global.lastClearedCell > 93 && game.challenges.Toxicity.stacks < 1500 && ((getPageSetting('MaxTox') && game.global.world > 59) || needToVoid)) {
+    if (game.global.challengeActive == 'Toxicity' && game.global.lastClearedCell > 93 && game.challenges.Toxicity.stacks < 1500 && ((getPageSetting('MaxTox') && game.global.world > 59) || needToVoid)) {
         shouldDoMaps = true;
         //we will get at least 85 toxstacks from the 1st voidmap (unless we have overkill)
 //            if (!game.portal.Overkill.locked && game.stats.cellsOverkilled.value)
 
         stackingTox = !(needToVoid && game.challenges.Toxicity.stacks > 1415);
         //force abandon army
-        if(!game.global.mapsActive && !game.global.preMapsActive) {
+        if (!game.global.mapsActive && !game.global.preMapsActive) {
             mapsClicked();
             mapsClicked();
         }
@@ -316,7 +320,7 @@ function autoMap() {
     //during 'watch' challenge, run maps on these levels:
     var watchmaps = customVars.watchChallengeMaps;
     var shouldDoWatchMaps = false;
-    if (game.global.challengeActive == 'Watch' && watchmaps.indexOf(game.global.world) > -1 && game.global.mapBonus < 1){
+    if (game.global.challengeActive == 'Watch' && watchmaps.indexOf(game.global.world) > -1 && game.global.mapBonus < 1) {
         shouldDoMaps = true;
         shouldDoWatchMaps = true;
     }
@@ -332,7 +336,7 @@ function autoMap() {
     // 2. blacksmithery is purchased,
     // but not when 3A. home detector is purchased, or 3B. we don't need nurseries
     if (game.buildings.Nursery.locked && game.talents.blacksmith.purchased && !(game.talents.housing.purchased ||
-            (getPageSetting('PreSpireNurseries') < 0 ?
+        (getPageSetting('PreSpireNurseries') < 0 ?
             !(getPageSetting('MaxNursery') && game.global.world >= getPageSetting('NoNurseriesUntil')) :
             !getPageSetting('PreSpireNurseries'))) && game.global.world >= customVars.NurseryMapLevel) {
         shouldDoMaps = true;
@@ -345,9 +349,11 @@ function autoMap() {
         shouldDoMaps = true;
     //Allow automaps to work with in-game Map at Zone option:
     vanillaMapatZone = (game.options.menu.mapAtZone.enabled && game.options.menu.mapAtZone.setZone == game.global.world && !isActiveSpireAT());
-    if (vanillaMapatZone)
+    if (vanillaMapatZone) {
+        game.options.menu.repeatUntil.enabled = 3;
+        toggleSetting('repeatUntil');
         shouldDoMaps = true;
-
+    }
 
     //Dynamic Siphonology section (when necessary)
     //Lower Farming Zone = Lowers the zone used during Farming mode. Starts 10 zones below current and Finds the minimum map level you can successfully one-shot
