@@ -54,6 +54,17 @@ function calcBaseDamageinX2() {
     baseHealth = getBattleStats("health");
     //stances are not needed, if you do need it, call the function with (,true)
 }
+
+//Uses getBattleStats3. Pretty much just uses in game values
+function calcBaseDamageinX3() {
+    //baseDamage
+    baseDamage = getBattleStats3("attack");
+    //baseBlock
+    baseBlock = getBattleStats3("block");
+    //baseHealth
+    baseHealth = getBattleStats3("health");
+    //stances are not needed, if you do need it, call the function with (,true)
+}
 //Autostance - function originally created by Belaith (in 1971)
 //Automatically swap formations (stances) to avoid dying
 function autoStance() {
@@ -450,7 +461,7 @@ function autoStance2() {
 
 function autoStance3() {
     //get back to a baseline of no stance (X)
-    calcBaseDamageinX();
+    calcBaseDamageinX3();
     //no need to continue
     if (game.global.gridArray.length === 0) return;
     if (game.global.soldierHealth <= 0) return; //dont calculate stances when dead, cause the "current" numbers are not updated when dead.
