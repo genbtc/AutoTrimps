@@ -64,9 +64,9 @@ var changelogList = [];
 //changelogList.push({date: " ", version: " ", description: "", isNew: true});  //TEMPLATE
 changelogList.push({date: "4/7", version: "-", description: "AutoPerks Zeker0 ratios updated for all levels.", isNew: true});
 changelogList.push({date: "4/2", version: "v2.1.6.9b", description: "Import Export, Modules Load code Improvements. Multiple Buttons/Settings Were Combined. AutoPerks code was changed but still functions the same, except for a new Fast-Allocate algorithm (now with a checkbox) that reduces the time to allocate for high helium players to near-instantaneous. Please test new algo; it might overshoot. You can also clear all perks then allocate and have it work now.  AutoMaps no longer considered as being in Lead challenge during Chall^2. ", isNew: true});
-changelogList.push({date: "3/23", version: "v2.1.6.9", description: "Game's <u>Map at Zone</u> can be used with AT now, to run maps forever. AutoMaps setting was combined with RunUniqueMaps (variable has changed from boolean false,true to a value 0,1,2). Settings file has been migrated as such. New: Map SpecialMod is sort of working, at least. Geneticist Infinity bugfix. New AGU Settings for 60% Void (fixed). Many Graphs fixes. AutoMaps changes. Equipment Cap, see README at <a target='#' href='https://github.com/genbtc/AutoTrimps/blob/gh-pages/README.md'>GitHub</a> DarkTheme fix. Scientists Fix. Zek450 Perks Preset Changed. Ongoing Development...", isNew: false});
-changelogList.push({date: "3/22", version: "v2.1.6.8", description: "Settings GUI, make better. Import/export improved. Graph buttons: Cycle Up/Down. Internal code fixes. New Graph: Nurseries", isNew: false});
-changelogList.push({date: "3/24", version: "v2.1.6.5-stable", description: "Set up <a target='#' href='https://genbtc.github.io/AutoTrimps-stable'>Stable Repository</a> for the faint of heart.", isNew: true});
+//changelogList.push({date: "3/23", version: "v2.1.6.9", description: "Game's <u>Map at Zone</u> can be used with AT now, to run maps forever. AutoMaps setting was combined with RunUniqueMaps (variable has changed from boolean false,true to a value 0,1,2). Settings file has been migrated as such. New: Map SpecialMod is sort of working, at least. Geneticist Infinity bugfix. New AGU Settings for 60% Void (fixed). Many Graphs fixes. AutoMaps changes. Equipment Cap, see README at <a target='#' href='https://github.com/genbtc/AutoTrimps/blob/gh-pages/README.md'>GitHub</a> DarkTheme fix. Scientists Fix. Zek450 Perks Preset Changed. Ongoing Development...", isNew: false});
+//changelogList.push({date: "3/22", version: "v2.1.6.8", description: "Settings GUI, make better. Import/export improved. Graph buttons: Cycle Up/Down. Internal code fixes. New Graph: Nurseries", isNew: false});
+//changelogList.push({date: "3/24", version: "v2.1.6.5-stable", description: "Set up <a target='#' href='https://genbtc.github.io/AutoTrimps-stable'>Stable Repository</a> for the faint of heart.", isNew: true});
 //changelogList.push({date: "3/20", version: "v2.1.6.7", description: "Entirely Re-Arranged Settings Layout. Enjoy! New: Display Tab: EnhanceGrid + Go AFK Mode. GUI: Pinned AT Tab menu bar to top when scrolling. Minimize/Maxi/Close Buttons. ShowChangeLog Button. New Graph: FluffyXP&Xp/Hr (starts@300)", isNew: false});
 //changelogList.push({date: "3/13", version: "v2.1.6.6", description: "Geneticist management changes. Equipment code improvements. ATscriptLoad improvements. attempt to track errors.", isNew: false});
 //changelogList.push({date: "3/7", version: "v2.1.6.5", description: "Save/Reload Profiles in Import/Export. Magmamancer graph. Magmite/Magma Spam disableable.", isNew: false});
@@ -275,11 +275,168 @@ function mainCleanup() {
 // Userscript loader. write your own!
 //Copy and paste this function named userscripts() into the JS Dev console. (F12)
 var userscriptOn = true;    //controls the looping of userscripts and can be self-disabled
-var globalvar0,globalvar1,globalvar2,globalvar3,globalvar4,globalvar5,globalvar6,globalvar7,globalvar8,globalvar9;
+var perked = false;
+var prestiged = false;
+var resetGenes = false;
 //left blank intentionally. the user will provide this. blank global vars are included as an example
 function userscripts()
 {
-    //insert code here:
+    //Windstacking stance dancing
+    if(game.global.world>=70) {
+        if (game.global.dailyChallenge.hasOwnProperty("mirrored") && game.global.world < 230) {
+            setFormation(1);
+        }
+        else if (getEmpowerment() !== "Wind" || game.global.mapsActive || game.empowerments.Wind.currentDebuffPower === 200) {
+            if (!(game.global.mapsActive && game.global.mapsOwnedArray[getMapIndex(game.global.currentMapId)].bonus === "lmc")) {
+                setFormation(2);
+            }
+            if (getEmpowerment() !== "Wind") {
+                MODULES["maps"].enoughDamageCutoff = 4;
+            }
+        }
+        else if (game.global.challengeActive === "Daily" && !game.global.spireActive) {
+            setFormation(4);
+            if (game.global.gridArray[game.global.lastClearedCell + 1].corrupted === "corruptBleed" || game.global.gridArray[game.global.lastClearedCell + 1].corrupted === "healthyBleed") {
+                setFormation(2);
+            }
+            MODULES["maps"].enoughDamageCutoff = 160;
+        }
+    }
+    //Misc Features
+    if (game.global.soldierHealth === 0 && !(game.global.spireActive || (game.global.mapsActive && getCurrentMapObject().location === "Void") || game.global.preMapsActive)) {
+        fightManual();
+        buyArmors();
+    }
+    if (game.global.antiStacks !== 45 && game.global.lastBreedTime >= 45000 && !game.global.spireActive) {
+        forceAbandonTrimps();
+    }
+    if ((needPrestige || !enoughDamage) && game.global.world>=200 && (getEmpowerment() === "Ice" || (getEmpowerment() === "Wind" && game.global.lastBreedTime >= 45000)) && !game.global.mapsActive && game.global.mapBonus !== 10 && game.global.world!==game.options.menu.mapAtZone.setZone) {
+        forceAbandonTrimps();
+    }
+    if (game.global.world === autoTrimpSettings["VoidMaps"].value && game.global.lastClearedCell >= 80 && getPageSetting('AutoMaps') === 0){
+        toggleAutoMaps();
+    }
+    if (game.global.world === 495 && !resetGenes)
+    {
+        game.global.genPaused = true;
+        numTab('6');
+        game.global.firing = true;
+        buyJob('Geneticist');
+        game.global.firing = false;
+        resetGenes = true;
+    }
+    //Raiding logic
+    if (game.global.world === game.options.menu.mapAtZone.setZone && game.options.menu.mapAtZone.enabled === 1) {
+        if (getPageSetting('AutoMaps') === 1 && game.global.mapsActive && !prestiged) {
+            toggleAutoMaps();
+            game.options.menu.repeatUntil.enabled = 2;
+            game.global.repeatMap = false;
+        }
+        else if (getPageSetting('AutoMaps') === 0 && game.global.preMapsActive && !prestiged) {
+            game.global.repeatMap = true;
+            plusPres();
+            buyMap();
+            selectMap(game.global.mapsOwnedArray[game.global.mapsOwnedArray.length - 1].id);
+            runMap();
+            prestiged = true;
+        }
+        else if (prestiged && game.global.preMapsActive) {
+            recycleMap();
+            toggleAutoMaps();
+            game.options.menu.mapAtZone.enabled = 0;
+        }
+    }
+    if (game.global.world === game.options.menu.mapAtZone.setZone + 1){
+        game.options.menu.mapAtZone.enabled = 1;
+        game.options.menu.mapAtZone.setZone = nextMapAtZone(game.options.menu.mapAtZone.setZone);
+        prestiged = false;
+    }
+
+    //Resetting values
+    if (game.global.world <= 10 && game.global.dailyChallenge.hasOwnProperty("mirrored")){
+        autoTrimpSettings["BuyWeapons"].enabled = false;
+    }
+    else if (game.global.world===230){
+        perked = false;
+        prestiged = false;
+        resetGenes = false;
+        game.options.menu.mapAtZone.setZone = 495;
+        game.options.menu.mapAtZone.enabled = 1;
+        autoTrimpSettings["BuyWeapons"].enabled = true;
+        autoTrimpSettings["AutoMaps"].value = 1;
+    }
+    //AutoAllocate Looting II
+    if (!perked && game.global.world !== 230){
+        viewPortalUpgrades();
+        game.global.lastCustomAmt = 100000;
+        numTab(5, true);
+        if (getPortalUpgradePrice("Looting_II")+game.resources.helium.totalSpentTemp <= game.resources.helium.respecMax){
+            buyPortalUpgrade('Looting_II');
+            activateClicked();
+            message("Bought 100k Looting II","Notices");
+        }
+        else{
+            perked = true;
+            cancelPortal();
+            message("Done buying Looting II","Notices");
+        }
+    }
+}
+
+function buyArmors(){
+    numTab(3);
+    buyEquipment('Boots');
+    buyEquipment('Helmet');
+    buyEquipment('Pants');
+    buyEquipment('Shoulderguards');
+    buyEquipment('Breastplate')
+    buyEquipment('Gambeson')
+}
+
+function plusPres(){
+    document.getElementById("biomeAdvMapsSelect").value = "Random";
+    document.getElementById('advExtraLevelSelect').value = plusMapToRun(game.global.world);
+    document.getElementById('advSpecialSelect').value = "p";
+    document.getElementById("lootAdvMapsRange").value = 0;
+    document.getElementById("difficultyAdvMapsRange").value = 9;
+    document.getElementById("sizeAdvMapsRange").value = 9;
+    document.getElementById('advPerfectCheckbox').checked = false;
+    updateMapCost();
+}
+
+
+function plusMapToRun(zone) {
+    var currentModifier = (zone - 235) % 15;
+    if (currentModifier === 1) {
+        if (zone % 10 === 1) {
+            return 4;
+        }
+        else if (zone % 10 === 6) {
+            return 5;
+        }
+    }
+    else if (currentModifier === 5) {
+        if (zone % 10 === 5) {
+            return 6;
+        }
+        else if (zone % 10 === 0) {
+            return 5;
+        }
+    }
+    return 0;
+}
+
+function nextMapAtZone(zone) {
+    var currentModifier = (zone - 235) % 15;
+    if (currentModifier === 1) {
+        return zone + 4;
+    }
+    else if (currentModifier === 5) {
+        return zone + 11;
+    }
+    else {
+        return -1;
+    }
 }
 
 //test.
