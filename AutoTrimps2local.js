@@ -62,14 +62,11 @@ function initializeAutoTrimps() {
 
 var changelogList = [];
 //changelogList.push({date: " ", version: " ", description: "", isNew: true});  //TEMPLATE
-changelogList.push({date: "4/7", version: "-", description: "AutoPerks Zeker0 ratios updated for all levels.", isNew: true});
-changelogList.push({date: "4/2", version: "v2.1.6.9b", description: "Import Export, Modules Load code Improvements. Multiple Buttons/Settings Were Combined. AutoPerks code was changed but still functions the same, except for a new Fast-Allocate algorithm (now with a checkbox) that reduces the time to allocate for high helium players to near-instantaneous. Please test new algo; it might overshoot. You can also clear all perks then allocate and have it work now.  AutoMaps no longer considered as being in Lead challenge during Chall^2. ", isNew: true});
+changelogList.push({date: "4/14", version: "v2.2.0", description: "AutoStance and Autofight 3 were added. TrimpScripts code were added to userscript",isNew: true});
+changelogList.push({date: "4/2", version: "v2.1.6.9b", description: "Import Export, Modules Load code Improvements. Multiple Buttons/Settings Were Combined. AutoPerks code was changed but still functions the same, except for a new Fast-Allocate algorithm (now with a checkbox) that reduces the time to allocate for high helium players to near-instantaneous. Please test new algo; it might overshoot. You can also clear all perks then allocate and have it work now.  AutoMaps no longer considered as being in Lead challenge during Chall^2.",isNew: false});
 changelogList.push({date: "3/23", version: "v2.1.6.9", description: "Game's <u>Map at Zone</u> can be used with AT now, to run maps forever. AutoMaps setting was combined with RunUniqueMaps (variable has changed from boolean false,true to a value 0,1,2). Settings file has been migrated as such. New: Map SpecialMod is sort of working, at least. Geneticist Infinity bugfix. New AGU Settings for 60% Void (fixed). Many Graphs fixes. AutoMaps changes. Equipment Cap, see README at <a target='#' href='https://github.com/genbtc/AutoTrimps/blob/gh-pages/README.md'>GitHub</a> DarkTheme fix. Scientists Fix. Zek450 Perks Preset Changed. Ongoing Development...", isNew: false});
-changelogList.push({date: "3/22", version: "v2.1.6.8", description: "Settings GUI, make better. Import/export improved. Graph buttons: Cycle Up/Down. Internal code fixes. New Graph: Nurseries", isNew: false});
-changelogList.push({date: "3/24", version: "v2.1.6.5-stable", description: "Set up <a target='#' href='https://genbtc.github.io/AutoTrimps-stable'>Stable Repository</a> for the faint of heart.", isNew: true});
-//changelogList.push({date: "3/20", version: "v2.1.6.7", description: "Entirely Re-Arranged Settings Layout. Enjoy! New: Display Tab: EnhanceGrid + Go AFK Mode. GUI: Pinned AT Tab menu bar to top when scrolling. Minimize/Maxi/Close Buttons. ShowChangeLog Button. New Graph: FluffyXP&Xp/Hr (starts@300)", isNew: false});
-//changelogList.push({date: "3/13", version: "v2.1.6.6", description: "Geneticist management changes. Equipment code improvements. ATscriptLoad improvements. attempt to track errors.", isNew: false});
-//changelogList.push({date: "3/7", version: "v2.1.6.5", description: "Save/Reload Profiles in Import/Export. Magmamancer graph. Magmite/Magma Spam disableable.", isNew: false});
+//changelogList.push({date: "3/22", version: "v2.1.6.8", description: "Settings GUI, make better. Import/export improved. Graph buttons: Cycle Up/Down. Internal code fixes. New Graph: Nurseries", isNew: false});
+//changelogList.push({date: "3/24", version: "v2.1.6.5-stable", description: "Set up <a target='#' href='https://genbtc.github.io/AutoTrimps-stable'>Stable Repository</a> for the faint of heart.", isNew: true});
 
 function assembleChangelog(date,version,description,isNew) {
     return (isNew)
@@ -85,8 +82,8 @@ function printChangelog() {
     };
     var footer =
         '<b>Ongoing Development</b> - <u>Report any bugs/problems please</u>!\
-        <br>Talk with the dev: <b>genr8_#8163</b> @ <a target="#" href="https://discord.gg/0VbWe0dxB9kIfV2C">AutoTrimps Discord Channel</a>\
-        <br>See<a target="#" href="https://github.com/genbtc/AutoTrimps/blob/gh-pages/README.md">ReadMe</a> Or check <a target="#" href="https://github.com/genBTC/AutoTrimps/commits/gh-pages" target="#">the commit history</a> (if you want).'
+        <br>Talk with this fork\'s dev: <b>Sliverz#7416</b> @ <a target="#" href="https://discord.gg/0VbWe0dxB9kIfV2C">AutoTrimps Discord Channel</a>\
+        <br>See<a target="#" href="https://github.com/genbtc/AutoTrimps/blob/gh-pages/README.md">ReadMe</a> Or check <a target="#" href="https://github.com/slivermasterz/AutoTrimps/commits/gh-pages" target="#">the commit history</a> (if you want).'
         ,   action = 'cancelTooltip()'
         ,   title = 'Script Update Notice<br>' + ATversion
         ,   acceptBtnText = "Thank you for playing AutoTrimps. Accept and Continue."
@@ -227,7 +224,8 @@ function mainLoop() {
     autoLevelEquipment();           //"Buy Armor", "Buy Armor Upgrades", "Buy Weapons", "Buy Weapons Upgrades"  (equipment.js)
     if (getPageSetting('UseScryerStance'))  useScryerStance();  //"Use Scryer Stance"   (scryer.js)
     else if (getPageSetting('AutoStance')<=1) autoStance();     //"Auto Stance"       (autostance.js)
-    else if (getPageSetting('AutoStance')==2) autoStance2();    //"Auto Stance #2"         (")
+    else if (getPageSetting('AutoStance')===2) autoStance2();    //"Auto Stance #2"         (")
+    else if (getPageSetting('AutoStance')===3) autoStance3();   //"Auto Stance #3"         (")
     if (getPageSetting('UseAutoGen')) autoGenerator();          //"Auto Generator ON" (magmite.js)
     ATselectAutoFight();  //  pick the right version of Fight/AutoFight/BetterAutoFight/BAF2 (fight.js)
     var forcePrecZ = (getPageSetting('ForcePresZ')<0) || (game.global.world<getPageSetting('ForcePresZ'));
@@ -275,44 +273,13 @@ function mainCleanup() {
 // Userscript loader. write your own!
 //Copy and paste this function named userscripts() into the JS Dev console. (F12)
 var userscriptOn = true;    //controls the looping of userscripts and can be self-disabled
-var perked = false;
+var perked = true;
 var prestiged = false;
 var resetGenes = false;
 //left blank intentionally. the user will provide this. blank global vars are included as an example
 function userscripts()
 {
-    //Windstacking stance dancing
-    if(game.global.world>=70) {
-        if (game.global.dailyChallenge.hasOwnProperty("mirrored") && game.global.world < 230) {
-            setFormation(1);
-        }
-        else if (getEmpowerment() !== "Wind" || game.global.mapsActive || game.empowerments.Wind.currentDebuffPower === 200) {
-            if (!(game.global.mapsActive && game.global.mapsOwnedArray[getMapIndex(game.global.currentMapId)].bonus === "lmc")) {
-                setFormation(2);
-            }
-            if (getEmpowerment() !== "Wind") {
-                MODULES["maps"].enoughDamageCutoff = 4;
-            }
-        }
-        else if (game.global.challengeActive === "Daily" && !game.global.spireActive) {
-            setFormation(4);
-            if (game.global.gridArray[game.global.lastClearedCell + 1].corrupted === "corruptBleed" || game.global.gridArray[game.global.lastClearedCell + 1].corrupted === "healthyBleed") {
-                setFormation(2);
-            }
-            MODULES["maps"].enoughDamageCutoff = 160;
-        }
-    }
     //Misc Features
-    if (game.global.soldierHealth === 0 && !(game.global.spireActive || (game.global.mapsActive && getCurrentMapObject().location === "Void") || game.global.preMapsActive)) {
-        fightManual();
-        buyArmors();
-    }
-    if (game.global.antiStacks !== 45 && game.global.lastBreedTime >= 45000 && !game.global.spireActive) {
-        forceAbandonTrimps();
-    }
-    if ((needPrestige || !enoughDamage) && game.global.world>=200 && (getEmpowerment() === "Ice" || (getEmpowerment() === "Wind" && game.global.lastBreedTime >= 45000)) && !game.global.mapsActive && game.global.mapBonus !== 10 && game.global.world!==game.options.menu.mapAtZone.setZone) {
-        forceAbandonTrimps();
-    }
     if (game.global.world === autoTrimpSettings["VoidMaps"].value && game.global.lastClearedCell >= 80 && getPageSetting('AutoMaps') === 0){
         toggleAutoMaps();
     }
@@ -383,15 +350,6 @@ function userscripts()
     }
 }
 
-function buyArmors(){
-    numTab(3);
-    buyEquipment('Boots');
-    buyEquipment('Helmet');
-    buyEquipment('Pants');
-    buyEquipment('Shoulderguards');
-    buyEquipment('Breastplate')
-    buyEquipment('Gambeson')
-}
 
 function plusPres(){
     document.getElementById("biomeAdvMapsSelect").value = "Random";
