@@ -178,6 +178,7 @@ function initializeAllTabs() {
     createTabs("Jobs", "Jobs - Worker Settings");
     createTabs("Gear", "Gear - Equipment Settings");
     createTabs("Maps", "Maps - AutoMaps & VoidMaps Settings");
+    createTabs("Raid", "Raid - Control for all equipment grabbing in future zones")
     createTabs("Combat", "Combat & Stance Settings");
     createTabs("Scryer", "Scryer Settings");
     createTabs("Magma", "Dimensional Generator & Magmite Settings");
@@ -370,8 +371,9 @@ function initializeAllSettings() {
     createSetting('TrimpleZ', 'Trimple Z', 'I don\'t really think doing this automatically is a good idea. You might want to farm for a bit before this, but I\'m not sure if it\'s meaningful at all to make a \'farm X minutes before trimple\' parameter to go along with it. Set it to the zone you want and it will run Trimple of Doom for Ancient Treasure AFTER farming and getting map stacks. If it is a negative number, this will be disabled after a successful run so you can set it differently next time.', 'valueNegative', 0, null, 'Maps');
     createSetting('AdvMapSpecialModifier', 'Map Special Modifier', '<b>EXPERIMENTAL.</b> Attempt to select the BEST map special attacks mod. With this on, this will replace the normal behavior. If bugs, please report as this will become more default soon.', 'boolean', false, null, 'Maps');
 
-
-
+//Raiding
+    createSetting('Raiding','Raiding Toggle', 'Collection of Raiding Scripts Experimental' , 'boolean', true, null ,'Raid' );
+    createSetting('PrestigeRaiding', 'Raid Prestigious Maps', 'Runs the best prestigious maps for optimal speed in a run. Best used for filler runs', 'boolean', false, null, 'Raid');
 
 //Combat
     //Subsection1Line1

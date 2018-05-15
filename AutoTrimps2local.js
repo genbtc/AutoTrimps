@@ -53,7 +53,7 @@ function initializeAutoTrimps() {
     ATscriptLoad('','SettingsGUI');   //populate Settings GUI
     ATscriptLoad('','Graphs');        //populate Graphs
     //Load modules:
-    ATmoduleList = ['query', 'portal', 'upgrades', 'heirlooms', 'buildings', 'jobs', 'equipment', 'gather', 'stance', 'battlecalc', 'maps', 'breedtimer', 'dynprestige', 'fight', 'scryer', 'magmite', 'other', 'import-export', 'client-server', 'perks', /* 'perky', */ 'fight-info', 'performance'];
+    ATmoduleList = ['query', 'portal', 'upgrades', 'heirlooms', 'buildings', 'jobs', 'equipment', 'gather', 'stance', 'battlecalc', 'maps', 'breedtimer', 'dynprestige', 'fight', 'scryer', 'magmite', 'other', 'import-export', 'client-server', 'perks', /* 'perky', */ 'fight-info', 'performance', 'raiding'];
     for (var m in ATmoduleList) {
         ATscriptLoad(modulepath, ATmoduleList[m]);
     }
@@ -62,6 +62,7 @@ function initializeAutoTrimps() {
 }
 
 var changelogList = [];
+
 //changelogList.push({date: " ", version: " ", description: "", isNew: true});  //TEMPLATE
 changelogList.push({date: "4/14", version: "v2.2.0", description: "AutoStance and Autofight 3 were added. TrimpScripts code were added to userscript",isNew: true});
 changelogList.push({date: "4/2", version: "v2.1.6.9b", description: "Import Export, Modules Load code Improvements. Multiple Buttons/Settings Were Combined. AutoPerks code was changed but still functions the same, except for a new Fast-Allocate algorithm (now with a checkbox) that reduces the time to allocate for high helium players to near-instantaneous. Please test new algo; it might overshoot. You can also clear all perks then allocate and have it work now.  AutoMaps no longer considered as being in Lead challenge during Chall^2.",isNew: false});
@@ -100,7 +101,7 @@ function printLowerLevelPlayerNotice() {
 
 //Magic Numbers
 var runInterval = 100;      //How often to loop through logic
-var startupDelay = 2500;    //How long to wait for everything to load
+var startupDelay = 1000;    //How long to wait for everything to load
 
 //Start Loops
 setTimeout(delayStart, startupDelay);
@@ -217,6 +218,7 @@ function mainLoop() {
     if (getPageSetting('ManualGather2')<=2) manualLabor();  //"Auto Gather/Build"       (gather.js)
     else if (getPageSetting('ManualGather2')==3) manualLabor2();  //"Auto Gather/Build #2"  (")
     getPageSetting('AutoMaps') > 0 ? autoMap() : updateAutoMapsStatus(); //"Auto Maps"      (automaps.js)
+    if (getPageSetting('Raiding') > 0) raiding();
     if (getPageSetting('GeneticistTimer') >= 0) autoBreedTimer(); //"Geneticist Timer" / "Auto Breed Timer"     (autobreedtimer.js)
     if (autoTrimpSettings.AutoPortal.selected != "Off") autoPortal();   //"Auto Portal" (hidden until level 40) (portal.js)
     if (getPageSetting('TrapTrimps') && game.global.trapBuildAllowed && game.global.trapBuildToggled == false) toggleAutoTrap(); //"Trap Trimps"
@@ -275,7 +277,6 @@ function mainCleanup() {
 //Copy and paste this function named userscripts() into the JS Dev console. (F12)
 var userscriptOn = true;    //controls the looping of userscripts and can be self-disabled
 var perked = true;
-var prestiged = false;
 var resetGenes = false;
 //left blank intentionally. the user will provide this. blank global vars are included as an example
 function userscripts()
@@ -293,32 +294,6 @@ function userscripts()
         game.global.firing = false;
         resetGenes = true;
     }
-    //Raiding logic
-    if (game.global.world === game.options.menu.mapAtZone.setZone && game.options.menu.mapAtZone.enabled === 1) {
-        if (getPageSetting('AutoMaps') === 1 && game.global.mapsActive && !prestiged) {
-            toggleAutoMaps();
-            game.options.menu.repeatUntil.enabled = 2;
-            game.global.repeatMap = false;
-        }
-        else if (getPageSetting('AutoMaps') === 0 && game.global.preMapsActive && !prestiged) {
-            game.global.repeatMap = true;
-            plusPres();
-            buyMap();
-            selectMap(game.global.mapsOwnedArray[game.global.mapsOwnedArray.length - 1].id);
-            runMap();
-            prestiged = true;
-        }
-        else if (prestiged && game.global.preMapsActive) {
-            recycleMap();
-            toggleAutoMaps();
-            game.options.menu.mapAtZone.enabled = 0;
-        }
-    }
-    if (game.global.world === game.options.menu.mapAtZone.setZone + 1){
-        game.options.menu.mapAtZone.enabled = 1;
-        game.options.menu.mapAtZone.setZone = nextMapAtZone(game.options.menu.mapAtZone.setZone);
-        prestiged = false;
-    }
 
     //Resetting values
     if (game.global.world <= 10 && game.global.dailyChallenge.hasOwnProperty("mirrored")){
@@ -326,10 +301,7 @@ function userscripts()
     }
     else if (game.global.world===230){
         perked = false;
-        prestiged = false;
         resetGenes = false;
-        game.options.menu.mapAtZone.setZone = 495;
-        game.options.menu.mapAtZone.enabled = 1;
         autoTrimpSettings["BuyWeapons"].enabled = true;
         autoTrimpSettings["AutoMaps"].value = 1;
     }
@@ -351,52 +323,6 @@ function userscripts()
     }
 }
 
-
-function plusPres(){
-    document.getElementById("biomeAdvMapsSelect").value = "Random";
-    document.getElementById('advExtraLevelSelect').value = plusMapToRun(game.global.world);
-    document.getElementById('advSpecialSelect').value = "p";
-    document.getElementById("lootAdvMapsRange").value = 0;
-    document.getElementById("difficultyAdvMapsRange").value = 9;
-    document.getElementById("sizeAdvMapsRange").value = 9;
-    document.getElementById('advPerfectCheckbox').checked = false;
-    updateMapCost();
-}
-
-
-function plusMapToRun(zone) {
-    var currentModifier = (zone - 235) % 15;
-    if (currentModifier === 1) {
-        if (zone % 10 === 1) {
-            return 4;
-        }
-        else if (zone % 10 === 6) {
-            return 5;
-        }
-    }
-    else if (currentModifier === 5) {
-        if (zone % 10 === 5) {
-            return 6;
-        }
-        else if (zone % 10 === 0) {
-            return 5;
-        }
-    }
-    return 0;
-}
-
-function nextMapAtZone(zone) {
-    var currentModifier = (zone - 235) % 15;
-    if (currentModifier === 1) {
-        return zone + 4;
-    }
-    else if (currentModifier === 5) {
-        return zone + 11;
-    }
-    else {
-        return -1;
-    }
-}
 
 //test.
 function throwErrorfromMain() {
