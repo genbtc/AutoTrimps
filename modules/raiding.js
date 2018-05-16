@@ -23,7 +23,7 @@ function raiding() {
         }
     }
 
-    if (game.global.world <= getPageSetting("RaidingStartZone")) {
+    if (game.global.world < getPageSetting("RaidingStartZone")) {
         mapAtZone = nextMapAtZone(getPageSetting("RaidingStartZone") - 1);
     }
     else if (game.global.world + 15 < mapAtZone || mapAtZone < game.global.world)
@@ -36,16 +36,20 @@ function prestigeRaiding() {
     if (game.global.world === mapAtZone) {
         if (getPageSetting('AutoMaps') === 1 && !prestiged) {
             game.options.menu.mapAtZone.enabled = 0;
-            forceAbandonTrimps();
             autoTrimpSettings["AutoMaps"].value = 0;
+            if (!game.global.switchToMaps) {
+                mapsClicked();
+            }
+            mapsClicked();
             game.options.menu.repeatUntil.enabled = 2;
             game.global.repeatMap = true;
         }
         else if (getPageSetting('AutoMaps') === 0 && game.global.preMapsActive && !prestiged) {
             getPageSetting("PrestigeRaiding") === 0 ? plusPres() : bestGear();
-            buyMap();
-            selectMap(game.global.mapsOwnedArray[game.global.mapsOwnedArray.length - 1].id);
-            runMap();
+            if (buyMap() > 0) {
+                selectMap(game.global.mapsOwnedArray[game.global.mapsOwnedArray.length - 1].id);
+                runMap();
+            }
             prestiged = true;
         }
         else if (prestiged && game.global.preMapsActive) {
@@ -60,7 +64,7 @@ function prestigeRaiding() {
 
 
 //Helper Scripts
-function plusPres(){
+function plusPres() {
     document.getElementById("biomeAdvMapsSelect").value = "Random";
     document.getElementById('advExtraLevelSelect').value = plusMapToRun(game.global.world);
     document.getElementById('advSpecialSelect').value = "p";
@@ -68,7 +72,9 @@ function plusPres(){
     document.getElementById("difficultyAdvMapsRange").value = 9;
     document.getElementById("sizeAdvMapsRange").value = 9;
     document.getElementById('advPerfectCheckbox').checked = false;
-    updateMapCost();
+    if (updateMapCost(true) > game.resources.fragments.owned) {
+        document.getElementById('advSpecialSelect').value = 0;
+    }
 }
 
 function bestGear() {
@@ -113,11 +119,14 @@ function plusMapToRun(zone) {
 
 function nextMapAtZone(zone) {
     var currentModifier = (zone - 235) % 15;
-    if (currentModifier < 5) {
-        return 5 - currentModifier + zone;
+    if (currentModifier === 0) {
+        return 1 + zone;
+    }
+    else if (currentModifier >= 5) {
+        return 16 - currentModifier + zone;
     }
     else {
-        return 16 - currentModifier + zone;
+        return 5 - currentModifier + zone;
     }
 }
 
