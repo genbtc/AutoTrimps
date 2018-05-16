@@ -103,6 +103,13 @@ function betterAutoFight3()
     if (game.global.gridArray.length === 0 || game.global.preMapsActive || !game.upgrades.Battle.done) return; //sanity check. stops error message on z1 right after portal
 
     if (game.global.soldierHealth === 0 && !(game.global.spireActive || (game.global.mapsActive && getCurrentMapObject().location === "Void") || game.global.preMapsActive)) {
+        if (game.global.antiStacks <= 1) {
+            game.global.firing = true;
+            game.global.lastCustomAmt = 300;
+            numTab(5, true);
+            buyJob('Geneticist', true, true);
+            game.global.firing = false;
+        }
         fightManual();
         buyArmors(); //temp fix for AT not buying armor
     }
