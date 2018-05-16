@@ -75,6 +75,7 @@ function plusPres() {
     if (updateMapCost(true) > game.resources.fragments.owned) {
         document.getElementById('advSpecialSelect').value = 0;
     }
+    updateMapCost();
 }
 
 function bestGear() {
@@ -93,6 +94,7 @@ function bestGear() {
     {
         document.getElementById('advExtraLevelSelect').value--;
     }
+    updateMapCost();
 }
 
 
