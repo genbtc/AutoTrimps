@@ -286,15 +286,6 @@ function userscripts()
     if (game.global.world === autoTrimpSettings["VoidMaps"].value && game.global.lastClearedCell >= 80 && getPageSetting('AutoMaps') === 0){
         toggleAutoMaps();
     }
-    if (game.global.world === 495 && !resetGenes)
-    {
-        game.global.genPaused = true;
-        numTab('6');
-        game.global.firing = true;
-        buyJob('Geneticist');
-        game.global.firing = false;
-        resetGenes = true;
-    }
 
     //Resetting values
     if (game.global.world <= 10 && game.global.dailyChallenge.hasOwnProperty("mirrored")){
