@@ -35,6 +35,12 @@ function prestigeRaiding() {
         game.options.menu.mapAtZone.setZone = nextMapAtZone(game.options.menu.mapAtZone.setZone);
         prestiged = false;
     }
+
+    if (game.global.world === 230)
+    {
+        game.options.menu.mapAtZone.enabled = 1;
+        game.options.menu.mapAtZone.setZone = 495;
+    }
 }
 
 
