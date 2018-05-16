@@ -104,14 +104,13 @@ function betterAutoFight3()
 
     if (game.global.soldierHealth === 0 && !(game.global.spireActive || (game.global.mapsActive && getCurrentMapObject().location === "Void") || game.global.preMapsActive)) {
         if (game.global.antiStacks <= 1) {
-            game.global.firing = true;
-            game.global.lastCustomAmt = 300;
-            numTab(5, true);
-            buyJob('Geneticist', true, true);
-            game.global.firing = false;
+            game.global.GeneticistassistSetting = 1;
         }
         fightManual();
         buyArmors(); //temp fix for AT not buying armor
+    }
+    else {
+        game.global.GeneticistassistSetting = 45;
     }
     if (game.global.antiStacks !== 45 && game.global.lastBreedTime >= 45000 && !game.global.spireActive) {
         forceAbandonTrimps();
