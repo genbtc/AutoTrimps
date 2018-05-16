@@ -2,39 +2,40 @@
 
 //Global Variables
 var prestiged = false;
-var originalVMZone = -1;
-var originalExitSpireCell = -1;
 var mapAtZone = nextMapAtZone(game.global.world - 1);
+var gameMapAtZoneEnabled = game.options.menu.mapAtZone.enabled;
 
 //Called by AT.
 function raiding() {
 
-    if (getPageSetting("RaidingStartZone") !== -1 && game.global.world >= getPageSetting("RaidingStartZone") && game.global.world + 15 < mapAtZone) {
-        mapAtZone = nextMapAtZone(game.global.world - 1);
-    }
     prestigeRaiding();
 
     if (getPageSetting("AutomateAT")) {
-        originalVMZone = originalVMZone === -1 ? autoTrimpSettings["VoidMaps"].value : originalVMZone;
-        originalExitSpireCell = originalExitSpireCell === -1 ? autoTrimpSettings["ExitSpireCell"].value : originalExitSpireCell;
         if (game.global.challengeActive === "Daily") {
-            autoTrimpSettings["VoidMaps"].value = getPageSetting("DailyVMZone") > 0 ? getPageSetting("DailyVMZone") : originalVMZone;
+            autoTrimpSettings["VoidMaps"].value = getPageSetting("DailyVMZone") > 0 ? getPageSetting("DailyVMZone") : autoTrimpSettings["VoidMaps"].value;
             autoTrimpSettings["ExitSpireCell"].value = 100;
+            gameMapAtZoneEnabled = 1;
         }
         else if (game.global.challengeActive === "") {
-            autoTrimpSettings["VoidMaps"].value = getPageSetting("FillerVMZone") > 0 ? getPageSetting("FillerVMZone") : originalVMZone;
-            autoTrimpSettings["ExitSpireCell"].value = getPageSetting("FillerSpireCell") > 0 ? getPageSetting("FillerSpireCell") : originalExitSpireCell;
+            autoTrimpSettings["VoidMaps"].value = getPageSetting("FillerVMZone") > 0 ? getPageSetting("FillerVMZone") : autoTrimpSettings["VoidMaps"].value;
+            autoTrimpSettings["ExitSpireCell"].value = getPageSetting("FillerSpireCell") > 0 ? getPageSetting("FillerSpireCell") : autoTrimpSettings["ExitSpireCell"].value;
+            gameMapAtZoneEnabled = 0;
         }
     }
-    else {
-        autoTrimpSettings["VoidMaps"].value = originalVMZone;
-        autoTrimpSettings["ExitSpireCell"].value = originalExitSpireCell;
+
+    if (game.global.world <= getPageSetting("RaidingStartZone")) {
+        mapAtZone = nextMapAtZone(getPageSetting("RaidingStartZone") - 1);
+    }
+    else if (game.global.world + 15 < mapAtZone || mapAtZone < game.global.world)
+    {
+        mapAtZone = nextMapAtZone(game.global.world - 1);
     }
 }
 
 function prestigeRaiding() {
     if (game.global.world === mapAtZone) {
         if (getPageSetting('AutoMaps') === 1 && !prestiged) {
+            game.options.menu.mapAtZone.enabled = 0;
             forceAbandonTrimps();
             autoTrimpSettings["AutoMaps"].value = 0;
             game.options.menu.repeatUntil.enabled = 2;
@@ -49,6 +50,7 @@ function prestigeRaiding() {
         }
         else if (prestiged && game.global.preMapsActive) {
             recycleMap();
+            game.options.menu.mapAtZone.enabled = gameMapAtZoneEnabled ? 1 : 0;
             autoTrimpSettings["AutoMaps"].value = 1;
             mapAtZone = nextMapAtZone(mapAtZone);
             prestiged = false;
