@@ -1,23 +1,46 @@
 
+
 //Global Variables
 var prestiged = false;
+var originalVMZone = -1;
+var originalExitSpireCell = -1;
+var mapAtZone = nextMapAtZone(game.global.world - 1);
 
 //Called by AT.
 function raiding() {
-    if (getPageSetting("PrestigeRaiding")) {
-        prestigeRaiding();
+
+    if (getPageSetting("RaidingStartZone") !== -1 && game.global.world >= getPageSetting("RaidingStartZone") && game.global.world + 15 < mapAtZone) {
+        mapAtZone = nextMapAtZone(game.global.world - 1);
+    }
+    prestigeRaiding();
+
+    if (getPageSetting("AutomateAT")) {
+        originalVMZone = originalVMZone === -1 ? autoTrimpSettings["VoidMaps"].value : originalVMZone;
+        originalExitSpireCell = originalExitSpireCell === -1 ? autoTrimpSettings["ExitSpireCell"].value : originalExitSpireCell;
+        if (game.global.challengeActive === "Daily") {
+            autoTrimpSettings["VoidMaps"].value = getPageSetting("DailyVMZone") > 0 ? getPageSetting("DailyVMZone") : originalVMZone;
+            autoTrimpSettings["ExitSpireCell"].value = 100;
+        }
+        else if (game.global.challengeActive === "") {
+            autoTrimpSettings["VoidMaps"].value = getPageSetting("FillerVMZone") > 0 ? getPageSetting("FillerVMZone") : originalVMZone;
+            autoTrimpSettings["ExitSpireCell"].value = getPageSetting("FillerSpireCell") > 0 ? getPageSetting("FillerSpireCell") : originalExitSpireCell;
+        }
+    }
+    else {
+        autoTrimpSettings["VoidMaps"].value = originalVMZone;
+        autoTrimpSettings["ExitSpireCell"].value = originalExitSpireCell;
     }
 }
 
 function prestigeRaiding() {
-    if (game.global.world === game.options.menu.mapAtZone.setZone && game.options.menu.mapAtZone.enabled === 1) {
-        if (getPageSetting('AutoMaps') === 1 && game.global.mapsActive && !prestiged) {
-            toggleAutoMaps();
+    if (game.global.world === mapAtZone) {
+        if (getPageSetting('AutoMaps') === 1 && !prestiged) {
+            forceAbandonTrimps();
+            autoTrimpSettings["AutoMaps"].value = 0;
             game.options.menu.repeatUntil.enabled = 2;
-            game.global.repeatMap = false;
+            game.global.repeatMap = true;
         }
         else if (getPageSetting('AutoMaps') === 0 && game.global.preMapsActive && !prestiged) {
-            game.global.repeatMap = true;
             plusPres();
             buyMap();
             selectMap(game.global.mapsOwnedArray[game.global.mapsOwnedArray.length - 1].id);
@@ -26,20 +49,10 @@ function prestigeRaiding() {
         }
         else if (prestiged && game.global.preMapsActive) {
             recycleMap();
-            toggleAutoMaps();
-            game.options.menu.mapAtZone.enabled = 0;
+            autoTrimpSettings["AutoMaps"].value = 1;
+            mapAtZone = nextMapAtZone(mapAtZone);
+            prestiged = false;
         }
-    }
-    if (game.global.world === game.options.menu.mapAtZone.setZone + 1) {
-        game.options.menu.mapAtZone.enabled = 1;
-        game.options.menu.mapAtZone.setZone = nextMapAtZone(game.options.menu.mapAtZone.setZone);
-        prestiged = false;
-    }
-
-    if (game.global.world === 230)
-    {
-        game.options.menu.mapAtZone.enabled = 1;
-        game.options.menu.mapAtZone.setZone = 495;
     }
 }
 
@@ -94,14 +107,11 @@ function plusMapToRun(zone) {
 
 function nextMapAtZone(zone) {
     var currentModifier = (zone - 235) % 15;
-    if (currentModifier === 1) {
-        return zone + 4;
-    }
-    else if (currentModifier === 5) {
-        return zone + 11;
+    if (currentModifier < 5) {
+        return 5 - currentModifier + zone;
     }
     else {
-        return -1;
+        return 16 - currentModifier + zone;
     }
 }
 

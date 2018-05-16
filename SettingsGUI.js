@@ -373,7 +373,12 @@ function initializeAllSettings() {
 
 //Raiding
     createSetting('Raiding','Raiding Toggle', 'Collection of Raiding Scripts Experimental' , 'boolean', true, null ,'Raid' );
-    createSetting('PrestigeRaiding', 'Raid Prestigious Maps', 'Runs the best prestigious maps for optimal speed in a run. Best used for filler runs', 'boolean', false, null, 'Raid');
+    createSetting('RaidingStartZone' , 'Raiding Start Zone' , 'Zone for all raiding scripts to start grabbing equips', 'value', -1, null, 'Raid');
+    createSetting('PrestigeRaiding', ['Raid Prestigious Maps','Raid Best Gear Maps'], 'Runs the best prestigious maps for optimal speed in a run. Best used for filler runs', 'multitoggle', 0, null, 'Raid');
+    createSetting('AutomateAT' , 'Daily/Filler Automaton', 'Turns on code that automatically changes AT settings between daily and filler runs', 'boolean', false, null, 'Raid');
+    createSetting('DailyVMZone' , 'Daily Void Maps Zone', 'Zone to run void maps for dailies if Daily/Filler Automation is on','value' ,-1,null,'Raid');
+    createSetting('FillerVMZone' , 'Filler Void Maps Zone', 'Zone to run void maps for fillers if Daily/Filler Automation is on','value' ,-1,null,'Raid');
+    createSetting('FillerSpireCell' , 'Filler Exit Spire Cell','Enter Cell to quit spire at zone for fillers, dailies will be full clear. Set to -1 to use default Exit Spire at Cell settings','value',-1,null,'Raid');
 
 //Combat
     //Subsection1Line1

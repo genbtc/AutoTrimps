@@ -305,15 +305,6 @@ function userscripts()
         resetGenes = false;
         autoTrimpSettings["BuyWeapons"].enabled = true;
         autoTrimpSettings["AutoMaps"].value = 1;
-        if (game.global.challengeActive === "Daily") {
-            autoTrimpSettings["VoidMaps"].value = 525;
-            autoTrimpSettings["ExitSpireCell"].value = 100;
-        }
-        else {
-            autoTrimpSettings["VoidMaps"].value = 510;
-            autoTrimpSettings["ExitSpireCell"].value = 40;
-            autoTrimpSettings["AutoStartDaily"].enabled = false;
-        }
     }
     //AutoAllocate Looting II
     if (!perked && game.global.world !== 230){
