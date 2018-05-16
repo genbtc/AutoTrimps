@@ -300,11 +300,20 @@ function userscripts()
     if (game.global.world <= 10 && game.global.dailyChallenge.hasOwnProperty("mirrored")){
         autoTrimpSettings["BuyWeapons"].enabled = false;
     }
-    else if (game.global.world===230){
+    else if (game.global.world===230) {
         perked = false;
         resetGenes = false;
         autoTrimpSettings["BuyWeapons"].enabled = true;
         autoTrimpSettings["AutoMaps"].value = 1;
+        if (game.global.challengeActive === "Daily") {
+            autoTrimpSettings["VoidMaps"].value = 525;
+            autoTrimpSettings["ExitSpireCell"].value = 100;
+        }
+        else {
+            autoTrimpSettings["VoidMaps"].value = 510;
+            autoTrimpSettings["ExitSpireCell"].value = 40;
+            autoTrimpSettings["AutoStartDaily"].enabled = false;
+        }
     }
     //AutoAllocate Looting II
     if (!perked && game.global.world !== 230){
