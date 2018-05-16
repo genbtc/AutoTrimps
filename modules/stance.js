@@ -563,6 +563,7 @@ function autoStance3() {
     if (game.global.soldierHealth <= 0) return; //dont calculate stances when dead, cause the "current" numbers are not updated when dead.
     if (!getPageSetting('AutoStance')) return;
     if (!game.upgrades.Formations.done) return;
+    if (game.global.world <= 70) return;
 
     if (game.global.dailyChallenge.hasOwnProperty("mirrored") && game.global.world < 230) {
         setFormation(1);

@@ -42,7 +42,7 @@ function prestigeRaiding() {
             game.global.repeatMap = true;
         }
         else if (getPageSetting('AutoMaps') === 0 && game.global.preMapsActive && !prestiged) {
-            plusPres();
+            getPageSetting("PrestigeRaiding") === 0 ? plusPres() : bestGear();
             buyMap();
             selectMap(game.global.mapsOwnedArray[game.global.mapsOwnedArray.length - 1].id);
             runMap();
@@ -73,12 +73,16 @@ function plusPres(){
 
 function bestGear() {
     document.getElementById("biomeAdvMapsSelect").value = "Random";
-    document.getElementById('advSpecialSelect').value = 0;
+    document.getElementById('advSpecialSelect').value = "p";
     document.getElementById("lootAdvMapsRange").value = 0;
     document.getElementById("difficultyAdvMapsRange").value = 0;
     document.getElementById("sizeAdvMapsRange").value = 9;
     document.getElementById('advPerfectCheckbox').checked = false;
-    document.getElementById('advExtraLevelSelect').value = 10;
+    document.getElementById('advExtraLevelSelect').value = game.global.world%10<5 ? 5 - game.global.world%10 :10;
+    if (updateMapCost(true) > game.resources.fragments.owned)
+    {
+        document.getElementById('advSpecialSelect').value = 0;
+    }
     while (updateMapCost(true) > game.resources.fragments.owned)
     {
         document.getElementById('advExtraLevelSelect').value--;
