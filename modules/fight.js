@@ -112,7 +112,6 @@ function betterAutoFight3()
     }
     else {
         game.global.GeneticistassistSetting = 45;
-        game.options.menu.gaFire.enabled = game.global.world >= 495 ? 2:1;
     }
     if (game.global.antiStacks !== 45 && game.global.lastBreedTime >= 45000 && !game.global.spireActive) {
         forceAbandonTrimps();

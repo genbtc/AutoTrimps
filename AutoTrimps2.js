@@ -287,7 +287,7 @@ function userscripts()
         toggleAutoMaps();
     }
 
-    if (game.global.world === 495)
+    if (game.global.world === 491)
     {
         game.global.genPaused = true;
     }

@@ -379,6 +379,8 @@ function initializeAllSettings() {
     createSetting('DailyVMZone' , 'Daily Void Maps Zone', 'Zone to run void maps for dailies if Daily/Filler Automation is on','value' ,-1,null,'Raid');
     createSetting('FillerVMZone' , 'Filler Void Maps Zone', 'Zone to run void maps for fillers if Daily/Filler Automation is on','value' ,-1,null,'Raid');
     createSetting('FillerSpireCell' , 'Filler Exit Spire Cell','Enter Cell to quit spire at zone for fillers, dailies will be full clear. Set to -1 to use default Exit Spire at Cell settings','value',-1,null,'Raid');
+    createSetting("WindStack","Wind Stack Dailies","Toggle wind stacking during dailies", "boolean", true,null,"Raid");
+    createSetting("WindStackCutOff","Wind Damage Cutoff", "Advanced Settings", "value", 160,null, "Raid");
 
 //Combat
     //Subsection1Line1

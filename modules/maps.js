@@ -27,7 +27,6 @@ MODULES["maps"].SkipNumUnboughtPrestiges = 2;   //exceeding this number of unbou
 MODULES["maps"].UnearnedPrestigesRequired = 2;
 MODULES["maps"].maxMapBonusAfterZ = MODULES["maps"].maxMapBonus;   //Max Map Bonus After Zone uses this many stacks
                                                                  //- init as default value (10). user can set if they want.
-MODULES["maps"].windEnoughDamageCutoff = 160;
 
 //Initialize Global Vars (dont mess with these ones, nothing good can come from it).
 var stackingTox = false;

@@ -576,11 +576,11 @@ function autoStance3() {
             MODULES["maps"].enoughDamageCutoff = 4;
         }
     }
-    else if (game.global.challengeActive === "Daily" && !game.global.spireActive) {
+    else if (game.global.challengeActive === "Daily" && !game.global.spireActive && getPageSetting("WindStack")) {
         setFormation(4);
         if (game.global.gridArray[game.global.lastClearedCell + 1].corrupted === "corruptBleed" || game.global.gridArray[game.global.lastClearedCell + 1].corrupted === "healthyBleed") {
             setFormation(2);
         }
-        MODULES["maps"].enoughDamageCutoff = MODULES["maps"].windEnoughDamageCutoff;
+        MODULES["maps"].enoughDamageCutoff = getPageSetting("WindStackCutOff");
     }
 }
