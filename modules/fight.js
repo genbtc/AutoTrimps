@@ -102,16 +102,18 @@ function betterAutoFight3()
         pauseFight();
     if (game.global.gridArray.length === 0 || game.global.preMapsActive || !game.upgrades.Battle.done) return; //sanity check. stops error message on z1 right after portal
 
-    if (game.global.soldierHealth === 0 && !(game.global.spireActive || (game.global.mapsActive && getCurrentMapObject().location === "Void") || game.global.preMapsActive)) {
-        if (game.global.antiStacks <= 1) {
-            game.global.GeneticistassistSetting = 1;
-            game.options.menu.gaFire.enabled = 1;
+    if (getPageSetting("ManageBreedtimer") === true) {
+        if (game.global.soldierHealth === 0 && !(game.global.spireActive || (game.global.mapsActive && getCurrentMapObject().location === "Void") || game.global.preMapsActive)) {
+            if (game.global.antiStacks <= 1) {
+                game.global.GeneticistassistSetting = 1;
+                game.options.menu.gaFire.enabled = 1;
+            }
+            fightManual();
+            buyArmors(); //temp fix for AT not buying armor
         }
-        fightManual();
-        buyArmors(); //temp fix for AT not buying armor
-    }
-    else {
-        game.global.GeneticistassistSetting = 45;
+        else {
+            game.global.GeneticistassistSetting = 45;
+        }
     }
     if (game.global.antiStacks !== 45 && game.global.lastBreedTime >= 45000 && !game.global.spireActive) {
         forceAbandonTrimps();
