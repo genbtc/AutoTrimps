@@ -287,11 +287,6 @@ function userscripts()
         toggleAutoMaps();
     }
 
-    if (game.global.world === 491)
-    {
-        game.global.genPaused = true;
-    }
-
     //Resetting values
     if (game.global.world <= 10 && game.global.dailyChallenge.hasOwnProperty("mirrored")){
         autoTrimpSettings["BuyWeapons"].enabled = false;
