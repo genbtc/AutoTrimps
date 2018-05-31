@@ -3,13 +3,13 @@
 //Global Variables
 var prestiged = false;
 var mapAtZone = nextMapAtZone(game.global.world - 1);
-var bwATZone = -1;
 var gameMapAtZoneEnabled = game.options.menu.mapAtZone.enabled;
-var bwRaiding = false;
 
 //Called by AT.
 function raiding() {
-    //Automate AT code
+
+    prestigeRaiding();
+
     if (getPageSetting("AutomateAT")) {
         if (game.global.challengeActive === "Daily") {
             autoTrimpSettings["VoidMaps"].value = getPageSetting("DailyVMZone") > 0 ? getPageSetting("DailyVMZone") : autoTrimpSettings["VoidMaps"].value;
@@ -22,11 +22,7 @@ function raiding() {
             gameMapAtZoneEnabled = 0;
         }
     }
-    else if (gameMapAtZoneEnabled !== game.options.menu.mapAtZone.enabled )
-    {
-        gameMapAtZoneEnabled = game.options.menu.mapAtZone.enabled;
-    }
-    //Raiding zone setup
+
     if (game.global.world < getPageSetting("RaidingStartZone")) {
         mapAtZone = nextMapAtZone(getPageSetting("RaidingStartZone") - 1);
     }
@@ -34,16 +30,9 @@ function raiding() {
     {
         mapAtZone = nextMapAtZone(game.global.world - 1);
     }
-
-    if (game.global.world < getPageSetting("BWStartZone")) {
-        bwATZone = getPageSetting("BWStartZone");
-    }
-
-
-    prestigeRaiding((getPageSetting("PrestigeRaiding") === 1 || game.global.world === bwATZone) ? bestGear : plusPres);
 }
 
-function prestigeRaiding(mapType) {
+function prestigeRaiding() {
     if (game.global.world === mapAtZone) {
         if (getPageSetting('AutoMaps') === 1 && !prestiged) {
             game.options.menu.mapAtZone.enabled = 0;
@@ -56,7 +45,7 @@ function prestigeRaiding(mapType) {
             game.global.repeatMap = true;
         }
         else if (getPageSetting('AutoMaps') === 0 && game.global.preMapsActive && !prestiged) {
-            mapType();
+            getPageSetting("PrestigeRaiding") === 0 ? plusPres() : bestGear();
             if (buyMap() > 0) {
                 selectMap(game.global.mapsOwnedArray[game.global.mapsOwnedArray.length - 1].id);
                 runMap();
@@ -65,19 +54,11 @@ function prestigeRaiding(mapType) {
         }
         else if (prestiged && game.global.preMapsActive) {
             recycleMap();
-            game.options.menu.mapAtZone.enabled = gameMapAtZoneEnabled === 1 ? 1 : 0;
-            autoTrimpSettings["AutoMaps"].value = getPageSetting("BWRaid") === true ? 0 : 1;
-            bwRaiding = getPageSetting("BWRaid") === true;
+            game.options.menu.mapAtZone.enabled = gameMapAtZoneEnabled ? 1 : 0;
+            autoTrimpSettings["AutoMaps"].value = 1;
             mapAtZone = nextMapAtZone(mapAtZone);
-            prestiged = getPageSetting("BWRaid") === true;
+            prestiged = false;
         }
-    }
-}
-
-function bwRaid() {
-    if (bwRaiding === true)
-    {
-        prestigeRaiding(bestGear);
     }
 }
 
@@ -91,23 +72,8 @@ function plusPres() {
     document.getElementById("difficultyAdvMapsRange").value = 9;
     document.getElementById("sizeAdvMapsRange").value = 9;
     document.getElementById('advPerfectCheckbox').checked = false;
-    while (updateMapCost(true) > game.resources.fragments.owned) {
-        document.getElementById("difficultyAdvMapsRange").value--
-    }
-    updateMapCost();
-}
-
-function bestLMC()
-{
-    document.getElementById("biomeAdvMapsSelect").value = "Plentiful";
-    document.getElementById('advExtraLevelSelect').value = 10;
-    document.getElementById('advSpecialSelect').value = "lmc";
-    document.getElementById("lootAdvMapsRange").value = 9;
-    document.getElementById("difficultyAdvMapsRange").value = 9;
-    document.getElementById("sizeAdvMapsRange").value = 9;
-    document.getElementById('advPerfectCheckbox').checked = true;
-    while (updateMapCost(true) > game.resources.fragments.owned) {
-        document.getElementById('advExtraLevelSelect').value--;
+    if (updateMapCost(true) > game.resources.fragments.owned) {
+        document.getElementById('advSpecialSelect').value = 0;
     }
     updateMapCost();
 }

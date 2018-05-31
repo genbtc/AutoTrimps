@@ -381,8 +381,7 @@ function initializeAllSettings() {
     createSetting('FillerSpireCell' , 'Filler Exit Spire Cell','Enter Cell to quit spire at zone for fillers, dailies will be full clear. Set to -1 to use default Exit Spire at Cell settings','value',-1,null,'Raid');
     createSetting("WindStack","Wind Stack Dailies","Toggle wind stacking during dailies", "boolean", true,null,"Raid");
     createSetting("WindStackCutOff","Wind Damage Cutoff", "Advanced Settings", "value", 160,null, "Raid");
-    createSetting("BWRaid","Raid BW","BW raiding switch","boolean",false,null,"Raid" );
-    createSetting("BWStartZone","BW Start Zone", "Zone for starting BW Raid",'value',-1,null,"Raid");
+
 //Combat
     //Subsection1Line1
     createSetting('BetterAutoFight', ['Better AutoFight OFF', 'Better Auto Fight 1', 'Better Auto Fight 2','Better Auto Fight 3'], '3-Way Button, Recommended. Will automatically handle fighting. The decision between BetterAutoFight 1 or 2 is up to your own discretion. The new BAF#2 does: A)Click fight anyway if we are dead and stuck in a loop due to Dimensional Generator and we can get away with adding time to it.(RemainingTime + ArmyAdd.Time &lt; GeneTimer) and B) Clicks fight anyway if we are dead and have &gt;=31 NextGroupTimer and deal with the consequences by firing genetecists afterwards. WARNING: If you autoportal with BetterAutoFight disabled, the game sits there doing nothing until you click FIGHT. (not good for afk) ', 'multitoggle', 1, null, "Combat");
