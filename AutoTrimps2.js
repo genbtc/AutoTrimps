@@ -302,7 +302,7 @@ function userscripts()
         autoTrimpSettings["BuyWeapons"].enabled = true;
         autoTrimpSettings["AutoMaps"].value = 1;
     }
-    /**
+    
     //AutoAllocate Looting II
     if (!perked && game.global.world !== 230){
         viewPortalUpgrades();
@@ -311,6 +311,7 @@ function userscripts()
         if (getPortalUpgradePrice("Looting_II")+game.resources.helium.totalSpentTemp <= game.resources.helium.respecMax){
             buyPortalUpgrade('Looting_II');
             activateClicked();
+			cancelPortal();
             message("Bought 100k Looting II","Notices");
         }
         else{
@@ -319,7 +320,6 @@ function userscripts()
             message("Done buying Looting II","Notices");
         }
     }
-    */
 }
 
 
