@@ -33,7 +33,7 @@ function calcBaseDamageinX() {
 //goes to battlecalc.js which came from Trimps "updates.js" line 1103
 function calcBaseDamageinX2() {
     //baseDamage
-    baseDamage = baseDamage = getBattleStats("attack", false, true);
+    baseDamage = getBattleStats("attack", false, true);
     //baseBlock
     baseBlock = getBattleStats("block");
     //baseHealth
