@@ -205,7 +205,7 @@ function getBattleStats(what,form,crit) {
         currentCalc *= mult;
     }
 	//Magmamancers
-	if (game.jobs.Magmamancer.owend > 0) {
+	if (game.jobs.Magmamancer.owend > 0 && game.talents.magmamancer.purchased) {
 		currentCalc *= game.jobs.Magmamancer.getBonusPercent();
 	}
     //Total C^2 Squared
