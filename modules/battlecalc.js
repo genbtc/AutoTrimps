@@ -204,6 +204,10 @@ function getBattleStats(what,form,crit) {
         var lvls = game.global.world - mutations.Magma.start() + 1;
         currentCalc *= mult;
     }
+	//Magmamancers
+	if (game.jobs.Magmamancer.owend > 0 && game.talents.magmamancer.purchased) {
+		currentCalc *= game.jobs.Magmamancer.getBonusPercent();
+	}
     //Total C^2 Squared
     if (game.global.totalSquaredReward > 0 && (what == "attack" || what == "health")){
         var amt = game.global.totalSquaredReward;
@@ -219,11 +223,38 @@ function getBattleStats(what,form,crit) {
         var amt = Fluffy.getDamageModifier();
         currentCalc *= amt;
     }
-    if (crit) {
-        var critChance = getPlayerCritChance();
-        if (what == "attack" && critChance){
-            currentCalc *= getPlayerCritDamageMult();
-        }
+    //Amal attack
+	if (what == "attack" && game.jobs.Amalgamator.owned > 0){
+		var amt = game.jobs.Amalgamator.getDamageMult();
+		currentCalc *= amt;
+	}
+	//Amal health
+	if (what == "health" && game.jobs.Amalgamator.owned > 0){
+		var amt = game.jobs.Amalgamator.getHealthMult();
+		currentCalc *= amt;
+	}
+    //Shrap Trimps (from Bone Trader)
+	if (what == "attack" && game.singleRunBonuses.sharpTrimps.owned) {
+		currentCalc *= 1.5;
+	}
+    //Crit Damage
+	if (what == "attack" && crit) {
+		var critChance = getPlayerCritChance();
+		var multis = Math.floor(getPlayerCritChance());
+		var critChance = critChance % 1;
+		if (multis == 0) {
+			var amt = (1 - critChance) + critChance * getPlayerCritDamageMult();
+		}
+		else if (multis < 0) {
+			critChance *= -1;
+			var amt = (1 - critChance) + critChance * getMegaCritDamageMult(multis + 1);
+		}
+		else {
+			var amt = getPlayerCritDamageMult();
+			amt *= (1 - critChance) + critChance * getMegaCritDamageMult(multis + 1);
+			amt *= Math.pow(getMegaCritDamageMult(multis + 1), multis - 1);
+		}
+		currentCalc *= amt;
     }
     return currentCalc;
 }
