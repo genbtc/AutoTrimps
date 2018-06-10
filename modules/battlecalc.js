@@ -204,6 +204,10 @@ function getBattleStats(what,form,crit) {
         var lvls = game.global.world - mutations.Magma.start() + 1;
         currentCalc *= mult;
     }
+	//Magmamancers
+	if (game.jobs.Magmamancer.owend > 0) {
+		currentCalc *= game.jobs.Magmamancer.getBonusPercent();
+	}
     //Total C^2 Squared
     if (game.global.totalSquaredReward > 0 && (what == "attack" || what == "health")){
         var amt = game.global.totalSquaredReward;
