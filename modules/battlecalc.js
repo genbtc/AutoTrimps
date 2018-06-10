@@ -219,11 +219,40 @@ function getBattleStats(what,form,crit) {
         var amt = Fluffy.getDamageModifier();
         currentCalc *= amt;
     }
-    if (crit) {
+    //Amal attack
+	if (what == "attack" && game.jobs.Amalgamator.owned > 0){
+		var amt = game.jobs.Amalgamator.getDamageMult();
+		currentCalc *= amt;
+	}
+	//Amal health
+	if (what == "health" && game.jobs.Amalgamator.owned > 0){
+		var amt = game.jobs.Amalgamator.getHealthMult();
+		currentCalc *= amt;
+	}
+    //Shrap Trimps (from Bone Trader)
+	if (what == "attack" && game.singleRunBonuses.sharpTrimps.owned) {
+		currentCalc *= 1.5;
+	}
+    //Crit Damage
+    if (what == "attack" && crit) {
         var critChance = getPlayerCritChance();
-        if (what == "attack" && critChance){
-            currentCalc *= getPlayerCritDamageMult();
-        }
+		var multis = Math.floor(getPlayerCritChance());
+		var critChance = critChance % 1;
+		if (multis > 0) {
+			var amt = getPlayerCritDamageMult();
+			if (Fluffy.isRewardActive("megaCrit") == 1) {
+				amt *= (1 - critChance) + critChance * 7;
+				amt *= Math.pow(7, multis - 1);
+			}
+			else {
+				amt *= (1 - critChance) + critChance * 5;
+				amt *= Math.pow(5, multis - 1);
+			}
+		}
+		else {
+			var amt = (1 - critChance) + critChance * getPlayerCritDamageMult();
+		}
+		currentCalc *= amt;
     }
     return currentCalc;
 }
