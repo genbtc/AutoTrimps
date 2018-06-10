@@ -128,19 +128,7 @@ function autoMap() {
 //START CALCULATING DAMAGES:
     var AutoStance = getPageSetting('AutoStance');
     //calculate crits (baseDamage was calced in function autoStance)    this is a weighted average of nonCrit + Crit. (somewhere in the middle)
-    if (getPlayerCritChance() <= 1)
-    {
-        ourBaseDamage = (baseDamage * (1 - getPlayerCritChance()) + (baseDamage * getPlayerCritChance() * getPlayerCritDamageMult()));
-    }
-    else if (getPlayerCritChance() <= 2)
-    {
-        ourBaseDamage = (baseDamage * getPlayerCritDamageMult() * (1 - getPlayerCritChance()) * -1) + (baseDamage * (getPlayerCritChance() - 1) * getPlayerCritDamageMult() * 5);
-    }
-    else
-    {
-        ourBaseDamage = (baseDamage * getPlayerCritDamageMult() * (2 - getPlayerCritChance()) * -5) + (baseDamage * (getPlayerCritChance() - 2) * getPlayerCritDamageMult() * 25);
-    }
-    
+    ourBaseDamage = (baseDamage * (1 - getPlayerCritChance()) + (baseDamage * getPlayerCritChance() * getPlayerCritDamageMult()));
     //calculate with map bonus
     var mapbonusmulti = 1 + (0.20 * game.global.mapBonus);
     //(autostance2 has mapbonusmulti built in)
