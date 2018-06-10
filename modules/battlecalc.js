@@ -238,23 +238,21 @@ function getBattleStats(what,form,crit) {
 		currentCalc *= 1.5;
 	}
     //Crit Damage
-    if (what == "attack" && crit) {
-        var critChance = getPlayerCritChance();
+	if (what == "attack" && crit) {
+		var critChance = getPlayerCritChance();
 		var multis = Math.floor(getPlayerCritChance());
 		var critChance = critChance % 1;
-		if (multis > 0) {
-			var amt = getPlayerCritDamageMult();
-			if (Fluffy.isRewardActive("megaCrit") == 1) {
-				amt *= (1 - critChance) + critChance * 7;
-				amt *= Math.pow(7, multis - 1);
-			}
-			else {
-				amt *= (1 - critChance) + critChance * 5;
-				amt *= Math.pow(5, multis - 1);
-			}
+		if (multis == 0) {
+			var amt = (1 - critChance) + critChance * getPlayerCritDamageMult();
+		}
+		else if (multis < 0) {
+			critChance *= -1;
+			var amt = (1 - critChance) + critChance * getMegaCritDamageMult(multis + 1);
 		}
 		else {
-			var amt = (1 - critChance) + critChance * getPlayerCritDamageMult();
+			var amt = getPlayerCritDamageMult();
+			amt *= (1 - critChance) + critChance * getMegaCritDamageMult(multis + 1);
+			amt *= Math.pow(getMegaCritDamageMult(multis + 1), multis - 1);
 		}
 		currentCalc *= amt;
     }
