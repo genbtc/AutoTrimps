@@ -37,7 +37,7 @@ function prestigeRaiding() {
         if (getPageSetting('AutoMaps') === 1 && !prestiged) {
             game.options.menu.mapAtZone.enabled = 0;
             autoTrimpSettings["AutoMaps"].value = 0;
-            if (!game.global.switchToMaps) {
+            if (!game.global.switchToMaps && game.options.menu.alwaysAbandon.enabled === 0) {
                 mapsClicked();
             }
             mapsClicked();
