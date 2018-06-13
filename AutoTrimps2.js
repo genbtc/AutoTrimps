@@ -15,7 +15,7 @@ var ATversion = '2.1.6.9b-genbtc-4-2-2018 + KFrowde + Zeker0';
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////
 var atscript = document.getElementById('AutoTrimps-script')
-  , basepath = 'https://Zorn192.github.io/AutoTrimps/'
+  , basepath = 'https://KFrowde.github.io/AutoTrimps/'
   , modulepath = 'modules/'
   ;
 //This should redirect the script to wherever its being mirrored from.
