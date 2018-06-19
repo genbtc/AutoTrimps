@@ -5,10 +5,10 @@ var prestiged = false;
 var mapAtZone = nextMapAtZone(game.global.world - 1);
 var gameMapAtZoneEnabled = game.options.menu.mapAtZone.enabled;
 
+var lastBionic = findLastBionic();
+
 //Called by AT.
 function raiding() {
-
-    prestigeRaiding();
 
     if (getPageSetting("AutomateAT")) {
         if (game.global.challengeActive === "Daily") {
@@ -30,14 +30,16 @@ function raiding() {
     {
         mapAtZone = nextMapAtZone(game.global.world - 1);
     }
+
+    prestigeRaiding(getPageSetting("PrestigeRaiding") === 0 ? plusPres : bestGear);
 }
 
-function prestigeRaiding() {
+function prestigeRaiding(setMap) {
     if (game.global.world === mapAtZone) {
         if (getPageSetting('AutoMaps') === 1 && !prestiged) {
             game.options.menu.mapAtZone.enabled = 0;
             autoTrimpSettings["AutoMaps"].value = 0;
-            if (!game.global.switchToMaps) {
+            if (!game.global.switchToMaps && game.options.menu.alwaysAbandon.enabled === 0) {
                 mapsClicked();
             }
             mapsClicked();
@@ -45,7 +47,7 @@ function prestigeRaiding() {
             game.global.repeatMap = true;
         }
         else if (getPageSetting('AutoMaps') === 0 && game.global.preMapsActive && !prestiged) {
-            getPageSetting("PrestigeRaiding") === 0 ? plusPres() : bestGear();
+            setMap();
             if (buyMap() > 0) {
                 selectMap(game.global.mapsOwnedArray[game.global.mapsOwnedArray.length - 1].id);
                 runMap();
@@ -60,6 +62,13 @@ function prestigeRaiding() {
             prestiged = false;
         }
     }
+}
+
+function bwRaiding()
+{
+    lastBionic = lastBionic === undefined ? findLastBionic() : lastBionic;
+    var numItems = addSpecials(true, true, lastBionic);
+
 }
 
 
@@ -131,4 +140,12 @@ function nextMapAtZone(zone) {
         return 5 - currentModifier + zone;
     }
 }
+
+    function findLastBionic() {
+        for (var i = game.global.mapsOwnedArray.length - 1; i >= 0; i--) {
+            if (game.global.mapsOwnedArray[i].location === "Bionic") {
+                return game.global.mapsOwnedArray[i];
+            }
+        }
+    }
 
