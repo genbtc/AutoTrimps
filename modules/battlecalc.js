@@ -102,7 +102,7 @@ function getBattleStats(what,form,crit) {
     }
     //Add Titimp
     if (game.global.titimpLeft > 1 && game.global.mapsActive && what == "attack"){
-        currentCalc *= 2;
+        //currentCalc *= 2;
     }
     //Add map bonus
     if (!game.global.mapsActive && game.global.mapBonus > 0 && what == "attack"){
