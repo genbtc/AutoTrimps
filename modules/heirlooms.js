@@ -512,7 +512,8 @@ function newSelectHeirloom(number, location, elem){
 function generateHeirloomIcon(heirloom, location, number){
     if (typeof heirloom.name === 'undefined') return "<span class='icomoon icon-sad3'></span>";
     var icon = (heirloom.type == "Shield") ? 'icomoon icon-shield3' : 'glyphicon glyphicon-grain';
-    var html = '<span class="heirloomThing heirloomRare' + heirloom.rarity;
+	var animated = (game.options.menu.showHeirloomAnimations.enabled) ? "animated " : "";
+	var html = '<span class="heirloomThing ' + animated + 'heirloomRare' + heirloom.rarity;
     if (location == "Equipped") html += ' equipped';
     var locText = "";
     if (location == "Equipped") locText += '-1,\'' + heirloom.type + 'Equipped\'';
