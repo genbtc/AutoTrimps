@@ -10,6 +10,7 @@ function ATselectAutoFight() {
     BAFsetting = getPageSetting('BetterAutoFight');
     if (BAFsetting==1) betterAutoFight();        //"Better Auto Fight"  (autofight.js)
     else if (BAFsetting==2) betterAutoFight2();     //"Better Auto Fight2"  (")
+    else if (BAFsetting===3) betterAutoFight3();
     else if (BAFsetting==0 && BAFsetting!=oldBAFsetting && game.global.autoBattle && game.global.pauseFight)  pauseFight(); //turn on autofight on once when BAF is toggled off.
     else if (BAFsetting==0 && game.global.world == 1 && game.global.autoBattle && game.global.pauseFight) pauseFight();     //turn on autofight on lvl 1 if its off.
     else if (BAFsetting==0 && !game.global.autoBattle && game.global.soldierHealth == 0) betterAutoFight();   //use BAF as a backup for pre-Battle situations
@@ -93,4 +94,33 @@ function betterAutoFight2() {
             debug("AutoFight: BAF2 #4, NextGroupBreedTimer went over " + breedTimerLimit + " and we arent fighting.", "other");
         }
     }
+}
+
+function betterAutoFight3()
+{
+    if (game.global.autoBattle && game.global.pauseFight)
+        pauseFight();
+    if (game.global.gridArray.length === 0 || game.global.preMapsActive || !game.upgrades.Battle.done) return; //sanity check. stops error message on z1 right after portal
+
+    if (game.global.soldierHealth === 0 && !(game.global.spireActive || (game.global.mapsActive && getCurrentMapObject().location === "Void") || game.global.preMapsActive)) {
+        fightManual();
+        buyArmors(); //temp fix for AT not buying armor
+    }
+    if (game.global.antiStacks !== 45 && game.global.lastBreedTime >= 45000 && !game.global.spireActive) {
+        forceAbandonTrimps();
+    }
+    if ((needPrestige || !enoughDamage) && game.global.world>=200 && (getEmpowerment() === "Ice" || (getEmpowerment() === "Wind" && game.global.lastBreedTime >= 45000)) && !game.global.mapsActive && game.global.mapBonus !== 10 && game.global.world!==game.options.menu.mapAtZone.setZone) {
+        forceAbandonTrimps();
+    }
+}
+
+function buyArmors(){
+    numTab(3);
+    buyEquipment('Boots');
+    buyEquipment('Helmet');
+    buyEquipment('Pants');
+    buyEquipment('Shoulderguards');
+    buyEquipment('Breastplate');
+    buyEquipment('Gambeson');
+    cancelTooltip();
 }

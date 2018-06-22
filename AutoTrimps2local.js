@@ -16,7 +16,7 @@ var ATversion = '2.2-Sliverz';
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////
 var atscript = document.getElementById('AutoTrimps-script')
-    , basepath = 'https://github.com/slivermasterz/AutoTrimps'
+    , basepath = 'AutoTrimps/'
     , modulepath = 'modules/'
 ;
 //This should redirect the script to wherever its being mirrored from.
@@ -64,7 +64,7 @@ function initializeAutoTrimps() {
 var changelogList = [];
 
 //changelogList.push({date: " ", version: " ", description: "", isNew: true});  //TEMPLATE
-changelogList.push({date: "4/15", version: "v2.2.0.1", description: "Raiding with menu added. Filler/Dailies options also added. Now can change between most gear and fastest", isNew: true});
+changelogList.push({date: "4/14", version: "v2.2.0.1", description: "Raiding with menu added", isNew: true});
 changelogList.push({date: "4/14", version: "v2.2.0", description: "AutoStance and Autofight 3 were added. TrimpScripts code were added to userscript",isNew: false});
 changelogList.push({date: "4/2", version: "v2.1.6.9b", description: "Import Export, Modules Load code Improvements. Multiple Buttons/Settings Were Combined. AutoPerks code was changed but still functions the same, except for a new Fast-Allocate algorithm (now with a checkbox) that reduces the time to allocate for high helium players to near-instantaneous. Please test new algo; it might overshoot. You can also clear all perks then allocate and have it work now.  AutoMaps no longer considered as being in Lead challenge during Chall^2.",isNew: false});
 changelogList.push({date: "3/23", version: "v2.1.6.9", description: "Game's <u>Map at Zone</u> can be used with AT now, to run maps forever. AutoMaps setting was combined with RunUniqueMaps (variable has changed from boolean false,true to a value 0,1,2). Settings file has been migrated as such. New: Map SpecialMod is sort of working, at least. Geneticist Infinity bugfix. New AGU Settings for 60% Void (fixed). Many Graphs fixes. AutoMaps changes. Equipment Cap, see README at <a target='#' href='https://github.com/genbtc/AutoTrimps/blob/gh-pages/README.md'>GitHub</a> DarkTheme fix. Scientists Fix. Zek450 Perks Preset Changed. Ongoing Development...", isNew: false});
@@ -102,7 +102,7 @@ function printLowerLevelPlayerNotice() {
 
 //Magic Numbers
 var runInterval = 100;      //How often to loop through logic
-var startupDelay = 2500;    //How long to wait for everything to load
+var startupDelay = 1000;    //How long to wait for everything to load
 
 //Start Loops
 setTimeout(delayStart, startupDelay);
@@ -291,13 +291,12 @@ function userscripts()
     if (game.global.world <= 10 && game.global.dailyChallenge.hasOwnProperty("mirrored")){
         autoTrimpSettings["BuyWeapons"].enabled = false;
     }
-    else if (game.global.world===230){
+    else if (game.global.world===230) {
         perked = false;
         resetGenes = false;
         autoTrimpSettings["BuyWeapons"].enabled = true;
         autoTrimpSettings["AutoMaps"].value = 1;
     }
-    
     //AutoAllocate Looting II
     if (!perked && game.global.world !== 230){
         viewPortalUpgrades();
@@ -306,7 +305,6 @@ function userscripts()
         if (getPortalUpgradePrice("Looting_II")+game.resources.helium.totalSpentTemp <= game.resources.helium.respecMax){
             buyPortalUpgrade('Looting_II');
             activateClicked();
-			cancelPortal();
             message("Bought 100k Looting II","Notices");
         }
         else{

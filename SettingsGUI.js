@@ -178,6 +178,7 @@ function initializeAllTabs() {
     createTabs("Jobs", "Jobs - Worker Settings");
     createTabs("Gear", "Gear - Equipment Settings");
     createTabs("Maps", "Maps - AutoMaps & VoidMaps Settings");
+    createTabs("Raid", "Raid - Control for all equipment grabbing in future zones")
     createTabs("Combat", "Combat & Stance Settings");
     createTabs("Scryer", "Scryer Settings");
     createTabs("Magma", "Dimensional Generator & Magmite Settings");
@@ -370,13 +371,21 @@ function initializeAllSettings() {
     createSetting('TrimpleZ', 'Trimple Z', 'I don\'t really think doing this automatically is a good idea. You might want to farm for a bit before this, but I\'m not sure if it\'s meaningful at all to make a \'farm X minutes before trimple\' parameter to go along with it. Set it to the zone you want and it will run Trimple of Doom for Ancient Treasure AFTER farming and getting map stacks. If it is a negative number, this will be disabled after a successful run so you can set it differently next time.', 'valueNegative', 0, null, 'Maps');
     createSetting('AdvMapSpecialModifier', 'Map Special Modifier', '<b>EXPERIMENTAL.</b> Attempt to select the BEST map special attacks mod. With this on, this will replace the normal behavior. If bugs, please report as this will become more default soon.', 'boolean', false, null, 'Maps');
 
-
-
+//Raiding
+    createSetting('Raiding','Raiding Toggle', 'Collection of Raiding Scripts Experimental' , 'boolean', true, null ,'Raid' );
+    createSetting('RaidingStartZone' , 'Raiding Start Zone' , 'Zone for all raiding scripts to start grabbing equips', 'value', -1, null, 'Raid');
+    createSetting('PrestigeRaiding', ['Raid Prestigious Maps','Raid Best Gear Maps'], 'Runs the best prestigious maps for optimal speed in a run. Best used for filler runs', 'multitoggle', 0, null, 'Raid');
+    createSetting('AutomateAT' , 'Daily/Filler Automaton', 'Turns on code that automatically changes AT settings between daily and filler runs', 'boolean', false, null, 'Raid');
+    createSetting('DailyVMZone' , 'Daily Void Maps Zone', 'Zone to run void maps for dailies if Daily/Filler Automation is on','value' ,-1,null,'Raid');
+    createSetting('FillerVMZone' , 'Filler Void Maps Zone', 'Zone to run void maps for fillers if Daily/Filler Automation is on','value' ,-1,null,'Raid');
+    createSetting('FillerSpireCell' , 'Filler Exit Spire Cell','Enter Cell to quit spire at zone for fillers, dailies will be full clear. Set to -1 to use default Exit Spire at Cell settings','value',-1,null,'Raid');
+    createSetting("WindStack","Wind Stack Dailies","Toggle wind stacking during dailies", "boolean", true,null,"Raid");
+    createSetting("WindStackCutOff","Wind Damage Cutoff", "Advanced Settings", "value", 160,null, "Raid");
 
 //Combat
     //Subsection1Line1
-    createSetting('BetterAutoFight', ['Better AutoFight OFF', 'Better Auto Fight 1', 'Better Auto Fight 2'], '3-Way Button, Recommended. Will automatically handle fighting. The decision between BetterAutoFight 1 or 2 is up to your own discretion. The new BAF#2 does: A)Click fight anyway if we are dead and stuck in a loop due to Dimensional Generator and we can get away with adding time to it.(RemainingTime + ArmyAdd.Time &lt; GeneTimer) and B) Clicks fight anyway if we are dead and have &gt;=31 NextGroupTimer and deal with the consequences by firing genetecists afterwards. WARNING: If you autoportal with BetterAutoFight disabled, the game sits there doing nothing until you click FIGHT. (not good for afk) ', 'multitoggle', 1, null, "Combat");
-    createSetting('AutoStance', ['Auto Stance OFF', 'Auto Stance 1', 'Auto Stance 2'], 'Automatically swap stances to avoid death. The decision between AutoStance 1 or 2 is up to your own discretion and they should be similar. ', 'multitoggle', 1, null, "Combat");
+    createSetting('BetterAutoFight', ['Better AutoFight OFF', 'Better Auto Fight 1', 'Better Auto Fight 2','Better Auto Fight 3'], '3-Way Button, Recommended. Will automatically handle fighting. The decision between BetterAutoFight 1 or 2 is up to your own discretion. The new BAF#2 does: A)Click fight anyway if we are dead and stuck in a loop due to Dimensional Generator and we can get away with adding time to it.(RemainingTime + ArmyAdd.Time &lt; GeneTimer) and B) Clicks fight anyway if we are dead and have &gt;=31 NextGroupTimer and deal with the consequences by firing genetecists afterwards. WARNING: If you autoportal with BetterAutoFight disabled, the game sits there doing nothing until you click FIGHT. (not good for afk) ', 'multitoggle', 1, null, "Combat");
+    createSetting('AutoStance', ['Auto Stance OFF', 'Auto Stance 1', 'Auto Stance 2' , 'Auto Stance 3'], 'Automatically swap stances to avoid death. The decision between AutoStance 1 or 2 is up to your own discretion and they should be similar. ', 'multitoggle', 3, null, "Combat");
     createSetting('IgnoreCrits', ['Safety First', 'Ignore Void Strength', 'Ignore All Crits'], 'No longer switches to B against corrupted precision and/or void strength. <b>Basically we now treat \'crit things\' as regular in both autoStance and autoStance2</b>. In fact it no longer takes precision / strength into account and will manage like a normal enemy, thus retaining X / D depending on your needs. If you\'re certain your block is high enough regardless if you\'re fighting a crit guy in a crit daily, use this! Alternatively, manage the stances yourself.', 'multitoggle', 0, null, 'Combat');
     createSetting('PowerSaving', ['Don\'t care', 'Power Saving', 'Only Rush Voids'], 'Avoid killing your army impatiently. Don\'t force abandon trimps when prestiging. Will still Die To Use Z and aggressively autostance to aid progression and anything else. Made for Empower daily, you might find it helpful if you\'re doing Workplace Safety feat. Then again with that I strongly recommend doing it fully manually. Anyway, don\'t blame me whatever happens. Only Rush Voids will allow considering abandoning, not force one. <b>Note:</b> AT will no longer be able to fix when your scryer gets stuck!', 'multitoggle', 0, null, 'Combat');
     createSetting('ForceAbandon', 'Auto Force-Abandon', '(Trimpicide). If a new fight group is available and anticipation stacks arent maxed, force abandon and grab a new group. Located in the geneticist management script.', 'boolean', true, null, 'Combat');
