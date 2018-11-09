@@ -87,7 +87,7 @@ function autoPortal() {
         case "Crushed":
         case "Nom":
         case "Toxicity":
-            if (getPageSetting('MaxTox'))
+            if (!game.global.challengeActive && getPageSetting('MaxTox'))
                 settingChanged("MaxTox");
         case "Watch":
         case "Lead":
