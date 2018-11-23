@@ -360,7 +360,7 @@ function calcBadGuyDmg(enemy,attack,daily,maxormin,disableFlucts) {
             number *= 1.25;
         }
         else if (game.global.challengeActive == "Lead"){
-            number *= (1 + (game.challenges.Lead.stacks * 0.04));
+            number *= (1 + (150 * 1.04));//going to be extra careful here and calculate vs 150 Lead stacks.
         }
         else if (game.global.challengeActive == "Scientist" && getScientistLevel() == 5) {
             number *= 10;
