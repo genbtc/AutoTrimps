@@ -169,9 +169,11 @@ function autoMap() {
     //Lead specific farming calcuation section:
     if((game.global.challengeActive == 'Lead' && !challSQ)) {
         ourBaseDamage /= mapbonusmulti;
-        if (AutoStance<=1)
+        if (AutoStance<=1) {
             enemyDamage *= (1 + (game.challenges.Lead.stacks * 0.04));
-        enemyHealth *= (1 + (game.challenges.Lead.stacks * 0.04));
+        }
+        //The idea is to check vs a large momentum count, not vs the current one which is low-ish at the end of odd zone when farming usually occurs
+        enemyHealth *= (1 + (150 * 0.04));//we have calcBadGuy to do this to to damage.
         //if the zone is odd:   (skip the +2 calc for the last level.
         if (game.global.world % 2 == 1 && game.global.world != 179){
              //calculate for the next level in advance (since we only farm on odd, and evens are very tough)
