@@ -178,10 +178,10 @@ function autoMap() {
             if (AutoStance <= 1) {
                 enemyDamage = getEnemyMaxAttack(game.global.world + 1, 99, 'Snimp', 1.2);
                 enemyDamage = calcDailyAttackMod(enemyDamage); //daily mods: badStrength,badMapStrength,bloodthirst
+                enemyDamage *= (1 + (100 * 0.04));//we already take lead into account in calcBadGuyDmg
             } else {
                 enemyDamage = calcBadGuyDmg(null, getEnemyMaxAttack(game.global.world + 1, 99, 'Snimp', 1.0), true, true); //(enemy,attack,daily,maxormin,[disableFlucts])
             }
-            enemyDamage *= (1 + (100 * 0.04));
             ourBaseDamage /= 1.5; //subtract the odd-zone bonus.
         }
         if (game.global.world == 179) {
