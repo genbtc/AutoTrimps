@@ -151,10 +151,8 @@ function autoMap() {
         //plain scale, without the averages, because we don't really want to have big corruption spikes
         //wouldn't be that good to overkill normal cells and die to 1 corrupted hit
         //a little bit of farming should help smoothen this issue
-        var cpthlth = getCorruptScale("health"); //get corrupted health mod
-        enemyHealth *= hlthprop;
-        var cptatk = getCorruptScale("attack");  //get corrupted attack mod
-        enemyDamage *= atkprop;
+        enemyHealth *= getCorruptScale("health");
+        enemyDamage *= getCorruptScale("attack");
         //console.log("enemy dmg:" + enemyDamage + " enemy hp:" + enemyHealth + " base dmg: " + ourBaseDamage);
     }
     // enter farming if it takes over 4 hits in D stance (16) (and exit if under.)
