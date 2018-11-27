@@ -693,7 +693,8 @@ function autoMap() {
             //set up various priorities for various situations
             if (updateMapCost(true) > game.resources.fragments.owned) {
                 if (needPrestige && !enoughDamage) decrement.push('diff');
-                if (shouldFarm) decrement.push('size');
+                //size is bad for caches, and in corruption, where this is a problem, maps don't pose a challenge anyway
+                if (shouldFarm) decrement.push('loot');
             }
 
         //Decrement 1 - use priorities first:
@@ -727,7 +728,7 @@ function autoMap() {
                 sizeAdvMapsRange.value -= 1;
             }
 
-        //run the Advanced Special Modifier script, bring
+        //run the Advanced Special Modifier script, bring//@todo consider bringing this higher in the loop for #2
             if (getPageSetting('AdvMapSpecialModifier'))
                 testMapSpecialModController();
 
