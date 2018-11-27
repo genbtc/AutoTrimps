@@ -142,8 +142,14 @@ function autoMap() {
         enemyDamage = calcBadGuyDmg(null,getEnemyMaxAttack(game.global.world + 1, 50, 'Snimp', 1.0),true,true); //(enemy,attack,daily,maxormin,[disableFlucts])
     }
     enemyHealth = getEnemyMaxHealth(game.global.world + 1,50);
-    if(game.global.challengeActive == "Toxicity") {
+    if (game.global.challengeActive == "Toxicity") {
         enemyHealth *= 2;
+    }
+    //yep, nobody taken care of that yet TODO a stick pending #7
+    if (game.global.challengeActive == "Coordinate") {
+            var badCoord = getBadCoordLevel();
+            enemyHealth *= badCoord;
+            enemyDamage *= badCoord;
     }
     //Corruption Zone Proportionality Farming Calculator:
     var corrupt = game.global.world >= mutations.Corruption.start(false);
