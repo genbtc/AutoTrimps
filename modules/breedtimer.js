@@ -101,6 +101,10 @@ function autoBreedTimer() {
     //Don't hire geneticists if we have already reached 30 anti stacks (put off further delay to next trimp group) //&& (game.global.lastBreedTime/1000 + getBreedTime(true) < targetBreed)
     var time = getBreedTime();
     var timeLeft = getBreedTime(true);
+    //TODO inline in getBreedTime?
+    if (game.global.challengeActive == "Trapper") {
+            timeLeft = 0;
+    }
     var boughtGenRound1 = false;
     if ((newSquadRdy || (game.global.lastBreedTime/1000 + timeLeft < targetBreed)) && targetBreed > time && !game.jobs.Geneticist.locked && targetBreed > timeLeft && game.resources.trimps.soldiers > 0 && !breedFire) {
         //Buy geneticists in Increments of 1 for now:
@@ -120,6 +124,9 @@ function autoBreedTimer() {
 //FIRING SECTION:
     var time = getBreedTime();
     var timeLeft = getBreedTime(true);
+    if (game.global.challengeActive == "Trapper") {
+            timeLeft = 0;
+    }
     var fire1 = targetBreed*1.02 < time;
     var fire2 = targetBreed*1.02 < timeLeft;
     var fireobj = fire1 ? time : timeLeft;
