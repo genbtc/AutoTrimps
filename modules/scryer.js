@@ -57,8 +57,8 @@ function useScryerStance() {
 
 //Any of these being true will indicate scryer should not be used, and cause the function to dump back to regular autoStance():
     var remainingEssence = countRemainingEssenceDrops();
-    //check for no more dark matter
-    use_auto = use_auto || (remainingEssence == 0);
+    //check for no more dark matter if in world
+    use_auto = use_auto || (remainingEssence == 0 && !game.global.mapsActive);
     //check for spire
     use_auto = use_auto || !game.global.mapsActive && isActiveSpireAT() && getPageSetting('ScryerUseinSpire2')!=1;
     //check for voids
