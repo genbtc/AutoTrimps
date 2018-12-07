@@ -77,7 +77,8 @@ function useScryerStance() {
 
     //check for corrupted cells (and exit)
     var iscorrupt = getCurrentEnemy(1).mutation == "Corruption";
-    iscorrupt = iscorrupt || (mutations.Magma.active() && game.global.mapsActive);
+    //#15 says we'd like to keep S in magma if possible
+//    iscorrupt = iscorrupt || (mutations.Magma.active() && game.global.mapsActive);
     iscorrupt = iscorrupt || (game.global.mapsActive && getCurrentMapObject().location == "Void" && game.global.world >= mutations.Corruption.start());
     if (iscorrupt && getPageSetting('ScryerSkipCorrupteds2')) {
         autostancefunction();
