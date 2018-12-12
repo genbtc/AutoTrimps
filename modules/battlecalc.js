@@ -287,7 +287,8 @@ function calcOurDmg(number,maxormin,disableStances,disableFlucts) { //number = b
     if (Fluffy.isActive()){
         number *= Fluffy.getDamageModifier();
     }
-    number *= (1 + (1 - game.empowerments.Ice.getCombatModifier()));
+    //#18 - disable Ice in h/d ratio calculations
+//    number *= (1 + (1 - game.empowerments.Ice.getCombatModifier()));
 
     if (game.global.challengeActive == "Daily"){
         if (typeof game.global.dailyChallenge.minDamage !== 'undefined'){
