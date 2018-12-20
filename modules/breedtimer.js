@@ -128,7 +128,6 @@ function autoBreedTimer() {
             timeLeft = 0;
     }
     var fire1 = targetBreed*1.02 < time;
-    var fire2 = targetBreed*1.02 < timeLeft;
     var fireobj = fire1 ? time : timeLeft;
     //if we need to speed up our breeding
     //if we have potency upgrades available, buy them. If geneticists are unlocked, or we aren't managing the breed timer, just buy them
@@ -137,7 +136,7 @@ function autoBreedTimer() {
     }
     //otherwise, if we have too many geneticists, (total time) - start firing them #1
     //otherwise, if we have too many geneticists, (remaining time) - start firing them #2
-    else if (!boughtGenRound1 && (fire1 || fire2) && !game.jobs.Geneticist.locked && game.jobs.Geneticist.owned > customVars.fireGensFloor) {
+    else if (!boughtGenRound1 && fire1 && !game.jobs.Geneticist.locked && game.jobs.Geneticist.owned > customVars.fireGensFloor) {
         //var timeGap = (time + timeLeft) > targetBreed ? targetBreed : targetBreed - (time + timeLeft);
         var timeOK = fireobj > 0 ? fireobj : 0.1;
         var numgens = Math.ceil(Math.log10(targetBreed / timeOK) / Math.log10(1.02));
