@@ -63,8 +63,8 @@ function useScryerStance() {
     use_auto = use_auto || !game.global.mapsActive && isActiveSpireAT() && getPageSetting('ScryerUseinSpire2')!=1;
     //check for voids
     use_auto = use_auto || game.global.mapsActive && getCurrentMapObject().location == "Void" && !getPageSetting('ScryerUseinVoidMaps2');
-    //check for maps
-    use_auto = use_auto || game.global.mapsActive && !getPageSetting('ScryerUseinMaps2');
+    //check for maps that are NOT void maps
+    use_auto = use_auto || game.global.mapsActive && !(getCurrentMapObject().location == "Void") && !getPageSetting('ScryerUseinMaps2');
     //check for bosses above voidlevel
     use_auto = use_auto || getPageSetting('ScryerSkipBoss2') == 1 && game.global.world > getPageSetting('VoidMaps') && game.global.lastClearedCell == 98;
     //check for bosses (all levels)
