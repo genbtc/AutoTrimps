@@ -294,6 +294,11 @@ function autoStance2() {
         enemyDamage *= 2;
     if (enemy.corrupted == 'corruptTough')
         enemyHealth *= 5;
+    //Ice
+    var iceFactor = game.empowerments.Ice.getCombatModifier();
+    if (iceFactor && iceFactor < 1) {
+        enemyDamage *= iceFactor;
+    }
 
     //calc X,D,B:
     var xDamage = (enemyDamage - baseBlock);
