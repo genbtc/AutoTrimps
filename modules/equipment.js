@@ -197,7 +197,7 @@ function evaluateEquipmentEfficiency(equipName) {
     var isLiquified = (game.options.menu.liquification.enabled && game.talents.liquification.purchased && !game.global.mapsActive && game.global.gridArray && game.global.gridArray[0] && game.global.gridArray[0].name == "Liquimp");
 //Run a quick Time estimate and if we complete it in 25 seconds or less, use 1/10th of our cap just so we can continue (MODULES["equipment"].capDivisor=10;)
     var time = mapTimeEstimater();
-    var isQuick = (time!=0) && (time < 25000);
+    var isQuick = (time!=0) && (time < 25000) && (!isActiveSpireAT());;
     var cap = getPageSetting('CapEquip2');
     if ((isLiquified || isQuick) && cap > 0 && gameResource.level >= (cap / MODULES["equipment"].capDivisor)) {
         Factor = 0;
