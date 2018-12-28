@@ -147,10 +147,22 @@ function autoMap() {
     }
     //yep, nobody taken care of that yet TODO a stick pending #7
     if (game.global.challengeActive == "Coordinate") {
-            var badCoord = getBadCoordLevel();
-            enemyHealth *= badCoord;
+        var badCoord = getBadCoordLevel();
+        enemyHealth *= badCoord;
+        //otherwise it's covered in calcBadGuyDmg already
+        if (AutoStance<=1) {
             enemyDamage *= badCoord;
+        }
     }
+    if (game.global.challengeActive == "Obliterated" || game.global.challengeActive == "Eradicated") {
+        obliteratedFactor = calcObliteratedEradicatedFactor();
+        enemyHealth *= obliteratedFactor;
+        //otherwise it's covered in calcBadGuyDmg already
+        if (AutoStance<=1) {
+            enemyDamage *= obliteratedFactor;
+        }
+    }
+
     //Corruption Zone Proportionality Farming Calculator:
     var corrupt = game.global.world >= mutations.Corruption.start(false);
     if (getPageSetting('CorruptionCalc') && corrupt) {

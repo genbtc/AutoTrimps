@@ -333,6 +333,17 @@ function calcOurDmg(number,maxormin,disableStances,disableFlucts) { //number = b
         return number;
 }
 
+//A method to calculated enemy hp and atk factors for Obliterated and Eradicated challenges
+//If neither challenge is active, returns 1
+function calcObliteratedEradicatedFactor() {
+    var obliteratedFactor =
+        (game.global.challengeActive == "Eradicated")
+            ? game.challenges.Eradicated.scaleModifier
+            : ((game.global.challengeActive == "Obliterated") ? 1e12 : 1);
+    var zoneModifier = Math.floor(game.global.world / game.challenges[game.global.challengeActive].zoneScaleFreq);
+    obliteratedFactor *= Math.pow(game.challenges[game.global.challengeActive].zoneScaling, zoneModifier);
+    return obliteratedFactor;
+}
 
 function calcBadGuyDmg(enemy,attack,daily,maxormin,disableFlucts) {
     var number;
@@ -348,6 +359,7 @@ function calcBadGuyDmg(enemy,attack,daily,maxormin,disableFlucts) {
     //Situational bad guy damage increases
     if (game.global.challengeActive){
         //Challenge bonuses here
+        number *= calcObliteratedEradicatedFactor();
         if (game.global.challengeActive == "Coordinate"){
             number *= getBadCoordLevel();
         }
