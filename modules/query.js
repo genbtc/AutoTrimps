@@ -218,6 +218,9 @@ function getBreedTime(remaining,howManyMoreGenes) {
         return parseFloat(timeRemaining.toFixed(1));
 
     var adjustedMax = (game.portal.Coordinated.level) ? game.portal.Coordinated.currentSend : trimps.maxSoldiers;
+    if (game.jobs.Amalgamator.owned > 0) {
+    	adjustedMax *= game.jobs.Amalgamator.getPopulationMult();
+    }
     var totalTime = log10((trimpsMax - trimps.employed) / (trimpsMax - adjustedMax - trimps.employed)) / log10(potencyMod);
     totalTime /= 10;
 
