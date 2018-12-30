@@ -268,6 +268,25 @@ function autoLevelEquipment() {
         enemyDamage = calcDailyAttackMod(enemyDamage); //daily mods: badStrength,badMapStrength,bloodthirst
         enemyHealth = getSpireStats(cell, "Snimp", "health");
     }
+    //yep, nobody taken care of that yet TODO a stick pending #7 - remove this copypaste and have a single place to calc enemy stats
+    if (game.global.challengeActive == "Coordinate") {
+        var badCoord = getBadCoordLevel();
+        enemyHealth *= badCoord;
+        enemyDamage *= badCoord;
+    }
+    if (game.global.challengeActive == "Obliterated" || game.global.challengeActive == "Eradicated") {
+        obliteratedFactor = calcObliteratedEradicatedFactor();
+        enemyHealth *= obliteratedFactor;
+        enemyDamage *= obliteratedFactor;
+    }
+    var corrupt = game.global.world >= mutations.Corruption.start(false);
+    if (getPageSetting('CorruptionCalc') && corrupt) {
+        //plain scale, without the averages, because we don't really want to have big corruption spikes
+        //wouldn't be that good to overkill normal cells and die to 1 corrupted hit
+        //a little bit of farming should help smoothen this issue
+        enemyHealth *= getCorruptScale("health");
+        enemyDamage *= getCorruptScale("attack");
+    }
 
     //below challenge multiplier not necessarily accurate, just fudge factors
     if(game.global.challengeActive == "Toxicity") {
