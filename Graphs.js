@@ -30,7 +30,7 @@ document.getElementById("graphParent").innerHTML += '<div id="graphFooter" style
 var $graphFooter = document.getElementById('graphFooterLine1');
 //$graphFooter.innerHTML += '\
 //Create the dropdown for what graph to show    (these correspond to headings in setGraph() and have to match)
-var graphList = ['Helium - He/Hr', 'Helium - Total', 'Helium - He/Hr Instant', 'Helium - He/Hr Delta', 'HeHr % / LifetimeHe', 'He % / LifetimeHe', 'Clear Time', 'Cumulative Clear Time', 'Run Time', 'Map Bonus', 'Void Maps', 'Void Map History', 'Loot Sources', 'Coordinations', 'GigaStations', 'Unused Gigas', 'Last Warpstation', 'Trimps', 'Nullifium Gained', 'Dark Essence', 'Dark Essence PerHour', 'OverkillCells', 'Magmite', 'Magmamancers', 'Fluffy XP', 'Fluffy XP PerHour', 'Nurseries'];
+var graphList = ['Helium - He/Hr', 'Helium - Total', 'Helium - He/Hr Instant', 'Helium - He/Hr Delta', 'HeHr % / LifetimeHe', 'He % / LifetimeHe', 'Clear Time', 'Cumulative Clear Time', 'Run Time', 'Map Bonus', 'Void Maps', 'Void Map History', 'Loot Sources', 'Coordinations', 'GigaStations', 'Unused Gigas', 'Last Warpstation', 'Trimps', 'Nullifium Gained', 'Dark Essence', 'Dark Essence PerHour', 'OverkillCells', 'Magmite', 'Magmamancers', 'Fluffy XP', 'Fluffy XP PerHour', 'Nurseries', 'Bones'];
 var $graphSel = document.createElement("select");
 $graphSel.id = 'graphSelection';
 $graphSel.setAttribute("style", "");
@@ -382,7 +382,8 @@ function pushData() {
         magmite: game.global.magmite,
         magmamancers: game.jobs.Magmamancer.owned,
         fluffy: game.global.fluffyExp,
-        nursery: game.buildings.Nursery.purchased
+        nursery: game.buildings.Nursery.purchased,
+        bones: game.global.b
     });
     //only keep 15 portals worth of runs to prevent filling storage
     clearData(15);
@@ -1000,11 +1001,16 @@ function setGraphData(graph) {
         case 'Nurseries':
             graphData = allPurposeGraph('nursery',true,"number");
             title = 'Nurseries Bought (Total)';
-            xTitle = 'Zone';// (starting at your NoNurseriesUntil setting)';
+            xTitle = 'Zone';
             yTitle = 'Nursery';
             yType = 'Linear';
-            // if (getPageSetting('NoNurseriesUntil'))
-                // xminFloor = getPageSetting('NoNurseriesUntil');
+            break;
+        case 'Bones':
+            graphData = allPurposeGraph('bones',true,"number");
+            title = 'Bones Found (Total)';
+            xTitle = 'Zone';
+            yTitle = 'Bones';
+            yType = 'Linear';
             break;
         case 'Fluffy XP':
             graphData = allPurposeGraph('fluffy',true,"number");
