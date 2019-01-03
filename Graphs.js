@@ -1153,8 +1153,8 @@ function setGraphData(graph) {
     formatter = formatter || function () {
         var ser = this.series;
         return '<span style="color:' + ser.color + '" >●</span> ' +
-                ser.name + ': <b>' +
-                Highcharts.numberFormat(this.y, precision,'.', ',') + valueSuffix + '</b><br>';
+                ser.name + ' <b>' +
+                prettify(this.y) + valueSuffix + '</b><br>';//#34 - changed formatting to Trimps own prettification
     };
     var additionalParams = {};
     //Makes everything happen.
