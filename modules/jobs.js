@@ -4,6 +4,8 @@ MODULES["jobs"].scientistRatio = 25;        //ratio for scientists. (totalRatios
 MODULES["jobs"].scientistRatio2 = 10;       //used for lowlevel and Watch challenge
 MODULES["jobs"].magmamancerRatio = 0.1;     //buys 10% of your gem resources per go.
 //Worker Ratios = [Farmer,Lumber,Miner]
+MODULES["jobs"].autoRatio8 = [1,1,100];
+MODULES["jobs"].autoRatio7 = [1,1,24];
 MODULES["jobs"].autoRatio6 = [1,12,12];
 MODULES["jobs"].autoRatio5 = [1,2,22];
 MODULES["jobs"].autoRatio4 = [1,1,10];
@@ -279,6 +281,10 @@ function workerRatios() {
     var ratioSet;
     if (MODULES["jobs"].customRatio) {
         ratioSet = MODULES["jobs"].customRatio;
+    } else if (game.buildings.Tribute.owned > 6000 && mutations.Magma.active()) {
+        ratioSet = MODULES["jobs"].autoRatio8;
+    } else if (game.buildings.Tribute.owned > 4500 && mutations.Magma.active()) {
+        ratioSet = MODULES["jobs"].autoRatio7;
     } else if (game.buildings.Tribute.owned > 3000 && mutations.Magma.active()) {
         ratioSet = MODULES["jobs"].autoRatio6;
     } else if (game.buildings.Tribute.owned > 1500) {
