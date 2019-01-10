@@ -336,13 +336,17 @@ function calcOurDmg(number,maxormin,disableStances,disableFlucts) { //number = b
 //A method to calculated enemy hp and atk factors for Obliterated and Eradicated challenges
 //If neither challenge is active, returns 1
 function calcObliteratedEradicatedFactor() {
-    var obliteratedFactor =
-        (game.global.challengeActive == "Eradicated")
-            ? game.challenges.Eradicated.scaleModifier
-            : ((game.global.challengeActive == "Obliterated") ? 1e12 : 1);
-    var zoneModifier = Math.floor(game.global.world / game.challenges[game.global.challengeActive].zoneScaleFreq);
-    obliteratedFactor *= Math.pow(game.challenges[game.global.challengeActive].zoneScaling, zoneModifier);
-    return obliteratedFactor;
+	if (game.global.challengeActive == "Eradicated" || game.global.challengeActive == "Obliterated") {
+    	var obliteratedFactor =
+        	(game.global.challengeActive == "Eradicated")
+	            ? game.challenges.Eradicated.scaleModifier
+    	        : ((game.global.challengeActive == "Obliterated") ? 1e12 : 1);
+    	var zoneModifier = Math.floor(game.global.world / game.challenges[game.global.challengeActive].zoneScaleFreq);
+    	obliteratedFactor *= Math.pow(game.challenges[game.global.challengeActive].zoneScaling, zoneModifier);
+    	return obliteratedFactor;
+	} else {
+		return 1;
+	}
 }
 
 function calcBadGuyDmg(enemy,attack,daily,maxormin,disableFlucts) {
