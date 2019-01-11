@@ -251,7 +251,10 @@ function autoStance() {
 
 function autoStance2() {
     //get back to a baseline of no stance (X)
-    calcBaseDamageinX2();
+    //calcBaseDamageinX2();
+    //temporary stick to help with #7
+    //stats in v2 are about x100 off
+    calcBaseDamageinX();
     //no need to continue
     if (game.global.gridArray.length === 0) return true;
     if (game.global.soldierHealth <= 0) return; //dont calculate stances when dead, cause the "current" numbers are not updated when dead.
