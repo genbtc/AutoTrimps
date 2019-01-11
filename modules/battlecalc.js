@@ -363,8 +363,10 @@ function calcBadGuyDmg(enemy,attack,daily,maxormin,disableFlucts) {
     //Situational bad guy damage increases
     if (game.global.challengeActive){
         //Challenge bonuses here
-        //#7 - apparently enemy stats factor that in already
-        //number *= calcObliteratedEradicatedFactor();
+        //#7 - apparently enemy stats factor that in already - but only where enemy was obtained
+        if (!enemy) {
+            number *= calcObliteratedEradicatedFactor();
+        }
         if (game.global.challengeActive == "Coordinate"){
             number *= getBadCoordLevel();
         }
