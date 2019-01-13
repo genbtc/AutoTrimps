@@ -228,6 +228,9 @@ function getBattleStats(what,form,crit) {
     return currentCalc;
 }
 
+//todo #7 - use function calculateDamage(number, buildString, isTrimp, noCheckAchieve, cell)
+//typical invocation calculateDamage(game.global.soldierCurrentAttack, false, true);
+//it gets an accurate pre-crit calculation in current stance
 function calcOurDmg(number,maxormin,disableStances,disableFlucts) { //number = base attack
     var fluctuation = .2; //%fluctuation
     var maxFluct = -1;
@@ -286,6 +289,15 @@ function calcOurDmg(number,maxormin,disableStances,disableFlucts) { //number = b
     }
     if (Fluffy.isActive()){
         number *= Fluffy.getDamageModifier();
+    }
+    //#38 - Amalgamator
+    if (game.jobs.Amalgamator.owned > 0) {
+    	number *= game.jobs.Amalgamator.getDamageMult();
+    }
+    //#38 - Strength Towers
+    if (playerSpireTraps.Strength.owned){
+    	var strBonus = playerSpireTraps.Strength.getWorldBonus();
+    	number *= (1 + (strBonus / 100));
     }
     //#18 - disable Ice in h/d ratio calculations
 //    number *= (1 + (1 - game.empowerments.Ice.getCombatModifier()));
