@@ -654,18 +654,20 @@ AutoPerks.applyCalculations = function(perks,remainingHelium){
     var preBuyAmt = game.global.buyAmt;
     var needsRespec = false;
     for(var i in perks) {
-        var capitalized = AutoPerks.capitaliseFirstLetter(perks[i].name);
-        game.global.buyAmt = perks[i].level - game.portal[capitalized].level - game.portal[capitalized].levelTemp;
-        if (game.global.buyAmt < 0) {
-            needsRespec = true;
-            if (MODULES["perks"].showDetails)
-                debug("AutoPerks RESPEC Required for: " + capitalized + " " + game.global.buyAmt, "perks");
-            //break;
-        }
-        else if (game.global.buyAmt > 0) {
-            if (MODULES["perks"].showDetails)
-                debug("AutoPerks-NoRespec Adding: " + capitalized + " " + game.global.buyAmt, "perks");
-            buyPortalUpgrade(capitalized);
+        if (perks[i]) {//defense against future unknown perks
+            var capitalized = AutoPerks.capitaliseFirstLetter(perks[i].name);
+            game.global.buyAmt = perks[i].level - game.portal[capitalized].level - game.portal[capitalized].levelTemp;
+            if (game.global.buyAmt < 0) {
+                needsRespec = true;
+                if (MODULES["perks"].showDetails)
+                    debug("AutoPerks RESPEC Required for: " + capitalized + " " + game.global.buyAmt, "perks");
+                //break;
+            }
+            else if (game.global.buyAmt > 0) {
+                if (MODULES["perks"].showDetails)
+                    debug("AutoPerks-NoRespec Adding: " + capitalized + " " + game.global.buyAmt, "perks");
+                buyPortalUpgrade(capitalized);
+            }
         }
     }
 
