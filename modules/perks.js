@@ -623,15 +623,17 @@ AutoPerks.applyCalculationsRespec = function(perks,remainingHelium){
         var preBuyAmt = game.global.buyAmt;
 
         for(var i in perks) {
-            var capitalized = AutoPerks.capitaliseFirstLetter(perks[i].name);
-            game.global.buyAmt = perks[i].level;
-            if (getPortalUpgradePrice(capitalized) <= remainingHelium) {
-                if (MODULES["perks"].showDetails)
-                    debug("AutoPerks-Respec Buying: " + capitalized + " " + perks[i].level, "perks");
-                buyPortalUpgrade(capitalized);
-            } else
-                if (MODULES["perks"].showDetails)
-                    debug("AutoPerks-Respec Error Couldn't Afford Asked Perk: " + capitalized + " " + perks[i].level, "perks");
+            if (perks[i]) {//defense against future unknown perks
+                var capitalized = AutoPerks.capitaliseFirstLetter(perks[i].name);
+                game.global.buyAmt = perks[i].level;
+                if (getPortalUpgradePrice(capitalized) <= remainingHelium) {
+                    if (MODULES["perks"].showDetails)
+                        debug("AutoPerks-Respec Buying: " + capitalized + " " + perks[i].level, "perks");
+                    buyPortalUpgrade(capitalized);
+                } else
+                    if (MODULES["perks"].showDetails)
+                        debug("AutoPerks-Respec Error Couldn't Afford Asked Perk: " + capitalized + " " + perks[i].level, "perks");
+            }
         }
         game.global.buyAmt = preBuyAmt;
         numTab(1,true);     //selects the 1st number of the buy-amount tab-bar (Always 1)
