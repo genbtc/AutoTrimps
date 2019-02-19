@@ -15,9 +15,21 @@ function safeBuyBuilding(building) {
     if (game.buildings[building].locked)
         return false;
     var oldBuy = preBuy2();
-    //build 2 at a time if we have the mastery for it.
-    //Note: Bypasses any "Max" caps by 1 if they are odd numbers and we can afford the 2nd one.
-    if (game.talents.doubleBuild.purchased) {
+    //build 10 or 2 at a time if we have the mastery for it.
+    //Note: Bypasses any "Max" caps by 1 if they are odd numbers and we can afford the 2nd one.//@todo #24
+    if (game.talents.deciBuild.purchased) {//@todo refactor without this horrendous nested ifs and code duplication
+        game.global.buyAmt = 10;
+        if (!canAffordBuilding(building)) {
+            game.global.buyAmt = 2;
+            if (!canAffordBuilding(building)) {
+                game.global.buyAmt = 1;
+                if (!canAffordBuilding(building)) {
+                    postBuy2(oldBuy);
+                    return false;
+                }
+            }
+        }
+    } else if (game.talents.doubleBuild.purchased) {
         game.global.buyAmt = 2;
         if (!canAffordBuilding(building)) {
             game.global.buyAmt = 1;
