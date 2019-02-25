@@ -62,7 +62,8 @@ function useScryerStance() {
     //check for spire
     use_auto = use_auto || !game.global.mapsActive && isActiveSpireAT() && getPageSetting('ScryerUseinSpire2')!=1;
     //check for voids
-    use_auto = use_auto || game.global.mapsActive && getCurrentMapObject().location == "Void" && !getPageSetting('ScryerUseinVoidMaps2');
+    var noVoid = game.global.mapsActive && getCurrentMapObject().location == "Void" && !getPageSetting('ScryerUseinVoidMaps2');
+    use_auto = use_auto || noVoid;
     //check for maps that are NOT void maps
     use_auto = use_auto || game.global.mapsActive && !(getCurrentMapObject().location == "Void") && !getPageSetting('ScryerUseinMaps2');
     //check for bosses above voidlevel
@@ -91,7 +92,7 @@ function useScryerStance() {
     var max_zone = getPageSetting('ScryerMaxZone');
     var valid_min = game.global.world >= min_zone;
     var valid_max = max_zone <= 0 || game.global.world < max_zone;
-    if (valid_min && valid_max) {
+    if ((valid_min && valid_max) || !noVoid) {
         if (oktoswitch)
             setFormation(4);
         wantToScry = true;
