@@ -5,9 +5,9 @@
 
 //OLD:
 //renamed from sortHeirlooms to worthOfHeirlooms
-var worth = {'Shield': {}, 'Staff': {}};
+var worth = {'Shield': {}, 'Staff': {}, 'Core': {}};
 function worthOfHeirlooms(){
-    worth = {'Shield': {}, 'Staff': {}};
+    worth = {'Shield': {}, 'Staff': {}, 'Core': {}};
     for (var loom in game.global.heirloomsExtra) {
         var theLoom = game.global.heirloomsExtra[loom];
         worth[theLoom.type][loom] = theLoom.rarity;
@@ -28,9 +28,9 @@ function worthOfHeirlooms(){
 
 //NEW:
 //makes an array of heirlooms sitting in the temporary extra area to indicate to the autoHeirlooms2() function which to Carry/Drop
-var worth2 = {'Shield': [], 'Staff': []};
+var worth2 = {'Shield': {}, 'Staff': {}, 'Core': {}};
 function worthOfHeirlooms2(){
-    worth2 = {'Shield': [], 'Staff': []};
+    worth2 = {'Shield': {}, 'Staff': {}, 'Core': {}};
     for (var index in game.global.heirloomsExtra) {
         var theLoom = game.global.heirloomsExtra[index];
         var data = {'location': 'heirloomsExtra', 'index': index, 'rarity': theLoom.rarity, 'eff': evaluateHeirloomMods(index, 'heirloomsExtra')};
