@@ -13,9 +13,9 @@ function applyCritMultiplier(baseDamage) {
 	    critChance -= 1;
 	    critDamage *= critMegaMult;
 	}
-	critDamage = critDamage * (1-critChance) + baseDamage * critChance * critMegaMult);
+	critDamage = critDamage * (1-critChance) + baseDamage * critChance * critMegaMult;
     } else {
-	critDamage = baseDamage * (1-critChance) + baseDamage * critChance * critMult);
+	critDamage = baseDamage * (1-critChance) + baseDamage * critChance * critMult;
     }
     return critDamage;
 }
