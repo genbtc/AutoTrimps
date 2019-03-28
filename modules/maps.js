@@ -125,7 +125,7 @@ function autoMap() {
 //START CALCULATING DAMAGES:
     var AutoStance = getPageSetting('AutoStance');
     //calculate crits (baseDamage was calced in function autoStance)    this is a weighted average of nonCrit + Crit. (somewhere in the middle)
-    ourBaseDamage = (baseDamage * (1-getPlayerCritChance()) + (baseDamage * getPlayerCritChance() * getPlayerCritDamageMult()));
+    ourBaseDamage = applyCritMultiplier(baseDamage);
     //calculate with map bonus
     var mapbonusmulti = 1 + (0.20*game.global.mapBonus);
     //(autostance2 has mapbonusmulti built in)
