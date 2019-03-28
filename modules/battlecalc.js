@@ -1,3 +1,25 @@
+//Applies getMegaCritDamageMult(critTier), if needed; applies regular crit as well.
+function applyCritMultiplier(baseDamage) {
+	//(baseDamage * (1-getPlayerCritChance()) + (baseDamage * getPlayerCritChance() * getPlayerCritDamageMult()));
+    var critDamage = baseDamage;
+    var critChance = getPlayerCritChance();
+    var critTier = Math.floor(critChance);
+    var critMult = getPlayerCritDamageMult();
+    var critMegaMult = getMegaCritDamageMult(1);	
+	
+    if (critTier > 0) {
+        critDamage *= critMult;
+	while (critTier > 1) {
+	    critChance -= 1;
+	    critDamage *= critMegaMult;
+	}
+	critDamage = critDamage * (1-critChance) + baseDamage * critChance * critMegaMult);
+    } else {
+	critDamage = baseDamage * (1-critChance) + baseDamage * critChance * critMult);
+    }
+    return critDamage;
+}
+
 //MODULES["battlecalc"] = {};
 //AutoTrimps: currently only used for health and block. attack is done by calcOurDmg below
 // function ripped from Trimps "updates.js" line 1103
