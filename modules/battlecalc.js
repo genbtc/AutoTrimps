@@ -5,11 +5,11 @@ function applyCritMultiplier(baseDamage) {
     var critChance = getPlayerCritChance();
     var critTier = Math.floor(critChance);
     var critMult = getPlayerCritDamageMult();
-    var critMegaMult = getMegaCritDamageMult(1);	
+    var critMegaMult = getMegaCritDamageMult(2);//yes, a single step megacrit modifier is 2	
 	
     if (critTier > 0) {
         critDamage *= critMult;
-	while (critTier > 1) {
+	while (critTier > 0) {
 	    critChance -= 1;
 	    critTier -= 1;
 	    critDamage *= critMegaMult;
