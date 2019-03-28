@@ -11,6 +11,7 @@ function applyCritMultiplier(baseDamage) {
         critDamage *= critMult;
 	while (critTier > 1) {
 	    critChance -= 1;
+	    critTier -= 1;
 	    critDamage *= critMegaMult;
 	}
 	critDamage = critDamage * (1-critChance) + baseDamage * critChance * critMegaMult;
