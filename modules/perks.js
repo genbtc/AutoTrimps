@@ -622,10 +622,15 @@ AutoPerks.applyCalculationsRespec = function(perks,remainingHelium){
         clearPerks();
         var preBuyAmt = game.global.buyAmt;
 
+        perks.reverse();//we want last perk to be t2 one so max instead of precise calc has less of an impact
         for(var i in perks) {
             if (perks[i]) {//defense against future unknown perks
                 var capitalized = AutoPerks.capitaliseFirstLetter(perks[i].name);
-                game.global.buyAmt = perks[i].level;
+                if (perks.length - 1 == i) {//fall back to max for the last perk out there so we're not hit by rounding
+                    game.global.buyAmt = "Max";
+                } else {
+                    game.global.buyAmt = perks[i].level;
+                }   
                 if (getPortalUpgradePrice(capitalized) <= remainingHelium) {
                     if (MODULES["perks"].showDetails)
                         debug("AutoPerks-Respec Buying: " + capitalized + " " + perks[i].level, "perks");
@@ -635,6 +640,7 @@ AutoPerks.applyCalculationsRespec = function(perks,remainingHelium){
                         debug("AutoPerks-Respec Error Couldn't Afford Asked Perk: " + capitalized + " " + perks[i].level, "perks");
             }
         }
+        perks.reverse();//no idea if anything else uses it so we'd better fix it
         game.global.buyAmt = preBuyAmt;
         numTab(1,true);     //selects the 1st number of the buy-amount tab-bar (Always 1)
         cancelTooltip();    //displays the last perk we bought's tooltip without this. idk why.
@@ -661,7 +667,7 @@ AutoPerks.applyCalculations = function(perks,remainingHelium){
                 needsRespec = true;
                 if (MODULES["perks"].showDetails)
                     debug("AutoPerks RESPEC Required for: " + capitalized + " " + game.global.buyAmt, "perks");
-                //break;
+                break;//no point iterating further
             }
             else if (game.global.buyAmt > 0) {
                 if (MODULES["perks"].showDetails)
