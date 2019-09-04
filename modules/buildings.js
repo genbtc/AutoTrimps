@@ -197,6 +197,14 @@ function buyBuildings() {
     var customVars = MODULES["buildings"];
     var oldBuy = preBuy2();
     game.global.buyAmt = 1;
+    //Smithy
+    if (!game.buildings.Smithy.locked) {
+        safeBuyBuilding('Smithy');
+    }
+    //Microchip
+    if (!game.buildings.Smithy.locked) {
+        safeBuyBuilding('Microchip');
+    }
     buyFoodEfficientHousing();  //["Hut", "House", "Mansion", "Hotel", "Resort"];
     buyGemEfficientHousing();   //["Hotel", "Resort", "Gateway", "Collector", "Warpstation"];
     //WormHoles:
