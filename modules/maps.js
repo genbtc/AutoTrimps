@@ -136,12 +136,12 @@ function autoMap() {
     var enemyDamage;
     var enemyHealth;
     if (AutoStance<=1) {
-        enemyDamage = getEnemyMaxAttack(game.global.world + 1, 50, 'Snimp', 1.2);
+        enemyDamage = getEnemyMaxAttack(game.global.world, 90, 'Snimp', 1.2);
         enemyDamage = calcDailyAttackMod(enemyDamage); //daily mods: badStrength,badMapStrength,bloodthirst
     } else {
-        enemyDamage = calcBadGuyDmg(null,getEnemyMaxAttack(game.global.world + 1, 50, 'Snimp', 1.0),true,true); //(enemy,attack,daily,maxormin,[disableFlucts])
+        enemyDamage = calcBadGuyDmg(null,getEnemyMaxAttack(game.global.world, 90, 'Snimp', 1.0),true,true); //(enemy,attack,daily,maxormin,[disableFlucts])
     }
-    enemyHealth = getEnemyMaxHealth(game.global.world + 1,50);
+    enemyHealth = getEnemyMaxHealth(game.global.world, 90);
     if (game.global.challengeActive == "Toxicity") {
         enemyHealth *= 2;
     }
@@ -366,7 +366,7 @@ function autoMap() {
 
     //Dynamic Siphonology section (when necessary)
     //Lower Farming Zone = Lowers the zone used during Farming mode. Starts 10 zones below current and Finds the minimum map level you can successfully one-shot
-    var siphlvl = shouldFarmLowerZone ? game.global.world - 10 : game.global.world - game.portal.Siphonology.level;
+    var siphlvl = shouldFarmLowerZone ? game.global.world - 10 : (game.global.universe == 1 ? game.global.world - game.portal.Siphonology.level : game.global.world);
     var maxlvl = game.talents.mapLoot.purchased ? game.global.world - 1 : game.global.world;
     maxlvl += extraMapLevels;   // extraMapLevels : advanced slider
     if (getPageSetting('DynamicSiphonology') || shouldFarmLowerZone){
