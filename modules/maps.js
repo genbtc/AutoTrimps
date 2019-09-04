@@ -411,13 +411,13 @@ function autoMap() {
        for (var map in game.global.mapsOwnedArray) {
           var theMap = game.global.mapsOwnedArray[map];
           if (theMap.noRecycle) {
-              if (theMap.name == 'The Wall' && game.upgrades.Bounty.allowed == 0 && !game.talents.bounty.purchased) {
+              if ((theMap.name == 'The Wall' || theMap.name == 'Big Wall') && game.upgrades.Bounty.allowed == 0 && !game.talents.bounty.purchased) {
                 var theMapDifficulty = Math.ceil(theMap.difficulty / 2);
                 if(game.global.world < 15 + theMapDifficulty) continue;
                 selectedMap = theMap.id;
                 break;
               }
-              if (theMap.name == 'Dimension of Anger' && document.getElementById("portalBtn").style.display == "none" && !game.talents.portal.purchased) {
+              if ((theMap.name == 'Dimension of Anger' || theMap.name == 'Dimension of Rage') && document.getElementById("portalBtn").style.display == "none" && !game.talents.portal.purchased) {
                   var theMapDifficulty = Math.ceil(theMap.difficulty / 2);
                   if(game.global.world < 20 + theMapDifficulty) continue;
                   selectedMap = theMap.id;
