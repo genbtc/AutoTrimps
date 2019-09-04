@@ -424,7 +424,7 @@ function autoMap() {
                   selectedMap = theMap.id;
                   break;
               }
-              if (theMap.name == 'Prismatic Palace') {
+              if (theMap.name == 'Prismatic Palace' && !game.upgrades.Prismalicious.done) {
                   var theMapDifficulty = Math.ceil(theMap.difficulty / 2);                  
                   if(game.global.world < 20 + theMapDifficulty) continue;
                   selectedMap = theMap.id;
