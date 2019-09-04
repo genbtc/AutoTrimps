@@ -526,7 +526,8 @@ function autoMap() {
             if(game.global.challengeActive == 'Toxicity') eAttack *= 5;
             //break to prevent finishing map to finish a challenge?
             //continue to check for doable map?
-            var diff = parseInt(getPageSetting('VoidCheck')) > 0 ? parseInt(getPageSetting('VoidCheck')) : 2;
+            //allow player to kill itself if he wants to, make default difficulty equal to 1
+            var diff = parseInt(getPageSetting('VoidCheck')) > 0 ? parseInt(getPageSetting('VoidCheck')) : 1;
             var ourBlock = getBattleStats("block", true);   //use block tooltip (after death block) instead of current army block.
             if(ourHealth/diff < eAttack - ourBlock) {
                 shouldFarm = true;
