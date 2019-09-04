@@ -72,10 +72,14 @@ function getScienceCostToUpgrade(upgrade) {
 }
 
 
+//this is a hideous copy from game.global.getEnemyMaxAttack
+//to fully delegate to game.global.getEnemyMaxAttack we need to hijack getCurrentMapObject() with world
+//and also apply diff/corrupt outside
 function getEnemyMaxAttack(world, level, name, diff, corrupt) {
     var amt = 0;
     var adjWorld = ((world - 1) * 100) + level;
-    amt += 50 * Math.sqrt(world) * Math.pow(3.27, world / 2);
+    var attackBase = (game.global.universe == 2) ? 750 : 50;
+    amt += attackBase * Math.sqrt(world) * Math.pow(3.27, world / 2);
     amt -= 10;
     if (world == 1){
         amt *= 0.35;
@@ -96,6 +100,18 @@ function getEnemyMaxAttack(world, level, name, diff, corrupt) {
     if (diff) {
         amt *= diff;
     }
+
+	if (game.global.universe == 2){
+		var part1 = (world > 40) ? 40 : world;
+		var part2 = (world > 60) ? 20 : world - 40;
+		var part3 = (world - 60);
+		if (part2 < 0) part2 = 0;
+		if (part3 < 0) part3 = 0;
+		amt *= Math.pow(1.5, part1);
+		amt *= Math.pow(1.4, part2);
+		amt *= Math.pow(1.32, part3);
+	}
+
     if (!corrupt)
         amt *= game.badGuys[name].attack;
     else {
@@ -104,11 +120,15 @@ function getEnemyMaxAttack(world, level, name, diff, corrupt) {
     return Math.floor(amt);
 }
 
+//this is a hideous copy from game.global.getEnemyMaxHealth
+//to fully delegate to game.global.getEnemyMaxHealth we need to hijack getCurrentMapObject() with world
+//and also apply corrupt outside
 function getEnemyMaxHealth(world, level, corrupt) {
     if (!level)
         level = 30;
     var amt = 0;
-    amt += 130 * Math.sqrt(world) * Math.pow(3.265, world / 2);
+    var healthBase = (game.global.universe == 2) ? 10e7 : 130;
+    amt += healthBase * Math.sqrt(world) * Math.pow(3.265, world / 2);
     amt -= 110;
     if (world == 1 || world == 2 && level < 10) {
         amt *= 0.6;
@@ -122,6 +142,15 @@ function getEnemyMaxHealth(world, level, corrupt) {
     }
     if (world < 60) amt *= 0.75;
     //if (world > 5 && game.global.mapsActive) amt *= 1.1;
+   
+    if (game.global.universe == 2){
+		var part1 = (world > 60) ? 60 : world;
+		var part2 = (world - 60);
+		if (part2 < 0) part2 = 0;
+		amt *= Math.pow(1.4, part1);
+		amt *= Math.pow(1.32, part2);
+	}
+
     if (!corrupt)
         amt *= game.badGuys["Grimp"].health;
     else
