@@ -80,6 +80,8 @@ function getBattleStats(what,form,crit) {
             trainerStrength = calcHeirloomBonus("Shield", "trainerEfficiency", trainerStrength);
             currentCalc  *= (trainerStrength + 1);
         }
+    } else if (what == "shield") {
+    	return getMaxEnergyShield();
     }
     //Add coordination
     currentCalc  *= game.resources.trimps.maxSoldiers;
