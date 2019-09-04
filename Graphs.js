@@ -30,7 +30,7 @@ document.getElementById("graphParent").innerHTML += '<div id="graphFooter" style
 var $graphFooter = document.getElementById('graphFooterLine1');
 //$graphFooter.innerHTML += '\
 //Create the dropdown for what graph to show    (these correspond to headings in setGraph() and have to match)
-var graphList = ['Helium - He/Hr', 'Helium - Total', 'Helium - He/Hr Instant', 'Helium - He/Hr Delta', 'HeHr % / LifetimeHe', 'He % / LifetimeHe', 'Clear Time', 'Cumulative Clear Time', 'Run Time', 'Map Bonus', 'Void Maps', 'Void Map History', 'Loot Sources', 'Coordinations', 'GigaStations', 'Unused Gigas', 'Last Warpstation', 'Trimps', 'Nullifium Gained', 'Dark Essence', 'Dark Essence PerHour', 'OverkillCells', 'Magmite', 'Magmamancers', 'Fluffy XP', 'Fluffy XP PerHour', 'Nurseries', 'Bones'];
+var graphList = ['Helium - He/Hr', 'Radon - Ra/Hr', 'Helium - Total', 'Helium - He/Hr Instant', 'Helium - He/Hr Delta', 'HeHr % / LifetimeHe', 'He % / LifetimeHe', 'Clear Time', 'Cumulative Clear Time', 'Run Time', 'Map Bonus', 'Void Maps', 'Void Map History', 'Loot Sources', 'Coordinations', 'GigaStations', 'Unused Gigas', 'Last Warpstation', 'Trimps', 'Nullifium Gained', 'Dark Essence', 'Dark Essence PerHour', 'OverkillCells', 'Magmite', 'Magmamancers', 'Fluffy XP', 'Fluffy XP PerHour', 'Nurseries', 'Bones'];
 var $graphSel = document.createElement("select");
 $graphSel.id = 'graphSelection';
 $graphSel.setAttribute("style", "");
@@ -361,6 +361,7 @@ function pushData() {
     allSaveData.push({
         totalPortals: game.global.totalPortals,
         heliumOwned: game.resources.helium.owned,
+	radonOwned: game.resources.radon.owned,
         currentTime: new Date().getTime(),
         portalTime: game.global.portalTime,
         world: game.global.world,
@@ -861,6 +862,17 @@ function setGraphData(graph) {
             title = 'Helium/Hour (Cumulative)';
             xTitle = 'Zone';
             yTitle = 'Helium/Hour';
+            yType = 'Linear';
+            yminFloor=0;
+            break;
+	case 'Radon - Ra/Hr':
+            graphData = allPurposeGraph('radonhr',true,null,
+                    function specialCalc(e1,e2) {
+                        return Math.floor(e1.radonOwned / ((e1.currentTime - e1.portalTime) / 3600000));
+                    });
+            title = 'Radon/Hour (Cumulative)';
+            xTitle = 'Zone';
+            yTitle = 'Radon/Hour';
             yType = 'Linear';
             yminFloor=0;
             break;
