@@ -40,7 +40,7 @@ var preset_genBTC = [100, 8, 8, 4, 4, 5, 18, 8, 14, 1, 1, 1, 1];
 var preset_genBTC2 = [96, 19, 15.4, 8, 8, 7, 14, 19, 11, 1, 1, 1, 1];
 var preset_Zek4501 = [300, 1, 30, 2, 4, 2, 9, 8, 17, 0.1, 1, 320, 1];
 var preset_Zek4502 = [350, 1, 40, 2, 3, 2, 5, 8, 2, 0.1, 1, 300, 20];
-var preset_Zek450 = [450, 0.9, 48, 3.35, 1, 2.8, 7.8, 1.95, 4, 0.04, 1, 120, 175];
+var preset_Zek4503 = [450, 0.9, 48, 3.35, 1, 2.8, 7.8, 1.95, 4, 0.04, 1, 120, 175];
 //
 var preset_space = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 //
@@ -51,8 +51,11 @@ var preset_Zek229 = [11.2, 0.58, 2.37, 1.464, 0.3, 2.02, 12.2, 0.58, 37, 0.22, 2
 var preset_Zek299 = [16.8, 3, 1.9, 1.1, 1.2, 1, 17.1, 3, 100, 0.06, 0.8, 0, 0];
 var preset_Zek399 = [135, 6.1, 18.5, 6.5, 2.5, 6, 17, 6.1, 25, 0.08, 1, 0, 0];
 var preset_Zek449 = [245, 5.85, 29, 1.95, 2.8, 6, 6.1, 5.85, 15, 0.05, 1, 57, 0];
+var preset_Zek450 = [450, 0.9, 48, 3.35, 1, 2.8, 7.8, 1.95, 10, 0.03, 1, 120, 175, 0];
+var preset_Zek500 = [600, 2.4, 60, 2, 1, 2.5, 8, 2.4, 8, 0.02, 1, 145, 180, 130];
+var preset_Zek550 = [700, 2.8, 70, 1.4, 1, 2.2, 7.5, 2.8, 8, 0.003, 1, 50, 80, 45];
 //gather these into an array of objects. this is one important object.
-var presetList = [preset_ZXV,preset_ZXVnew,preset_ZXV3,preset_TruthEarly,preset_TruthLate,preset_nsheetz,preset_nsheetzNew,preset_HiderHehr,preset_HiderBalance,preset_HiderMore,preset_genBTC,preset_genBTC2,preset_Zek4501,preset_Zek4502,preset_Zek450,preset_space,preset_Zek059,preset_Zek100,preset_Zek180,preset_Zek229,preset_Zek299,preset_Zek399,preset_Zek449,preset_Zek450,preset_space];
+var presetList = [preset_ZXV,preset_ZXVnew,preset_ZXV3,preset_TruthEarly,preset_TruthLate,preset_nsheetz,preset_nsheetzNew,preset_HiderHehr,preset_HiderBalance,preset_HiderMore,preset_genBTC,preset_genBTC2,preset_Zek4501,preset_Zek4502,preset_Zek4503,preset_space,preset_Zek059,preset_Zek100,preset_Zek180,preset_Zek229,preset_Zek299,preset_Zek399,preset_Zek449,preset_Zek450,preset_Zek500,preset_Zek550,preset_space];
 //Specific ratios labeled above must be given the matching ID below.
 //Ratio preset dropdown list
 var presetListHtml = "\
@@ -70,7 +73,7 @@ var presetListHtml = "\
 <option id='preset_genBTC2'>genBTC2</option>\
 <option id='preset_Zek4501'>Zeker0-#1 old</option>\
 <option id='preset_Zek4502'>Zeker0-#2 old</option>\
-<option id='preset_Zek450'>Zeker0-#3 old</option>\
+<option id='preset_Zek4503'>Zeker0-#3 old</option>\
 <option id='preset_space'>--------------</option>\
 <option id='preset_Zek059'>Zeker0 (z1-59)</option>\
 <option id='preset_Zek100'>Zeker0 (z60-100)</option>\
@@ -79,7 +82,9 @@ var presetListHtml = "\
 <option id='preset_Zek299'>Zeker0 (z230-299)</option>\
 <option id='preset_Zek399'>Zeker0 (z300-399)</option>\
 <option id='preset_Zek449'>Zeker0 (z400-449)</option>\
-<option id='preset_Zek450'>Zeker0 (z450+) (new)</option>\
+<option id='preset_Zek450'>Zeker0 (z450-500</option>\
+<option id='preset_Zek500'>Zeker0 (z501-549)</option>\
+<option id='preset_Zek500'>Zeker0 (z550+)</option>\
 <option id='preset_space'>--------------</option>\
 <option id='customPreset'>CUSTOM ratio</option></select>";
 //Custom Creation for all perk customRatio boxes in Trimps Perk Window
