@@ -413,7 +413,8 @@ function autoMap() {
           if (theMap.noRecycle) {
               if ((theMap.name == 'The Wall' || theMap.name == 'Big Wall') && game.upgrades.Bounty.allowed == 0 && (!game.talents.bounty.purchased || game.global.universe == 2)) {
                 var theMapDifficulty = Math.ceil(theMap.difficulty / 2);
-                if(game.global.world < 15 + theMapDifficulty) continue;
+                //15 for U1, 7 for U2
+                if(game.global.world < 7 + (2 - game.global.universe)*8 + theMapDifficulty) continue;
                 selectedMap = theMap.id;
                 break;
               }
