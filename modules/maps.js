@@ -519,7 +519,9 @@ function autoMap() {
                 eAttack *= (getCorruptScale("attack") / 2).toFixed(1);
             //TODO: Account for magmated voidmaps. (not /2)
             //TODO: Account for daily.
-            var ourHealth = baseHealth;
+            //u2 update - prismatic shield
+            //@todo Angelic? 
+            var ourHealth = baseHealth + getBattleStats("shield", true);
             if(game.global.challengeActive == 'Balance') {
                 var stacks = game.challenges.Balance.balanceStacks ? (game.challenges.Balance.balanceStacks > theMap.size) ? theMap.size : game.challenges.Balance.balanceStacks : false;
                 eAttack *= 2;
@@ -535,6 +537,7 @@ function autoMap() {
             //allow player to kill itself if he wants to, make default difficulty equal to 1
             var diff = parseInt(getPageSetting('VoidCheck')) > 0 ? parseInt(getPageSetting('VoidCheck')) : 1;
             var ourBlock = getBattleStats("block", true);   //use block tooltip (after death block) instead of current army block.
+            //@todo get rid of getbattlestats and extract "survives X hits" calculation to a single place
             if(ourHealth/diff < eAttack - ourBlock) {
                 shouldFarm = true;
                 voidCheckPercent = Math.round((ourHealth/diff)/(eAttack-ourBlock)*100);
