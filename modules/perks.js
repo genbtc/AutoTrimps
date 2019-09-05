@@ -320,14 +320,26 @@ AutoPerks.initialise = function() {
 AutoPerks.clickAllocate = function() {
     AutoPerks.initialise(); // Reset all fixed perks to 0 and grab new ratios if any
 
-    var helium = AutoPerks.getHelium();
+    var helium;
+    if (game.global.universe == 1) {
+        helium = AutoPerks.getHelium();
+    } else if (game.global.universe == 2) {
+        helium = AutoPerks.getRadon();
+    }
 
     // Get fixed perks
     var preSpentHe = 0;
     var fixedPerks = AutoPerks.getFixedPerks();
+    var gamePerk;
     for (var i in fixedPerks) {
         //Maintain your existing fixed perks levels.
-        fixedPerks[i].level = game.portal[AutoPerks.capitaliseFirstLetter(fixedPerks[i].name)].level;
+        gamePerk = game.portal[AutoPerks.capitaliseFirstLetter(fixedPerks[i].name)];
+        if (game.global.universe == 1) {
+            fixedPerks[i].level = gamePerk.level;
+        } else if (game.global.universe == 2) {
+            //u2 perk list is not supposed to have wrong perks
+            fixedPerks[i].level = gamePerk.radLevel;
+        }
         var price = AutoPerks.calculateTotalPrice(fixedPerks[i], fixedPerks[i].level);
         fixedPerks[i].spent += price;
         preSpentHe += price;
@@ -369,6 +381,20 @@ AutoPerks.getHelium = function() {
         var portUpgrade = game.portal[item];
         if (typeof portUpgrade.level === 'undefined') continue;
         respecMax += portUpgrade.heliumSpent;
+    }
+    return respecMax;
+}
+
+AutoPerks.getRadon = function() {
+    //determines if we are in the portal screen or the perk screen.
+    
+    var respecMax = (game.global.viewingUpgrades) ? game.global.radonLeftover : game.global.radonLeftover + game.resources.radon.owned;
+    //iterates all the perks and gathers up their heliumSpent counts.
+    for (var item in game.portal){
+        if (game.portal[item].radLocked) continue;
+        var portUpgrade = game.portal[item];
+        if (typeof portUpgrade.radLevel === 'undefined') continue;
+        respecMax += portUpgrade.radSpent;
     }
     return respecMax;
 }
@@ -636,6 +662,7 @@ AutoPerks.applyCalculationsRespec = function(perks,remainingHelium){
                 } else {
                     game.global.buyAmt = perks[i].level;
                 }   
+                //works fine, has u2 factored in
                 if (getPortalUpgradePrice(capitalized) <= remainingHelium) {
                     if (MODULES["perks"].showDetails)
                         debug("AutoPerks-Respec Buying: " + capitalized + " " + perks[i].level, "perks");
@@ -667,7 +694,8 @@ AutoPerks.applyCalculations = function(perks,remainingHelium){
     for(var i in perks) {
         if (perks[i]) {//defense against future unknown perks
             var capitalized = AutoPerks.capitaliseFirstLetter(perks[i].name);
-            game.global.buyAmt = perks[i].level - game.portal[capitalized].level - game.portal[capitalized].levelTemp;
+            gameLevel = game.global.universe == 1 ? game.portal[capitalized].level : game.portal[capitalized].radLevel;
+            game.global.buyAmt = perks[i].level - gameLevel - game.portal[capitalized].levelTemp;
             if (game.global.buyAmt < 0) {
                 needsRespec = true;
                 if (MODULES["perks"].showDetails)
@@ -699,11 +727,13 @@ AutoPerks.applyCalculations = function(perks,remainingHelium){
         if (MODULES["perks"].showDetails) {
             var exportPerks = {};
             for (var item in game.portal){
-                el = game.portal[item];
+                el = game.portal[item];                
+                //u2 exists
+                level = game.global.universe == 1 ? el.level : el.radLevel;
                 //For smaller strings and backwards compatibility, perks not added to the object will be treated as if the perk is supposed to be level 0.
-                if (el.locked || el.level <= 0) continue;
+                if (el.locked || level <= 0) continue;
                 //Add the perk to the object with the desired level
-                exportPerks[item] = el.level + el.levelTemp;
+                exportPerks[item] = level + el.levelTemp;
             }
             console.log(exportPerks);
         }
@@ -825,8 +855,16 @@ AutoPerks.initializePerks = function () {
     var carpentry_II = new AutoPerks.ArithmeticPerk("carpentry_II", 100000, 10000, 0.0025, carpentry);
     var looting_II = new AutoPerks.ArithmeticPerk("looting_II", 100000, 10000, 0.0025, looting);
 
+    //U2 perks
+    var prismal = new AutoPerks.VariablePerk("prismal", 1, true,              6, 0.1);
+        
+    AutoPerks.perkHolder = [];    
     //gather these into an array of objects
-    AutoPerks.perkHolder = [siphonology, anticipation, meditation, relentlessness, range, agility, bait, trumps, packrat, looting, toughness, power, motivation, pheromones, artisanistry, carpentry, resilience, coordinated, resourceful, overkill, capable, cunning, curious, classy, toughness_II, power_II, motivation_II, carpentry_II, looting_II];
+    if (game.global.universe == 1) {
+        AutoPerks.perkHolder = [siphonology, anticipation, meditation, relentlessness, range, agility, bait, trumps, packrat, looting, toughness, power, motivation, pheromones, artisanistry, carpentry, resilience, coordinated, resourceful, overkill, capable, cunning, curious, classy, toughness_II, power_II, motivation_II, carpentry_II, looting_II];
+    } else if (game.global.universe == 2) {
+        AutoPerks.perkHolder = [range, agility, bait, trumps, packrat, looting, toughness, power, motivation, pheromones, artisanistry, carpentry, prismal];
+    }
     //initialize basics on all.
     for(var i in AutoPerks.perkHolder) {
         AutoPerks.perkHolder[i].level = 0; //errors out here if a new perk is added to the game.
