@@ -1355,7 +1355,7 @@ setInterval(getLootData, 15000);
 
   // who even thought copying the code was a good idea?
   const oldFunction = window.addResCheckMax;
-  window.addResCheckMax = (a, b, c, d, e) => filterLoot(a, b, null, d) || oldFunction(a, b, c, d, e);
+  window.addResCheckMax = (a, b, c, d, e, f) => filterLoot(a, b, null, d) || oldFunction(a, b, c, d, e, f);
 })();
 //END overwriting default game functions!!!!!!!!!!!!!!!!!!!!!!
 
