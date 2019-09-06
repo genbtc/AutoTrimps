@@ -227,8 +227,13 @@ function buyJobs() {
     //game.jobs.Magmamancer.getBonusPercent(true);
     var timeOnZone = Math.floor((new Date().getTime() - game.global.zoneStarted) / 60000);
     // Add 5 minutes for zone-time for magmamancer mastery
-    if (game.talents.magmamancer.purchased)
+    if (game.talents.magmamancer.purchased) {
         timeOnZone += 5;
+    }
+    // Add some minutes for Still Magmamancing master
+    if (game.talents.stillMagmamancer.purchased) {
+        timeOnZone += game.global.spireRows;
+    }
     var stacks2 = Math.floor(timeOnZone / 10);
     if (getPageSetting('AutoMagmamancers') && stacks2 > tierMagmamancers) {
         var old = preBuy2();
