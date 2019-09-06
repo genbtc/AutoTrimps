@@ -581,7 +581,10 @@ AutoPerks.spendHelium2 = function(helium) {
             // Purchase the most efficient perk
             var t2 = mostEff.name.endsWith("_II");
             if (t2) {
-                packLevel = mostEff.increase * 10;
+                //at 6.5 Oc He with *10 that were here ran 370-ish million loops, ffs
+                //*1000 gives ~4m
+                //*10000 gives ~50m, weird
+                packLevel = mostEff.increase * 1000;
                 packPrice = AutoPerks.calculateTotalPrice(mostEff, mostEff.level + packLevel) - mostEff.spent;
             }
             if (t2 && packPrice <= helium) {
