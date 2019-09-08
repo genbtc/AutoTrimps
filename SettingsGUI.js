@@ -818,7 +818,7 @@ function updateCustomButtons() {
     //automaps button in GUI
     document.getElementById("autoMapBtn").setAttribute("class", "noselect settingsBtn settingBtn" + autoTrimpSettings.AutoMaps.value);
     //auto portal setting, hide until player has unlocked the balance challenge
-    (game.challenges.Balance.filter()) ? turnOn("AutoPortal") : turnOff("AutoPortal");
+    //(game.challenges.Balance.filter()) ? turnOn("AutoPortal") : turnOff("AutoPortal");
     //auto Daily settings, hide until player has unlocked the Daily challenges
     var doDaily = game.challenges.Daily.filter();
     (doDaily) ? turnOn("AutoStartDaily") : turnOff("AutoStartDaily");
