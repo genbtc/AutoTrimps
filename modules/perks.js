@@ -951,7 +951,7 @@ AutoPerks.getOwnedPerks = function() {
     var perks = [];
     for (var name in game.portal){
         perk = game.portal[name];
-        if((game.global.universe == 1 ? perk.locked : perk.radLocked) || (typeof perk.level === 'undefined')) continue;
+        if((game.global.universe == 1 ? perk.locked : (typeof perk.radLocked === 'undefined' || perk.radLocked)) || (typeof perk.level === 'undefined')) continue;
         perks.push(AutoPerks.getPerkByName(name));
     }
     return perks;
