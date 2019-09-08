@@ -87,6 +87,18 @@ var presetListHtml = "\
 <option id='preset_Zek500'>Zeker0 (z550+)</option>\
 <option id='preset_space'>--------------</option>\
 <option id='customPreset'>CUSTOM ratio</option></select>";
+
+//U2
+//[looting,toughness,power,motivation,pheromones,artisanistry,carpentry,prismal]
+var preset_Rspace = [0, 0, 0, 0, 0, 0, 0, 0];
+var preset_RZek059 = [7, 10, 5, 1, 0.5, 2, 15, 9];
+
+var presetListU2 = [preset_RZek059,preset_Rspace];
+var presetListHtmlU2 = "\
+<option id='preset_RZek059'>Zek (z1-59)</option>\
+<option id='preset_Rspace'>--------------</option>\
+<option id='customPreset'>CUSTOM ratio</option></select>";	
+
 //Custom Creation for all perk customRatio boxes in Trimps Perk Window
 AutoPerks.createInput = function(perkname,div) {
     var perk1input = document.createElement("Input");
@@ -137,14 +149,24 @@ AutoPerks.displayGUI = function() {
     //Line 1 of the UI
     apGUI.$ratiosLine1 = document.createElement("DIV");
     apGUI.$ratiosLine1.setAttribute('style', 'display: inline-block; text-align: left; width: 100%');
-    var listratiosLine1 = ["Overkill","Resourceful","Coordinated","Resilience","Carpentry","Artisanistry"];
+    var listratiosLine1;
+    if (game.global.universe == 1) {
+        listratiosLine1 = ["Overkill","Resourceful","Coordinated","Resilience","Carpentry","Artisanistry"];
+    } else if (game.global.universe == 2) {
+        listratiosLine1 = ["Carpentry","Pheromones","Motivation","Artisanistry"];
+    }
     for (var i in listratiosLine1)
         AutoPerks.createInput(listratiosLine1[i],apGUI.$ratiosLine1);
     apGUI.$customRatios.appendChild(apGUI.$ratiosLine1);
     //Line 2 of the UI
     apGUI.$ratiosLine2 = document.createElement("DIV");
     apGUI.$ratiosLine2.setAttribute('style', 'display: inline-block; text-align: left; width: 100%');
-    var listratiosLine2 = ["Pheromones","Motivation","Power","Looting","Cunning","Curious"];
+    var listratiosLine2;
+    if (game.global.universe == 1) {
+        listratiosLine2 = ["Pheromones","Motivation","Power","Looting","Cunning","Curious"];
+    } else if (game.global.universe == 2) {
+        listratiosLine2 = ["Power","Looting","Toughness","Prismal"];
+    }
     for (var i in listratiosLine2)
         AutoPerks.createInput(listratiosLine2[i],apGUI.$ratiosLine2);
     //Create dump perk dropdown
@@ -183,16 +205,17 @@ AutoPerks.displayGUI = function() {
     if(game.options.menu.darkTheme.enabled != 2) apGUI.$ratioPreset.setAttribute("style", oldstyle + " color: black;");
     else apGUI.$ratioPreset.setAttribute('style', oldstyle);
     //Populate ratio preset dropdown list from HTML above:
-    apGUI.$ratioPreset.innerHTML = presetListHtml;
-    //Load the last ratio used
-    var loadLastPreset = localStorage.getItem('AutoperkSelectedRatioPresetID');
+    apGUI.$ratioPreset.innerHTML =  game.global.universe == 1 ? presetListHtml : presetListHtmlU2;
+    //Load the last ratio used    
+    var loadLastPreset = localStorage.getItem(game.global.universe == 1 ? 'AutoperkSelectedRatioPresetID' : 'AutoperkSelectedRatioPresetIDU2');
     var setID;
     if (loadLastPreset != null) { 
         //these four lines are temporary to migrate Custom Ratios to the new dropdown. Once everyone has the name in localStorage we can remove this.
-        if (loadLastPreset == 15 && !localStorage.getItem('AutoperkSelectedRatioPresetName'))
+        itemName = game.global.universe == 1 ? 'AutoperkSelectedRatioPresetName' : 'AutoperkSelectedRatioPresetNameU2';
+        if (loadLastPreset == 15 && !localStorage.getItem(itemName))
             loadLastPreset = 25;
-        if (localStorage.getItem('AutoperkSelectedRatioPresetName')=="customPreset")
-            loadLastPreset = 25;
+        if (localStorage.getItem(itemName)=="customPreset")
+            loadLastPreset = 25;        
         setID = loadLastPreset;
     }
     else 
@@ -223,7 +246,7 @@ AutoPerks.populateDumpPerkList = function() {
     html += "<option id='none'>None</option></select>";
     $dumpDropdown.innerHTML = html;
     //load the last dump preset used
-    var loadLastDump = localStorage.getItem('AutoperkSelectedDumpPresetID');
+    var loadLastDump = localStorage.getItem(game.global.universe == 1 ? 'AutoperkSelectedDumpPresetID' : 'AutoperkSelectedDumpPresetIDU2');
     if (loadLastDump != null)
         $dumpDropdown.selectedIndex = loadLastDump;
     else
@@ -232,8 +255,8 @@ AutoPerks.populateDumpPerkList = function() {
 
 AutoPerks.saveDumpPerk = function() {
     var $dump = document.getElementById("dumpPerk");
-    safeSetItems('AutoperkSelectedDumpPresetID', $dump.selectedIndex);
-    safeSetItems('AutoperkSelectedDumpPresetName', $dump.value);
+    safeSetItems(game.global.universe == 1 ? 'AutoperkSelectedDumpPresetID' : 'AutoperkSelectedDumpPresetIDU2', $dump.selectedIndex);
+    safeSetItems(game.global.universe == 1 ? 'AutoperkSelectedDumpPresetName' : 'AutoperkSelectedDumpPresetNameU2', $dump.value);
 }
 
 AutoPerks.saveCustomRatios = function() {
@@ -243,7 +266,7 @@ AutoPerks.saveCustomRatios = function() {
         for(var i = 0; i < $perkRatioBoxes.length; i++) {
             customRatios.push({'id':$perkRatioBoxes[i].id,'value':parseFloat($perkRatioBoxes[i].value)});
         }
-        safeSetItems('AutoPerksCustomRatios', JSON.stringify(customRatios) );
+        safeSetItems(game.global.universe == 1 ? 'AutoPerksCustomRatios' : 'AutoPerksCustomRatiosU2', JSON.stringify(customRatios) );
     }
 }
 
@@ -270,7 +293,7 @@ AutoPerks.setDefaultRatios = function() {
     //If "Custom" dropdown is selected:
     if (ratioSet == $rp.length-1) {
         //Try to grab custom ratios from LocalStorage if they were saved.
-        var tmp = JSON.parse(localStorage.getItem('AutoPerksCustomRatios'));
+        var tmp = JSON.parse(localStorage.getItem(game.global.universe == 1 ? 'AutoPerksCustomRatios' : 'AutoPerksCustomRatiosU2'));
         if (tmp !== null)
             AutoPerks.GUI.$customRatios = tmp;
         else {
@@ -288,8 +311,8 @@ AutoPerks.setDefaultRatios = function() {
         }
     }
     //save the last ratio used
-    safeSetItems('AutoperkSelectedRatioPresetID', ratioSet);
-    safeSetItems('AutoperkSelectedRatioPresetName', $rp.selectedOptions[0].id);
+    safeSetItems(game.global.universe == 1 ? 'AutoperkSelectedRatioPresetID' : 'AutoperkSelectedRatioPresetIDU2', ratioSet);
+    safeSetItems(game.global.universe == 1 ? 'AutoperkSelectedRatioPresetName' : 'AutoperkSelectedRatioPresetNameU2', $rp.selectedOptions[0].id);
 }
 
 //updates the internal perk variables with values grabbed from the custom ratio input boxes that the user may have changed.
@@ -791,8 +814,9 @@ AutoPerks.VariablePerk = function(name, base, compounding, value, baseIncrease, 
     this.spent = 0; // Total helium spent on each perk.
     function getRatiosFromPresets() {
         var valueArray = [];
-        for (var i=0; i<presetList.length; i++) {
-            valueArray.push(presetList[i][value]);
+        list = game.global.universe == 1 ? presetList : presetListU2;
+        for (var i=0; i<list.length; i++) {
+            valueArray.push(list[i][value]);
         }
         return valueArray;
     }
