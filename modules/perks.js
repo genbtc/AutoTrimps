@@ -926,7 +926,8 @@ AutoPerks.getSomePerks = function(fixed,variable,tier2,allperks) {
     for(var i in AutoPerks.perkHolder) {
         var name = AutoPerks.capitaliseFirstLetter(AutoPerks.perkHolder[i].name);
         var perk = game.portal[name];
-        if(perk.locked || (typeof perk.level === 'undefined')) continue;
+        if (game.global.universe == 1 ? (typeof perk.locked === 'undefined' || perk.locked) : (typeof perk.radLocked === 'undefined' || perk.radLocked)) continue;
+        if (game.global.universe == 1 ? typeof perk.level === 'undefined' : typeof perk.radLevel === 'undefined') continue;   
         if ((fixed && AutoPerks.perkHolder[i].fixed) ||
            (variable && !AutoPerks.perkHolder[i].fixed) ||
            (tier2 && AutoPerks.perkHolder[i].type == "linear" && !AutoPerks.perkHolder[i].fluffy) ||
@@ -951,7 +952,8 @@ AutoPerks.getOwnedPerks = function() {
     var perks = [];
     for (var name in game.portal){
         perk = game.portal[name];
-        if((game.global.universe == 1 ? perk.locked : (typeof perk.radLocked === 'undefined' || perk.radLocked)) || (typeof perk.level === 'undefined')) continue;
+        if (game.global.universe == 1 ? (typeof perk.locked === 'undefined' || perk.locked) : (typeof perk.radLocked === 'undefined' || perk.radLocked)) continue;
+        if (game.global.universe == 1 ? typeof perk.level === 'undefined' : typeof perk.radLevel === 'undefined') continue;   
         perks.push(AutoPerks.getPerkByName(name));
     }
     return perks;
