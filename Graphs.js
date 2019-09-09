@@ -276,11 +276,11 @@ function clearData(portal,clrall) {
     if(!portal)
         portal = 0;
     if (!clrall) {
-        while(allSaveData[0].totalPortals < game.global.totalPortals - portal) {
+        while(allSaveData[0].totalPortals < game.global.totalPortals + game.global.totalRadPortals - portal) {
             allSaveData.shift();
         }
     } else {
-        while(allSaveData[0].totalPortals != game.global.totalPortals) {
+        while(allSaveData[0].totalPortals != game.global.totalPortals + game.global.totalRadPortals) {
             allSaveData.shift();
         }
     }
@@ -397,7 +397,7 @@ var graphAnal = [];
 function trackHourlyGraphAnalytics() {
     graphAnal.push({
         currentTime: new Date().getTime(),
-        totalPortals: game.global.totalPortals,
+        totalPortals: game.global.totalPortals + game.global.totalRadPortals,
         heliumOwned: game.resources.helium.owned,
         highzone: game.global.highestLevelCleared,
         bones: game.global.b
@@ -444,9 +444,9 @@ function gatherInfo() {
     //make sure data structures are ready
     initializeData();
     //Track portal.
-    GraphsVars.aWholeNewPortal = GraphsVars.currentPortal != game.global.totalPortals;
+    GraphsVars.aWholeNewPortal = GraphsVars.currentPortal != game.global.totalPortals + game.global.totalRadPortals;
     if (GraphsVars.aWholeNewPortal) {
-        GraphsVars.currentPortal = game.global.totalPortals;
+        GraphsVars.currentPortal = game.global.totalPortals + game.global.totalRadPortals;
         //clear filtered loot data upon portaling. < 5 check to hopefully throw out bone portal shenanigans
         filteredLoot = {
             'produced': {metal: 0, wood: 0, food: 0, gems: 0},
@@ -1361,7 +1361,7 @@ setInterval(getLootData, 15000);
 
 function lookUpZoneData(zone,portal) {
     if (portal == null)
-        portal = game.global.totalPortals;
+        portal = game.global.totalPortals + game.global.totalRadPortals;
     for (var i=allSaveData.length-1,end=0; i >= 0; i--) {
         if (allSaveData[i].totalPortals != portal) continue;
         if (allSaveData[i].world != zone) continue;
