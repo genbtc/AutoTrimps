@@ -178,6 +178,10 @@ function buyJobs() {
             safeBuyJob('Scientist', buyScientists);
         }
     }
+    //Meteorologists
+    if (game.jobs.Meteorologist.locked == 0) {
+        checkFireandHire('Meteorologist');
+    }
     //Trainers:
     if (getPageSetting('MaxTrainers') > game.jobs.Trainer.owned || getPageSetting('MaxTrainers') == -1) {
         // capped to tributes percentage.
