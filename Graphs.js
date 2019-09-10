@@ -359,7 +359,7 @@ function pushData() {
     var lifetime = (game.resources.helium.owned / (game.global.totalHeliumEarned-game.resources.helium.owned))*100;
 
     allSaveData.push({
-        totalPortals: totalPortals: game.global.totalPortals + game.global.totalRadPortals,
+        totalPortals: game.global.totalPortals + game.global.totalRadPortals,
         heliumOwned: game.resources.helium.owned,
 	radonOwned: game.resources.radon.owned,
         currentTime: new Date().getTime(),
