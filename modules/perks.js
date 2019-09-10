@@ -323,7 +323,10 @@ AutoPerks.updatePerkRatios = function() {
         currentPerk = AutoPerks.getPerkByName($perkRatioBoxes[i].id.substring(0, $perkRatioBoxes[i].id.length - 5)); // Remove "ratio" from the id to obtain the perk name
         currentPerk.updatedValue = parseFloat($perkRatioBoxes[i].value);
     }
-    AutoPerks.getPerkByName("toughness").updatedValue = AutoPerks.getPerkByName("resilience").updatedValue / 2;
+    resilience = AutoPerks.getPerkByName("resilience");
+    if (!(typeof resilience === 'undefined')) {
+        AutoPerks.getPerkByName("toughness").updatedValue = resilience.updatedValue / 2;
+    }
     // Manually update tier II perks
     var tierIIPerks = AutoPerks.getTierIIPerks();
     for(var i in tierIIPerks)
