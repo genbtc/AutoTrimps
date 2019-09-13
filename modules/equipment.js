@@ -5,6 +5,7 @@ MODULES["equipment"].numHitsSurvivedScry = 80;
 MODULES["equipment"].enoughDamageCutoff = 4; //above this the game will buy attack equipment
 MODULES["equipment"].capDivisor = 10; //Your Equipment cap divided by this will give you the lower cap for liquified and overkilled zones
 MODULES["equipment"].alwaysLvl2 = true; //Always buys the 2nd level of equipment. Its the most effective.
+MODULES["equipment"].quickMs = 10000;
 MODULES["equipment"].waitTill60 = true; // 'Skip Gear Level 58&59', 'Dont Buy Gear during level 58 and 59, wait till level 60, when cost drops down to 10%
 MODULES["equipment"].equipHealthDebugMessage = false;    //this repeats a message when you don't have enough health. set to false to stop the spam.
 
@@ -197,7 +198,7 @@ function evaluateEquipmentEfficiency(equipName) {
     var isLiquified = (game.options.menu.liquification.enabled && game.talents.liquification.purchased && !game.global.mapsActive && game.global.gridArray && game.global.gridArray[0] && game.global.gridArray[0].name == "Liquimp");
 //Run a quick Time estimate and if we complete it in 25 seconds or less, use 1/10th of our cap just so we can continue (MODULES["equipment"].capDivisor=10;)
     var time = mapTimeEstimater();
-    var isQuick = (time!=0) && (time < 25000) && (!isActiveSpireAT());;
+    var isQuick = (time!=0) && (time < MODULES["equipment"].quickMs) && (!isActiveSpireAT());;
     var cap = getPageSetting('CapEquip2');
     if ((isLiquified || isQuick) && cap > 0 && gameResource.level >= (cap / MODULES["equipment"].capDivisor)) {
         Factor = 0;
