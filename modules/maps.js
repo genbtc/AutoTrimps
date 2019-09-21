@@ -314,7 +314,7 @@ function autoMap() {
     }
 
     //stack tox stacks if we are doing max tox, or if we need to clear our void maps
-    if(game.global.challengeActive == 'Toxicity' && game.global.lastClearedCell > 93 && game.challenges.Toxicity.stacks < 1500 && ((getPageSetting('MaxTox') && game.global.world > 59) || needToVoid)) {
+    if(game.global.challengeActive == 'Toxicity' && game.global.lastClearedCell > 93 && game.challenges.Toxicity.stacks < 1500 && getPageSetting('MaxTox') && ((game.global.world > 59) || needToVoid)) {
         shouldDoMaps = true;
         //we will get at least 85 toxstacks from the 1st voidmap (unless we have overkill)
 //            if (!game.portal.Overkill.locked && game.stats.cellsOverkilled.value)
