@@ -117,6 +117,8 @@ function getEnemyMaxAttack(world, level, name, diff, corrupt) {
     else {
         amt *= getCorruptScale("attack");
     }
+	//gotta take care of Equality as well
+	if (getPerkLevel("Equality")) amt *= game.portal.Equality.getMult();
     return Math.floor(amt);
 }
 
