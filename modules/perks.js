@@ -887,13 +887,14 @@ AutoPerks.initializePerks = function () {
 
     //U2 perks
     var prismal = new AutoPerks.VariablePerk("prismal", 1, true,              6, 0.1);
-        
+    var equality = new AutoPerks.FixedPerk("equality", 1, 10);        
+    
     AutoPerks.perkHolder = [];    
     //gather these into an array of objects
     if (game.global.universe == 1) {
         AutoPerks.perkHolder = [siphonology, anticipation, meditation, relentlessness, range, agility, bait, trumps, packrat, looting, toughness, power, motivation, pheromones, artisanistry, carpentry, resilience, coordinated, resourceful, overkill, capable, cunning, curious, classy, toughness_II, power_II, motivation_II, carpentry_II, looting_II];
     } else if (game.global.universe == 2) {
-        AutoPerks.perkHolder = [range, agility, bait, trumps, packrat, looting, toughness, power, motivation, pheromones, artisanistry, carpentry, prismal];
+        AutoPerks.perkHolder = [range, agility, bait, trumps, packrat, looting, toughness, power, motivation, pheromones, artisanistry, carpentry, prismal, equality];
     }
     //initialize basics on all.
     for(var i in AutoPerks.perkHolder) {
