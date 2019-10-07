@@ -359,7 +359,12 @@ function autoMap() {
     if (doMaxMapBonus)
         shouldDoMaps = true;
     //Allow automaps to work with in-game Map at Zone option:
-    vanillaMapatZone = (game.options.menu.mapAtZone.enabled && game.options.menu.mapAtZone.setZone == game.global.world && !isActiveSpireAT());
+    vanillaMapatZone = 
+            (game.options.menu.mapAtZone.enabled 
+        &&  (
+                (game.global.universe == 1 && game.options.menu.mapAtZone.setZone == game.global.world)
+            ||  (game.global.universe == 2 && game.options.menu.mapAtZone.setZoneU2 == game.global.world)) 
+        &&  !isActiveSpireAT());
     if (vanillaMapatZone)
         shouldDoMaps = true;
 
@@ -648,9 +653,9 @@ function autoMap() {
             if (!game.global.switchToMaps){
                 mapsClicked();
             }
-            //Get Impatient/Abandon if: (need prestige / _NEED_ to do void maps / on lead in odd world.) AND (a new army is ready, OR _need_ to void map OR lead farming and we're almost done with the zone) (handle shouldDoWatchMaps elsewhere below)
+            //Get Impatient/Abandon if: (need prestige / _NEED_ to do void maps / need max map bonus / on lead in odd world.) AND (a new army is ready, OR _need_ to void map OR lead farming and we're almost done with the zone) (handle shouldDoWatchMaps elsewhere below)
             if ((!getPageSetting('PowerSaving') || (getPageSetting('PowerSaving') == 2) && doVoids) && game.global.switchToMaps && !shouldDoWatchMaps &&
-                (needPrestige || doVoids ||
+                (needPrestige || doVoids || doMaxMapBonus || 
                 ((game.global.challengeActive == 'Lead' && !challSQ) && game.global.world % 2 == 1) ||
                 (!enoughDamage && enoughHealth && game.global.lastClearedCell < 9) ||
                 (shouldFarm && game.global.lastClearedCell >= customVars.shouldFarmCell) ||
