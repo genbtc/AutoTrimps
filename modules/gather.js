@@ -13,7 +13,7 @@ function manualLabor() {
     var notFullPop = game.resources.trimps.owned < game.resources.trimps.realMax();
     var trapTrimpsOK = getPageSetting('TrapTrimps');
     var targetBreed = getPageSetting('GeneticistTimer');
-    var trapperTrapUntilFull = game.global.challengeActive == "Trapper" && notFullPop;
+    var trapperTrapUntilFull = (game.global.challengeActive == "Trapper" || game.global.challengeActive == "Trappapalooza") && notFullPop;
     var watchJumpstartTraps  = game.global.challengeActive == "Watch"  && notFullPop;
     var hasTurkimp = game.talents.turkimp2.purchased || game.global.turkimpTimer > 0;
 
@@ -131,9 +131,9 @@ function manualLabor2() {
     var notFullPop = game.resources.trimps.owned < game.resources.trimps.realMax();
     var trapTrimpsOK = getPageSetting('TrapTrimps');
     var targetBreed = getPageSetting('GeneticistTimer');
-    var trapperTrapUntilFull = game.global.challengeActive == "Trapper" && notFullPop;
+    var trapperTrapUntilFull = (game.global.challengeActive == "Trapper" || game.global.challengeActive == "Trappapalooza") && notFullPop;
     var watchJumpstartTraps  = game.global.challengeActive == "Watch"  && notFullPop;
-    var hasTurkimp = game.talents.turkimp4.purchased || game.global.turkimpTimer > 0;
+    var hasTurkimp = game.talents.turkimp2.purchased || game.global.turkimpTimer > 0;
 
     //FRESH GAME LOWLEVEL NOHELIUM CODE.
     if (game.global.world <=3 && game.global.totalHeliumEarned<=5000) {
