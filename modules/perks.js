@@ -89,13 +89,15 @@ var presetListHtml = "\
 <option id='customPreset'>CUSTOM ratio</option></select>";
 
 //U2
-//[looting,toughness,power,motivation,pheromones,artisanistry,carpentry,prismal]
+//[looting,toughness,power,motivation,pheromones,artisanistry,carpentry,prismal,equality,criticality]
 var preset_Rspace = [0, 0, 0, 0, 0, 0, 0, 0];
-var preset_RZek059 = [7, 10, 5, 1, 0.5, 2, 15, 9];
+var preset_RZek059 = [7, 10, 5, 1, 0.5, 2, 12, 9, 0.5, 2];
+var preset_RZekmelt = [10, 0.5, 2, 0.5, 0.3, 1.2, 3, 0.5, 1, 3];
 
-var presetListU2 = [preset_RZek059,preset_Rspace];
+var presetListU2 = [preset_RZek059,preset_RZekmelt,preset_Rspace];
 var presetListHtmlU2 = "\
 <option id='preset_RZek059'>Zek (z1-59)</option>\
+<option id='preset_RZekmelt'>Zek (Melt)</option>\
 <option id='preset_Rspace'>--------------</option>\
 <option id='customPreset'>CUSTOM ratio</option></select>";	
 
@@ -153,8 +155,8 @@ AutoPerks.displayGUI = function() {
     if (game.global.universe == 1) {
         listratiosLine1 = ["Overkill","Resourceful","Coordinated","Resilience","Carpentry","Artisanistry"];
     } else if (game.global.universe == 2) {
-        listratiosLine1 = ["Carpentry","Pheromones","Motivation","Artisanistry"];
-    }
+        listratiosLine1 = ["Equality", "Carpentry","Pheromones","Motivation","Artisanistry"];
+    }        
     for (var i in listratiosLine1)
         AutoPerks.createInput(listratiosLine1[i],apGUI.$ratiosLine1);
     apGUI.$customRatios.appendChild(apGUI.$ratiosLine1);
@@ -165,7 +167,7 @@ AutoPerks.displayGUI = function() {
     if (game.global.universe == 1) {
         listratiosLine2 = ["Pheromones","Motivation","Power","Looting","Cunning","Curious"];
     } else if (game.global.universe == 2) {
-        listratiosLine2 = ["Power","Looting","Toughness","Prismal"];
+        ["Power","Looting","Toughness","Prismal","Criticality"];
     }
     for (var i in listratiosLine2)
         AutoPerks.createInput(listratiosLine2[i],apGUI.$ratiosLine2);
@@ -887,14 +889,17 @@ AutoPerks.initializePerks = function () {
 
     //U2 perks
     var prismal = new AutoPerks.VariablePerk("prismal", 1, true,              6, 0.1);
-    var equality = new AutoPerks.FixedPerk("equality", 1, 10);        
+    //10% compounding 
+    var equality = new AutoPerks.VariablePerk("equality", 1, true,            12, 0.11111);      
+    equality.exprate = 1.5;
+    var criticality = new AutoPerks.VariablePerk("criticality", 100, true,     10, 0.1);
     
     AutoPerks.perkHolder = [];    
     //gather these into an array of objects
     if (game.global.universe == 1) {
         AutoPerks.perkHolder = [siphonology, anticipation, meditation, relentlessness, range, agility, bait, trumps, packrat, looting, toughness, power, motivation, pheromones, artisanistry, carpentry, resilience, coordinated, resourceful, overkill, capable, cunning, curious, classy, toughness_II, power_II, motivation_II, carpentry_II, looting_II];
     } else if (game.global.universe == 2) {
-        AutoPerks.perkHolder = [range, agility, bait, trumps, packrat, looting, toughness, power, motivation, pheromones, artisanistry, carpentry, prismal, equality];
+        AutoPerks.perkHolder = [range, agility, bait, trumps, packrat, looting, toughness, resilience, power, motivation, pheromones, artisanistry, carpentry, prismal, equality];
     }
     //initialize basics on all.
     for(var i in AutoPerks.perkHolder) {
