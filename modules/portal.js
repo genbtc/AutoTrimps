@@ -82,6 +82,7 @@ function autoPortal() {
             break;
         case "Balance":
         case "Decay":
+        case "Melt":
         case "Electricity":
         case "Life":
         case "Crushed":
@@ -166,6 +167,7 @@ function findOutCurrentPortalLevel() {
     var portalLevelName =
     {
         "Balance" : 41,
+        "Melt": 51,
         "Decay" : 56,
         "Electricity" : 82,
         "Crushed" : 126,
