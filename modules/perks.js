@@ -167,7 +167,7 @@ AutoPerks.displayGUI = function() {
     if (game.global.universe == 1) {
         listratiosLine2 = ["Pheromones","Motivation","Power","Looting","Cunning","Curious"];
     } else if (game.global.universe == 2) {
-        ["Power","Looting","Toughness","Prismal","Criticality"];
+        listratiosLine2 = ["Power","Looting","Toughness","Prismal","Criticality"];["Power","Looting","Toughness","Prismal","Criticality"];
     }
     for (var i in listratiosLine2)
         AutoPerks.createInput(listratiosLine2[i],apGUI.$ratiosLine2);
