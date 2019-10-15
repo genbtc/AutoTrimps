@@ -437,6 +437,10 @@ function autoMap() {
                   break;
               }
               var dont = game.global.runningChallengeSquared;
+              if (theMap.name == 'Melting Point' && game.global.challengeActive == "Melt" && !dont) {
+                  selectedMap = theMap.id;
+                  break;
+              }
               if(theMap.name == 'The Block' && !game.upgrades.Shieldblock.allowed && ((game.global.challengeActive == "Scientist" || game.global.challengeActive == "Trimp") && !dont || getPageSetting('BuyShieldblock'))) {
                   var theMapDifficulty = Math.ceil(theMap.difficulty / 2);
                   if(game.global.world < 11 + theMapDifficulty) continue;
