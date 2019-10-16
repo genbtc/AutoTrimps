@@ -438,6 +438,7 @@ function autoMap() {
               }
               var dont = game.global.runningChallengeSquared;
               if (theMap.name == 'Melting Point' && game.global.challengeActive == "Melt" && !dont) {
+                  if (game.global.world < 51) continue;
                   selectedMap = theMap.id;
                   break;
               }
