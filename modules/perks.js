@@ -903,7 +903,8 @@ AutoPerks.initializePerks = function () {
     if (game.global.universe == 1) {
         AutoPerks.perkHolder = [siphonology, anticipation, meditation, relentlessness, range, agility, bait, trumps, packrat, looting, toughness, power, motivation, pheromones, artisanistry, carpentry, resilience, coordinated, resourceful, overkill, capable, cunning, curious, classy, toughness_II, power_II, motivation_II, carpentry_II, looting_II];
     } else if (game.global.universe == 2) {
-        AutoPerks.perkHolder = [range, agility, bait, trumps, packrat, looting, toughness, resilience, power, motivation, pheromones, artisanistry, carpentry, prismal, equality, criticality, tenacity];
+        var overkill = new AutoPerks.FixedPerk("overkill", 1000000, 30);
+        AutoPerks.perkHolder = [range, agility, bait, trumps, packrat, overkill, looting, toughness, resilience, power, motivation, pheromones, artisanistry, carpentry, prismal, equality, criticality, tenacity];
     }
     //initialize basics on all.
     for(var i in AutoPerks.perkHolder) {
