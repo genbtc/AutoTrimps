@@ -179,6 +179,7 @@ AutoPerks.displayGUI = function() {
         //Line 3 of the UI
         apGUI.$ratiosLine3 = document.createElement("DIV");
         apGUI.$ratiosLine3.setAttribute('style', 'display: inline-block; text-align: left; width: 100%');
+        apGUI.$customRatios.appendChild(apGUI.$ratiosLine3;
         var listratiosLine3;
         listratiosLine3 = ["Resilience","Tenacity","Greed"];
         for (var i in listratiosLine3) {
