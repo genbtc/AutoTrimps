@@ -89,15 +89,17 @@ var presetListHtml = "\
 <option id='customPreset'>CUSTOM ratio</option></select>";
 
 //U2
-//[looting,toughness,power,motivation,pheromones,artisanistry,carpentry,resilience,prismal,equality,criticality, tenacity]
-var preset_Rspace = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-var preset_RZek059 = [7, 10, 5, 1, 0.5, 2, 12, 0, 9, 0.5, 2, 25];
-var preset_RZekmelt = [10, 0.5, 2, 0.5, 0.3, 1.2, 3, 1, 0.5, 1, 3, 18];
+//[looting,toughness,power,motivation,pheromones,artisanistry,carpentry,resilience,prismal,equality,criticality, tenacity, greed]
+var preset_Rspace = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+var preset_RZek059 = [7, 10, 5, 1, 0.5, 2, 12, 9, 0.5, 2, 5, 0, 0];
+var preset_RZekmelt = [10, 0.5, 2, 0.5, 0.3, 1.2, 3, 1, 0.5, 1, 3, 18, 20];
+var preset_RZekquag = [8, 0.7, 1.8, 0.8, 0.2, 1.3, 3.3, 0.6, 0.8, 2.8, 6.2, 18, 27];
 
-var presetListU2 = [preset_RZek059,preset_RZekmelt,preset_Rspace];
+var presetListU2 = [preset_RZek059,preset_RZekmelt,preset_RZekquag,preset_Rspace];
 var presetListHtmlU2 = "\
 <option id='preset_RZek059'>Adjusted Zek (z1-59)</option>\
 <option id='preset_RZekmelt'>Adjusted Zek (Melt)</option>\
+<option id='preset_RZekquag'>Zek (Quag)</option>\
 <option id='preset_Rspace'>--------------</option>\
 <option id='customPreset'>CUSTOM ratio</option></select>";	
 
@@ -155,7 +157,7 @@ AutoPerks.displayGUI = function() {
     if (game.global.universe == 1) {
         listratiosLine1 = ["Overkill","Resourceful","Coordinated","Resilience","Carpentry","Artisanistry"];
     } else if (game.global.universe == 2) {
-        listratiosLine1 = ["Equality", "Carpentry","Pheromones","Motivation","Artisanistry","Resilience"];
+        listratiosLine1 = ["Equality", "Carpentry","Pheromones","Motivation","Artisanistry"];
     }        
     for (var i in listratiosLine1) {
         AutoPerks.createInput(listratiosLine1[i],apGUI.$ratiosLine1);
@@ -168,11 +170,18 @@ AutoPerks.displayGUI = function() {
     if (game.global.universe == 1) {
         listratiosLine2 = ["Pheromones","Motivation","Power","Looting","Cunning","Curious"];
     } else if (game.global.universe == 2) {
-        listratiosLine2 = ["Power","Looting","Toughness","Prismal","Criticality", "Tenacity"];
+        listratiosLine2 = ["Power","Looting","Toughness","Prismal","Criticality"];
     }
     for (var i in listratiosLine2) {
         AutoPerks.createInput(listratiosLine2[i],apGUI.$ratiosLine2);    
     }    
+    if (game.global.universe == 2) {
+        var listratiosLine3;
+        listratiosLine3 = ["Resilience","Tenacity","Greed"];
+        for (var i in listratiosLine3) {
+            AutoPerks.createInput(listratiosLine3[i],apGUI.$ratiosLine3);    
+        }  
+    }
     //Create dump perk dropdown
     apGUI.$dumpperklabel = document.createElement("Label");
     apGUI.$dumpperklabel.id = 'DumpPerk Label';
@@ -894,9 +903,12 @@ AutoPerks.initializePerks = function () {
     //10% compounding 
     var equality = new AutoPerks.VariablePerk("equality", 1, true,            9, 0.11111);      
     equality.exprate = 1.5;
+    //should it be compounding?
     var criticality = new AutoPerks.VariablePerk("criticality", 100, true,     10, 0.1);
     //10% compounding 
     var tenacity = new AutoPerks.VariablePerk("tenacity", 50000000, true,      11, 0.1);
+    //we'll think of it as of 10% compounding to not complicate things too much
+    var greed = new AutoPerks.VariablePerk("greed", 10000000000, true,      12, 0.1);
     
     AutoPerks.perkHolder = [];    
     //gather these into an array of objects
@@ -904,7 +916,7 @@ AutoPerks.initializePerks = function () {
         AutoPerks.perkHolder = [siphonology, anticipation, meditation, relentlessness, range, agility, bait, trumps, packrat, looting, toughness, power, motivation, pheromones, artisanistry, carpentry, resilience, coordinated, resourceful, overkill, capable, cunning, curious, classy, toughness_II, power_II, motivation_II, carpentry_II, looting_II];
     } else if (game.global.universe == 2) {
         var overkill = new AutoPerks.FixedPerk("overkill", 1000000, 30);
-        AutoPerks.perkHolder = [range, agility, bait, trumps, packrat, overkill, looting, toughness, resilience, power, motivation, pheromones, artisanistry, carpentry, prismal, equality, criticality, tenacity];
+        AutoPerks.perkHolder = [range, agility, bait, trumps, packrat, overkill, looting, toughness, resilience, power, motivation, pheromones, artisanistry, carpentry, prismal, equality, criticality, tenacity, greed];
     }
     //initialize basics on all.
     for(var i in AutoPerks.perkHolder) {
