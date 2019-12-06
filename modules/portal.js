@@ -168,6 +168,7 @@ function findOutCurrentPortalLevel() {
     {
         "Balance" : 41,
         "Melt": 51,
+        "Quagmire": 71,
         "Decay" : 56,
         "Electricity" : 82,
         "Crushed" : 126,
