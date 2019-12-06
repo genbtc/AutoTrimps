@@ -445,7 +445,7 @@ AutoPerks.getRadon = function() {
 //Calculate Price
 AutoPerks.calculatePrice = function(perk, level) { // Calculate price of buying *next* level
     if(perk.fluffy) return Math.ceil(perk.base * Math.pow(10,level));
-    else if(perk.type == 'exponential') return Math.ceil(level/2 + perk.base * Math.pow(1.3, level));
+    else if(perk.type == 'exponential') return Math.ceil(level/2 + perk.base * Math.pow(perk.exprate, level));
     else if(perk.type == 'linear') return Math.ceil(perk.base + perk.increase * level);
 }
 //Calculate Total Price
