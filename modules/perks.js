@@ -94,12 +94,16 @@ var preset_Rspace = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 var preset_RZek059 = [7, 10, 5, 1, 0.5, 2, 12, 9, 0.5, 2, 5, 0, 0];
 var preset_RZekmelt = [10, 0.5, 2, 0.5, 0.3, 1.2, 3, 1, 0.5, 1, 3, 18, 20];
 var preset_RZekquag = [8, 0.7, 1.8, 0.8, 0.2, 1.3, 3.3, 0.6, 0.8, 2.8, 6.2, 18, 27];
+var preset_Rmauquag = [8, 0.7, 1.8, 0.8, 0.2, 1.3, 3.3, 0.6, 0.8, 0.01, 6.2, 18, 27];
+var preset_Rmauc3 = [1, 1, 3, 0.8, 0.2, 1.3, 3.3, 2, 1, 0.01, 6.2, 30, 1];
 
-var presetListU2 = [preset_RZek059,preset_RZekmelt,preset_RZekquag,preset_Rspace];
+var presetListU2 = [preset_RZek059, preset_RZekmelt, preset_RZekquag, preset_Rmauquag, preset_Rmauc3, preset_Rspace];
 var presetListHtmlU2 = "\
 <option id='preset_RZek059'>Adjusted Zek (z1-59)</option>\
 <option id='preset_RZekmelt'>Adjusted Zek (Melt)</option>\
 <option id='preset_RZekquag'>Zek (Quag)</option>\
+<option id='preset_RZekquag'>maurezen quagmire</option>\
+<option id='preset_RZekquag'>maurezen c3</option>\
 <option id='preset_Rspace'>--------------</option>\
 <option id='customPreset'>CUSTOM ratio</option></select>";	
 
