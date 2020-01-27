@@ -909,7 +909,7 @@ AutoPerks.initializePerks = function () {
     var looting_II = new AutoPerks.ArithmeticPerk("looting_II", 100000, 10000, 0.0025, looting);
 
     //U2 perks
-    var prismal = new AutoPerks.VariablePerk("prismal", 1, true,              8, 0.1);
+    var prismal = new AutoPerks.VariablePerk("prismal", 1, true,              8, 0.1, 100);
     //10% compounding 
     var equality = new AutoPerks.VariablePerk("equality", 1, true,            9, 0.11111);      
     equality.exprate = 1.5;
@@ -918,7 +918,7 @@ AutoPerks.initializePerks = function () {
     //10% compounding 
     var tenacity = new AutoPerks.VariablePerk("tenacity", 50000000, true,      11, 0.1);
     //we'll think of it as of 10% compounding to not complicate things too much
-    var greed = new AutoPerks.VariablePerk("greed", 10000000000, true,      12, 0.1);
+    var greed = new AutoPerks.VariablePerk("greed", 10000000000, true,      12, 0.1, 40);
     
     AutoPerks.perkHolder = [];    
     //gather these into an array of objects
