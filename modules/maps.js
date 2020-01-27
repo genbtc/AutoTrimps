@@ -436,10 +436,17 @@ function autoMap() {
                   selectedMap = theMap.id;
                   break;
               }
-              var dont = game.global.runningChallengeSquared;
-              if (theMap.name == 'Melting Point' && game.global.challengeActive == "Melt" && !dont) {
-                  if (game.global.world < 51) continue;
-                  selectedMap = theMap.id;
+              //c^2 is left for manual control; we also shouldn't run the melting point more than once
+              var dont = game.global.runningChallengeSquared || !game.mapUnlocks.SmithFree.canRunOnce;
+              if (theMap.name == 'Melting Point' && !dont) {
+                  //run ASAP for Melt challenge
+                  if (game.global.world < 51 && game.global.challengeActive == "Melt") continue;
+                  //we want to get a bonus smithy at the last possible moment
+                  if (voidMapLevelSetting > 0 && game.global.world < voidMapLevelSettingZone) continue;
+                  //which includes getting max map bonus and, incidentally, doing a bunch of farming beforehand
+                  if ((doMaxMapBonus && game.global.mapBonus < customVars.maxMapBonus-1) || shouldDoMaps) continue;                  
+
+                  selectedMap = theMap.id;                  
                   break;
               }
               if(theMap.name == 'The Block' && !game.upgrades.Shieldblock.allowed && ((game.global.challengeActive == "Scientist" || game.global.challengeActive == "Trimp") && !dont || getPageSetting('BuyShieldblock'))) {
