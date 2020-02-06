@@ -918,7 +918,7 @@ AutoPerks.initializePerks = function () {
     //should it be compounding?
     var criticality = new AutoPerks.VariablePerk("criticality", 100, true,     10, 0.1);
     //10% compounding 
-    var tenacity = new AutoPerks.VariablePerk("tenacity", 50000000, true,      11, 0.1);
+    var tenacity = new AutoPerks.VariablePerk("tenacity", 50000000, true,      11, 0.1, 40);
     //we'll think of it as of 10% compounding to not complicate things too much
     var greed = new AutoPerks.VariablePerk("greed", 10000000000, true,      12, 0.1, 40);
     
