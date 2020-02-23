@@ -14,6 +14,7 @@ var AutoPerks = {};
 MODULES["perks"] = {};
 MODULES["perks"].showDetails = true;   //show which individual perks are spent;
 MODULES["perks"].useAlgo2 = false;   //use algorithm 2 instead.
+MODULES["perks"].fastAllocateFactor = 1000;   //perk purchase loop multiplier
 
 //Import the FastPriorityQueue.js general Library (not AT specific, but needed for perk queue)
 var head = document.getElementsByTagName('head')[0];
@@ -633,7 +634,7 @@ AutoPerks.spendHelium2 = function(helium) {
                 //at 6.5 Oc He with *10 that were here ran 370-ish million loops, ffs
                 //*1000 gives ~4m
                 //*10000 gives ~50m, weird
-                packLevel = mostEff.increase * 1000;
+                packLevel = mostEff.increase * MODULES["perks"].fastAllocateFactor;
                 packPrice = AutoPerks.calculateTotalPrice(mostEff, mostEff.level + packLevel) - mostEff.spent;
             }
             if (t2 && packPrice <= helium) {
