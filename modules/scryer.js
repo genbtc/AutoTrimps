@@ -63,7 +63,8 @@ function useScryerStance() {
     use_auto = use_auto || !game.global.mapsActive && isActiveSpireAT() && getPageSetting('ScryerUseinSpire2')!=1;
     //check for voids
     var isVoid = game.global.mapsActive && getCurrentMapObject().location == "Void";
-    var ignoreVoid = isVoid && !getPageSetting('ScryerUseinVoidMaps2');
+    //ignore scryer for voids if setting is off or running c2
+    var ignoreVoid = isVoid && (!getPageSetting('ScryerUseinVoidMaps2') || game.global.runningChallengeSquared);
     use_auto = use_auto || ignoreVoid;
     //check for maps that are NOT void maps
     use_auto = use_auto || game.global.mapsActive && !(getCurrentMapObject().location == "Void") && !getPageSetting('ScryerUseinMaps2');
