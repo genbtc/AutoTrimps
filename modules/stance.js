@@ -407,8 +407,11 @@ function autoStance2() {
     var voidCritinXok = !isCritThing || oneshotFast || surviveX;
 
     if (!game.global.preMapsActive && game.global.soldierHealth > 0) {
+        //use Wind stance if: enlightened wind is active and we're in the wind zone
+        if (getUberEmpowerment() == "Wind" && getEmpowerment() == "Wind") {
+            setFormation(5);
         //use D stance if: new army is ready&waiting / can survive void-double-attack or we can one-shot / can survive lead damage / can survive void-crit-dmg
-        if (game.upgrades.Dominance.done && surviveD && leadAttackOK && drainAttackOK && voidCritinDok && dExplosionOK) {
+        } else if (game.upgrades.Dominance.done && surviveD && leadAttackOK && drainAttackOK && voidCritinDok && dExplosionOK) {
             setFormation(2);
         //if CritVoidMap, switch out of D stance if we cant survive. Do various things.
         } else if (isCritThing && !voidCritinDok) {
