@@ -3,7 +3,7 @@
 function aimAtGamma() {
     var settingOn = getPageSetting('WaitForGamma');
     //reflect is going to kill us, so what's the point
-    setting &= !(game.global.challengeActive == "Daily" && typeof game.global.dailyChallenge.mirrored !== 'undefined');
+    settingOn &= !(game.global.challengeActive == "Daily" && typeof game.global.dailyChallenge.mirrored !== 'undefined');
 
     return settingOn;
 }
