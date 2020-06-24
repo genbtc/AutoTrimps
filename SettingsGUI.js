@@ -382,6 +382,8 @@ function initializeAllSettings() {
     createSetting('ForceAbandon', 'Auto Force-Abandon', '(Trimpicide). If a new fight group is available and anticipation stacks arent maxed, force abandon and grab a new group. Located in the geneticist management script.', 'boolean', true, null, 'Combat');
     createSetting('DynamicGyms', 'Dynamic Gyms', 'Designed to limit your block to slightly more than however much the enemy attack is. If MaxGyms is capped or GymWall is set, those will still work, and this will NOT override those (works concurrently), but it will further limit them. In the future it may override, but the calculation is not easy to get right so I dont want it undo-ing other things yet. ', 'boolean', false, null, 'Combat');
     createSetting('AutoRoboTrimp', 'AutoRoboTrimp', 'Use RoboTrimps ability starting at this level, and every 5 levels thereafter. (set to 0 to disable. default 60.) 60 is a good choice for mostly everybody.', 'value', '60', null, 'Combat');
+    createSetting('ManagedEquality', 'Managed Equality', '[U2 only] Use Equality dance - zero equality for non-fast enemies, just enough for fast ones', 'boolean', true, null, 'Combat');
+    createSetting('WaitForGamma', 'Wait for Gamma', '[U2 only] Equality dance subsetting - if true, for fast enemies it will aim at surviving 5 hits to trigger Gamma Burst. Will try to detect situations like reflect when this is not possible. Plague and electricity effects are assumed fine atm due to Angelic mastery.', 'boolean', false, null, 'Combat');
 
 
 

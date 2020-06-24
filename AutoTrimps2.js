@@ -226,6 +226,7 @@ function mainLoop() {
     if (aWholeNewWorld && getPageSetting('AutoRoboTrimp')) autoRoboTrimp();   //"AutoRoboTrimp" (other.js)
     if (aWholeNewWorld && getPageSetting('FinishC2')>0 && game.global.runningChallengeSquared) finishChallengeSquared(); // "Finish Challenge2" (other.js)
     autoLevelEquipment();           //"Buy Armor", "Buy Armor Upgrades", "Buy Weapons", "Buy Weapons Upgrades"  (equipment.js)
+    if (getPageSetting('ManagedEquality')) manageEquality();
     if (getPageSetting('UseScryerStance'))  useScryerStance();  //"Use Scryer Stance"   (scryer.js)
     else if (getPageSetting('AutoStance')<=1) autoStance();     //"Auto Stance"       (autostance.js)
     else if (getPageSetting('AutoStance')==2) autoStance2();    //"Auto Stance #2"         (")
