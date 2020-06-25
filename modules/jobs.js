@@ -4,6 +4,9 @@ MODULES["jobs"].scientistRatio = 25;        //ratio for scientists. (totalRatios
 MODULES["jobs"].scientistRatio2 = 10;       //used for lowlevel and Watch challenge
 MODULES["jobs"].magmamancerRatio = 0.1;     //buys 10% of your gem resources per go.
 //Worker Ratios = [Farmer,Lumber,Miner]
+MODULES["jobs"].ratios = {};
+MODULES["jobs"].ratios[1] = {};
+MODULES["jobs"].ratios[2] = {};
 //[1] is U1
 MODULES["jobs"].ratios[1][8] = [1,1,100];
 MODULES["jobs"].ratios[1][7] = [1,1,24];
