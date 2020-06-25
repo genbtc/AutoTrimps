@@ -1,7 +1,7 @@
 MODULES["jobs"] = {};
 //These can be changed (in the console) if you know what you're doing:
 MODULES["jobs"].scientistRatio = 25;        //ratio for scientists. (totalRatios / this)
-MODULES["jobs"].scientistRatio2 = 10;       //used for lowlevel and Watch challenge
+MODULES["jobs"].scientistRatio2 = 10;       //used for lowlevel, Watch and Archaeology challenges
 MODULES["jobs"].magmamancerRatio = 0.1;     //buys 10% of your gem resources per go.
 //Worker Ratios = [Farmer,Lumber,Miner]
 MODULES["jobs"].ratios = {};
@@ -96,7 +96,7 @@ function buyJobs() {
     var minerRatio = parseInt(getPageSetting('MinerRatio'));
     var totalRatio = farmerRatio + lumberjackRatio + minerRatio;
     var scientistRatio = totalRatio / MODULES["jobs"].scientistRatio;
-    if (game.jobs.Farmer.owned < 100) {
+    if (game.jobs.Farmer.owned < 100 || game.global.challengeActive == "Archaeology") {
         scientistRatio = totalRatio / MODULES["jobs"].scientistRatio2;
     }
 
