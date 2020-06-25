@@ -53,6 +53,10 @@ equality.manageEquality = function() {
             }
 
             //there might be some stacks already
+            //this can also be NaN sometimes
+            if (isNaN(game.portal.Equality.disabledStackCount)) {
+                game.portal.Equality.disabledStackCount = 0;
+            }
             //also this happens to be string if set via slider, hence Number() call
             game.portal.Equality.disabledStackCount = Number(game.portal.Equality.disabledStackCount) + equalityNeeded;
 
