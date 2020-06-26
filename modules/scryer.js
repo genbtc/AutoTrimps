@@ -3,6 +3,9 @@
 var wantToScry = false;
 //use S stance
 function useScryerStance() {
+    // we don't have formations in U2
+    if (game.global.universe == 2) return;
+
     var AutoStance = getPageSetting('AutoStance');
     function autostancefunction() {
         if (AutoStance<=1) autoStance();    //"Auto Stance"
