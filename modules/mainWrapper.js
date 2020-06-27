@@ -13,6 +13,8 @@ mainWrapper.getCurrentCell = function() {
 //checks whether the current enemy is fast. A copypaste job from approx main.js#fight:13491
 //cell is a current world or map cell object
 mainWrapper.isEnemyFast = function(cell) {
+    //happens near portal
+    if (typeof cell === 'undefined') return false;
     var checkFast =
         (game.global.challengeActive == "Slow" || ((((game.badGuys[cell.name].fast || cell.mutation == "Corruption") && game.global.challengeActive != "Nom") || game.global.voidBuff == "doubleAttack") && game.global.challengeActive != "Coordinate"));
     var forceSlow = false;
