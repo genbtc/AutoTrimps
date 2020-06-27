@@ -28,6 +28,8 @@ equality.manageEquality = function() {
         }
 
         var cell = mainWrapper.getCurrentCell();
+        //happens near portal
+        if (typeof cell === 'undefined') return false;
 
         //run just enough stacks vs fast
         var aimAtGamma = this.aimAtGamma();
