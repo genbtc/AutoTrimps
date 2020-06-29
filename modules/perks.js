@@ -615,40 +615,20 @@ AutoPerks.spendHelium2 = function(helium) {
         return false;
     }
 
-    var mostEff, price, inc;
+    var mostEff;
     var packPrice,packLevel;
     var i=0;
     //Change the way we iterate.
     function iterateQueue() {
         mostEff = effQueue.poll();
-        price = AutoPerks.calculatePrice(mostEff, mostEff.level); // Price of *next* purchase.
-        inc = AutoPerks.calculateIncrease(mostEff, mostEff.level);
+        mostEff.price = AutoPerks.calculatePrice(mostEff, mostEff.level); // Price of *next* purchase.
+        mostEff.inc = AutoPerks.calculateIncrease(mostEff, mostEff.level);
         mostEff.efficiency = inc / price;
         i++;
     }
-    for (iterateQueue() ; price <= helium ; iterateQueue() ) {
+    for (iterateQueue() ; mostEff.price <= helium ; iterateQueue() ) {
         if(mostEff.level < mostEff.max) { // but first, check if the perk has reached its maximum value
-            // Purchase the most efficient perk
-            var t2 = mostEff.name.endsWith("_II");
-            if (t2) {
-                //at 6.5 Oc He with *10 that were here ran 370-ish million loops, ffs
-                //*1000 gives ~4m
-                //*10000 gives ~50m, weird
-                packLevel = mostEff.increase * MODULES["perks"].fastAllocateFactor;
-                packPrice = AutoPerks.calculateTotalPrice(mostEff, mostEff.level + packLevel) - mostEff.spent;
-            }
-            if (t2 && packPrice <= helium) {
-                helium -= packPrice;
-                mostEff.level+= packLevel;
-                mostEff.spent += packPrice;
-            }  else  {
-                helium -= price;
-                mostEff.level++;
-                mostEff.spent += price;            
-            }
-            price = AutoPerks.calculatePrice(mostEff, mostEff.level); // Price of *next* purchase.
-            inc = AutoPerks.calculateIncrease(mostEff, mostEff.level);
-            mostEff.efficiency = inc / price;
+            helium = AutoPerks.bumpPerkLevel(mostEff, helium);
             effQueue.add(mostEff);  // Add back into queue run again until out of helium
         }
     }
@@ -660,14 +640,11 @@ AutoPerks.spendHelium2 = function(helium) {
         var heb4dump = helium;
         var index = $selector.selectedIndex;
         var dumpPerk = AutoPerks.getPerkByName($selector[index].innerHTML);
-        //debug(AutoPerks.capitaliseFirstLetter(dumpPerk.name) + " level pre-dump: " + dumpPerk.level,"perks");
-        if(dumpPerk.level < dumpPerk.max) {
-            for(price = AutoPerks.calculatePrice(dumpPerk, dumpPerk.level); price < helium && dumpPerk.level < dumpPerk.max; price = AutoPerks.calculatePrice(dumpPerk, dumpPerk.level)) {
-                helium -= price;
-                dumpPerk.spent += price;
-                dumpPerk.level++;
-            }
+
+        while (dumpPerk.level < dumpPerk.max) {
+            helium = AutoPerks.bumpPerkLevel(dumpPerk, helium);
         }
+
         var dumpresults = heb4dump - helium;
         debug("AutoPerks2: Dump Perk " + AutoPerks.capitaliseFirstLetter(dumpPerk.name) + " level post-dump: "+ dumpPerk.level + " Helium Dumped: " + prettify(dumpresults) + " He.", "perks");        
     } //end dump perk code.
@@ -676,24 +653,41 @@ AutoPerks.spendHelium2 = function(helium) {
     //Repeat the process for spending round 2. This spends any extra helium we have that is less than the cost of the last point of the dump-perk.
     while (effQueue.size > 1) {
         mostEff = effQueue.poll();
-        if (mostEff.level >= mostEff.max) continue; // but first, check if the perk has reached its maximum value
-        price = AutoPerks.calculatePrice(mostEff, mostEff.level);
-        if (price >= helium) continue;
-        // Purchase the most efficient perk
-        helium -= price;
-        mostEff.level++;
-        mostEff.spent += price;
-        // Reduce its efficiency
-        inc = AutoPerks.calculateIncrease(mostEff, mostEff.level);
-        price = AutoPerks.calculatePrice(mostEff, mostEff.level);
-        mostEff.efficiency = inc/price;
-        // Add back into queue run again until out of helium
-        effQueue.add(mostEff);
+        if (mostEff.level <= mostEff.max) {
+            helium = AutoPerks.bumpPerkLevel(mostEff, helium);
+            // Add back into queue run again until out of helium
+            effQueue.add(mostEff);
+        }
     }
     var r2results = heB4round2 - helium;
     debug("AutoPerks2: Pass Two Complete. Cleanup Spent Any Leftover Helium: " + prettify(r2results) + " He.","perks");
 }
 
+//perk is a perk object from perkHolder collection
+//helium is the number of helium left to spend
+//returns the helium left post-spend
+AutoPerks.bumpPerkLevel = function(perk, helium) {
+    var t2 = perk.name.endsWith("_II");
+
+    packLevel = 1;
+    packPrice = perk.price;
+    if (t2) {
+        packLevel = perk.increase * MODULES["perks"].fastAllocateFactor;
+        packPrice = AutoPerks.calculateTotalPrice(perk, perk.level + packLevel) - perk.spent;
+
+        if (packPrice > helium) {
+            packLevel = 1;
+            packPrice = perk.price;
+        }
+    }
+
+    perk.level+= packLevel;
+    perk.spent += packPrice;
+    perk.price = AutoPerks.calculatePrice(perk, perk.level); // Price of *next* purchase.
+    perk.inc = AutoPerks.calculateIncrease(perk, perk.level);
+    perk.efficiency = inc / price;
+    return helium - packPrice;
+}
 
 
 //Pushes the respec button, then the Clear All button, then assigns perk points based on what was calculated.
