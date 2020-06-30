@@ -626,6 +626,7 @@ AutoPerks.spendHelium2 = function(helium) {
         mostEff.efficiency = inc / price;
         i++;
     }
+    AutoPerks.fastAllocateFactor = MODULES["perks"].fastAllocateFactor;
     for (iterateQueue() ; mostEff.price <= helium ; iterateQueue() ) {
         if(mostEff.level < mostEff.max) { // but first, check if the perk has reached its maximum value
             helium = AutoPerks.bumpPerkLevel(mostEff, helium);
@@ -635,6 +636,7 @@ AutoPerks.spendHelium2 = function(helium) {
     debug("AutoPerks2: Pass One Complete. Loops ran: " + i, "perks");
 
     //Begin selectable dump perk code
+    AutoPerks.fastAllocateFactor = MODULES["perks"].fastAllocateFactor;
     var $selector = document.getElementById('dumpPerk');
     if ($selector != null && $selector.value != "None") {
         var heb4dump = helium;
@@ -650,6 +652,7 @@ AutoPerks.spendHelium2 = function(helium) {
     } //end dump perk code.
     
     var heB4round2 = helium;
+    AutoPerks.fastAllocateFactor = MODULES["perks"].fastAllocateFactor;
     //Repeat the process for spending round 2. This spends any extra helium we have that is less than the cost of the last point of the dump-perk.
     while (effQueue.size > 1) {
         mostEff = effQueue.poll();
@@ -672,12 +675,14 @@ AutoPerks.bumpPerkLevel = function(perk, helium) {
     packLevel = 1;
     packPrice = perk.price;
     if (t2) {
-        packLevel = perk.increase * MODULES["perks"].fastAllocateFactor;
+        packLevel = perk.increase * AutoPerks.fastAllocateFactor;
         packPrice = AutoPerks.calculateTotalPrice(perk, perk.level + packLevel) - perk.spent;
 
         if (packPrice > helium) {
             packLevel = 1;
             packPrice = perk.price;
+            // back off in case we're near the end of our helium stores
+            AutoPerks.fastAllocateFactor = Math.ceil(AutoPerks.fastAllocateFactor / 10);
         }
     }
 
@@ -685,7 +690,7 @@ AutoPerks.bumpPerkLevel = function(perk, helium) {
     perk.spent += packPrice;
     perk.price = AutoPerks.calculatePrice(perk, perk.level); // Price of *next* purchase.
     perk.inc = AutoPerks.calculateIncrease(perk, perk.level);
-    perk.efficiency = inc / price;
+    perk.efficiency = perk.inc / perk.price;
     return helium - packPrice;
 }
 
