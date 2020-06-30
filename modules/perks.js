@@ -14,7 +14,7 @@ var AutoPerks = {};
 MODULES["perks"] = {};
 MODULES["perks"].showDetails = true;   //show which individual perks are spent;
 MODULES["perks"].useAlgo2 = false;   //use algorithm 2 instead.
-MODULES["perks"].fastAllocateFactor = 1000;   //perk purchase loop multiplier
+MODULES["perks"].fastAllocateFactor = 100000;   //perk purchase loop multiplier
 
 //Import the FastPriorityQueue.js general Library (not AT specific, but needed for perk queue)
 var head = document.getElementsByTagName('head')[0];
@@ -643,7 +643,7 @@ AutoPerks.spendHelium2 = function(helium) {
         var index = $selector.selectedIndex;
         var dumpPerk = AutoPerks.getPerkByName($selector[index].innerHTML);
 
-        while (dumpPerk.level < dumpPerk.max) {
+        while (dumpPerk.level < dumpPerk.max && dumpPerk.price < helium) {
             helium = AutoPerks.bumpPerkLevel(dumpPerk, helium);
         }
 
@@ -656,7 +656,7 @@ AutoPerks.spendHelium2 = function(helium) {
     //Repeat the process for spending round 2. This spends any extra helium we have that is less than the cost of the last point of the dump-perk.
     while (effQueue.size > 1) {
         mostEff = effQueue.poll();
-        if (mostEff.level <= mostEff.max) {
+        if (mostEff.level <= mostEff.max && mostEff.price < helium) {
             helium = AutoPerks.bumpPerkLevel(mostEff, helium);
             // Add back into queue run again until out of helium
             effQueue.add(mostEff);
