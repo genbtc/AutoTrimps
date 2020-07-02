@@ -34,3 +34,43 @@ mainWrapper.getFluctuation = function() {
         return 0.2;
     }
 }
+
+//checks whether we're in spire right now (world on spire zone)
+mainWrapper.isInSpire == function() {
+    return game.global.spireActive && !game.global.mapsActive;
+}
+
+//gets min damage as a parameter
+//returns max damage
+mainWrapper.min2max == function(min) {
+    var fluctuation = mainWrapper.getFluctuation();
+    return (1 + fluctuation) * min / (1 - fluctuation);
+}
+
+mainWrapper.critTier
+
+//checks whether trimps can possibly 1-shot both current & next enemy
+mainWrapper.canOverkill == function() {
+    var cell = mainWrapper.getCurrentCell();
+
+    //happens near portal
+    if (typeof cell === 'undefined') return true;
+
+    var enemyHealth = cell.health;
+
+    var trimpAttack = mainWrapper.min2max(calculateDamage(game.global.soldierCurrentAttack, false, true, false, 0, true));
+    //apply crits
+    var trimpMaxAttack = trimpAttack * getPlayerCritDamageMult() * getMegaCritDamageMult(Math.floor(1 + getPlayerCritChance()));
+    //apply Gamma
+    trimpMaxAttack = calcHeirloomBonus("Shield", "gammaBurst", trimpMaxAttack);
+    //apply difference with D stance
+    trimpMaxAttack *= 8;
+
+    var enemyMaxHealth = cell.maxHealth;
+    //apply PB at max rate
+    enemyMaxHealth *= 0.05;
+    //apply overkill penalties
+    enemyMaxHealth /= (getPerkLevel("Overkill") * 0.005);
+
+    return trimpMaxAttack >= enemyMaxHealth;
+}

@@ -412,7 +412,9 @@ function autoStance2() {
             //only use Wind in maps if the user wants it
             && (!game.global.mapsActive || getPageSetting('WindInMaps'))
             //turn Wind off in spires, we don't want any trouble on plagued dailies or something
-            && (!game.global.spireActive || game.global.mapsActive)) {
+            && !mainWrapper.isInSpire()
+            //we want to switch Wind off as soon as we hit 300 if we can't possibly overkill
+            && (mainWrapper.canOverkill() || game.empowerments.Wind.currentDebuffPower < 300)) {
             setFormation(5);
         //use D stance if: new army is ready&waiting / can survive void-double-attack or we can one-shot / can survive lead damage / can survive void-crit-dmg
         } else if (game.upgrades.Dominance.done && surviveD && leadAttackOK && drainAttackOK && voidCritinDok && dExplosionOK) {

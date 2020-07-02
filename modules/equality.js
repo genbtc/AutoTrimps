@@ -35,8 +35,7 @@ equality.manageEquality = function() {
         var aimAtGamma = this.aimAtGamma();
         if (mainWrapper.isEnemyFast(cell) || aimAtGamma) {
             var minEnemyDamage = calculateDamage(cell.attack, false, false, false, cell, true);
-            var fluctuation = mainWrapper.getFluctuation();
-            var maxEnemyDamage = (1 + fluctuation) * minEnemyDamage / (1 - fluctuation);
+            var maxEnemyDamage = mainWrapper.min2max(minEnemyDamage);
 
             var enemyDamage = (minEnemyDamage + maxEnemyDamage) / 2;
             var ourEffectiveHealth = game.global.soldierHealthMax + game.global.soldierEnergyShieldMax;
