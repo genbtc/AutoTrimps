@@ -70,5 +70,5 @@ mainWrapper.canOverkill = function() {
     //apply overkill penalties
     enemyMaxHealth /= (getPerkLevel("Overkill") * 0.005);
 
-    return trimpMaxAttack >= enemyMaxHealth;
+    return trimpMaxAttack >= (enemyMaxHealth + enemyHealth);
 }
