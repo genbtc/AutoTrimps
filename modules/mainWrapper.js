@@ -36,21 +36,19 @@ mainWrapper.getFluctuation = function() {
 }
 
 //checks whether we're in spire right now (world on spire zone)
-mainWrapper.isInSpire == function() {
+mainWrapper.isInSpire = function() {
     return game.global.spireActive && !game.global.mapsActive;
 }
 
 //gets min damage as a parameter
 //returns max damage
-mainWrapper.min2max == function(min) {
+mainWrapper.min2max = function(min) {
     var fluctuation = mainWrapper.getFluctuation();
     return (1 + fluctuation) * min / (1 - fluctuation);
 }
 
-mainWrapper.critTier
-
 //checks whether trimps can possibly 1-shot both current & next enemy
-mainWrapper.canOverkill == function() {
+mainWrapper.canOverkill = function() {
     var cell = mainWrapper.getCurrentCell();
 
     //happens near portal
