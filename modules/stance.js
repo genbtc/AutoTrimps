@@ -408,7 +408,9 @@ function autoStance2() {
 
     if (!game.global.preMapsActive && game.global.soldierHealth > 0) {
         //use Wind stance if: enlightened wind is active and we're in the wind zone
-        if (getUberEmpowerment() == "Wind" && getEmpowerment() == "Wind") {
+        if (getUberEmpowerment() == "Wind" && getEmpowerment() == "Wind"
+            //only use Wind in maps if the user wants it
+            && (!game.global.mapsActive || getPageSetting('WindInMaps'))) {
             setFormation(5);
         //use D stance if: new army is ready&waiting / can survive void-double-attack or we can one-shot / can survive lead damage / can survive void-crit-dmg
         } else if (game.upgrades.Dominance.done && surviveD && leadAttackOK && drainAttackOK && voidCritinDok && dExplosionOK) {
