@@ -3,14 +3,22 @@
 var wantToScry = false;
 //use S stance
 function useScryerStance() {
-    // we don't have formations in U2
-    if (game.global.universe == 2) return;
 
     var AutoStance = getPageSetting('AutoStance');
     function autostancefunction() {
         if (AutoStance<=1) autoStance();    //"Auto Stance"
         else if (AutoStance==2) autoStance2();   //"Auto Stance #2"
     };
+    // these are needed to trigger a base enemy damage calculation
+    // @TODO #7 get rid of this dependency
+    if (AutoStance<=1)
+        calcBaseDamageinX(); //calculate internal script variables normally processed by autostance.
+    else if (AutoStance==2)
+        calcBaseDamageinX2(); //calculate method #2
+
+    // we don't have formations in U2
+    if (game.global.universe == 2) return;
+
     //check preconditions   (exit quick, if impossible to use)
     var use_auto = game.global.preMapsActive || game.global.gridArray.length === 0 || game.global.highestLevelCleared < 180;
     use_auto = use_auto || game.global.world <= 60;
@@ -21,10 +29,7 @@ function useScryerStance() {
         return;
     }
 
-    if (AutoStance<=1)
-        calcBaseDamageinX(); //calculate internal script variables normally processed by autostance.
-    else if (AutoStance==2)
-        calcBaseDamageinX2(); //calculate method #2
+
     var missingHealth = game.global.soldierHealthMax - game.global.soldierHealth;
     var newSquadRdy = game.resources.trimps.realMax() <= game.resources.trimps.owned + 1;
     var form = game.global.formation;
