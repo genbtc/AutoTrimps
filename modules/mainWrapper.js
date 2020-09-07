@@ -15,6 +15,7 @@ mainWrapper.getCurrentCell = function() {
 mainWrapper.isEnemyFast = function(cell) {
     var checkFast =
         (game.global.challengeActive == "Slow" || ((((game.badGuys[cell.name].fast || cell.mutation == "Corruption") && game.global.challengeActive != "Nom") || game.global.voidBuff == "doubleAttack") && game.global.challengeActive != "Coordinate"));
+    var experienced = game.global.challengeActive == "Exterminate" && game.challenges.Exterminate.experienced;
     var forceSlow = false;
     if (game.global.challengeActive == "Duel"){
         if (game.challenges.Duel.enemyStacks < 10) {
@@ -23,7 +24,7 @@ mainWrapper.isEnemyFast = function(cell) {
             forceSlow = true;
         }
     }
-    return checkFast && !forceSlow;
+    return checkFast && !forceSlow && !experienced;
 }
 
 //copypaste as well; at least this is straightforward to do
