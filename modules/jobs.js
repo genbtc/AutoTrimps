@@ -339,9 +339,9 @@ function workerRatios() {
         }
 
         //we want that sweet parity buff if we're where it's important (u2)
-        //and are not already heavily skewed towards food
+        //1:1:1 gets quite a bonus, which is not that lower than 1:0:0 skew, so we'll stick to this
         //TODO have a setting for maxing parity
-        if (game.global.universe == 2 && getParityBonus() > 1 && ratio != 4) {
+        if (game.global.universe == 2 && getParityBonus() > 1) {
             ratio = 6;
         }
 
