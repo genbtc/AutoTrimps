@@ -17,6 +17,7 @@ MODULES["jobs"].ratios[1][3] = [3,1,4];
 MODULES["jobs"].ratios[1][2] = [3,3,5];
 MODULES["jobs"].ratios[1][1] = [1,1,1];
 //[2] is U2
+MODULES["jobs"].ratios[2][6] = [1,1,1];
 MODULES["jobs"].ratios[2][5] = [1,20,200];
 MODULES["jobs"].ratios[2][4] = [10,1,1];
 MODULES["jobs"].ratios[2][3] = [3,1,4];
@@ -335,6 +336,13 @@ function workerRatios() {
         }
         if (game.resources.trimps.realMax() > 300000) {
             ratio++;
+        }
+
+        //we want that sweet parity buff if we're where it's important (u2)
+        //and are not already heavily skewed towards food
+        //TODO have a setting for maxing parity
+        if (game.global.universe == 2 && getParityBonus() > 1 && ratio != 4) {
+            ratio = 6;
         }
 
         ratioSet = MODULES["jobs"].ratios[game.global.universe][ratio];
