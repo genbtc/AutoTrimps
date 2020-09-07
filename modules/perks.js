@@ -927,8 +927,8 @@ AutoPerks.initializePerks = function () {
     if (game.global.universe == 1) {
         AutoPerks.perkHolder = [siphonology, anticipation, meditation, relentlessness, range, agility, bait, trumps, packrat, looting, toughness, power, motivation, pheromones, artisanistry, carpentry, resilience, coordinated, resourceful, overkill, capable, cunning, curious, classy, toughness_II, power_II, motivation_II, carpentry_II, looting_II];
     } else if (game.global.universe == 2) {
-        var overkill = new AutoPerks.FixedPerk("overkill", 1000000, 30);
-        AutoPerks.perkHolder = [range, agility, bait, trumps, packrat, looting, toughness, resilience, power, motivation, pheromones, artisanistry, carpentry, prismal, equality, criticality, tenacity, greed, frenzy];
+        var hunger = new AutoPerks.FixedPerk("hunger", 1000000, 30);
+        AutoPerks.perkHolder = [range, agility, bait, trumps, packrat, hunger, looting, toughness, resilience, power, motivation, pheromones, artisanistry, carpentry, prismal, equality, criticality, tenacity, greed, frenzy];
     }
     //initialize basics on all.
     for(var i in AutoPerks.perkHolder) {
