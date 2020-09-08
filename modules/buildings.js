@@ -197,6 +197,10 @@ function buyBuildings() {
     var customVars = MODULES["buildings"];
     var oldBuy = preBuy2();
     game.global.buyAmt = 1;
+    //Antenna
+    if (!game.buildings.Antenna.locked) {
+        safeBuyBuilding('Antenna');
+    }
     //Smithy
     if (!game.buildings.Smithy.locked) {
         safeBuyBuilding('Smithy');
