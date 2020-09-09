@@ -82,7 +82,7 @@ function buyFoodEfficientHousing() {
     for (var house in unlockedHousing) {
         var building = game.buildings[unlockedHousing[house]];
         var cost = getBuildingItemPrice(building, "food", false, 1);
-        var ratio = cost / building.increase.by;
+        var ratio = cost / getHousingIncrease(building);
         buildorder.push({
             'name': unlockedHousing[house],
             'ratio': ratio
@@ -106,6 +106,14 @@ function buyFoodEfficientHousing() {
     }
 }
 
+function getHousingIncrease(building) {
+    var increase = building.increase.by;
+    if (!game.buildings.Hub.locked && game.buildings.Hub.owned > 0) {
+        increase += game.buildings.Hub.increase.by;
+    }
+    return increase;
+}
+
 function buyGemEfficientHousing() {
     var gemHousing = ["Hotel", "Resort", "Gateway", "Collector", "Warpstation"];
     var unlockedHousing = [];
@@ -118,7 +126,7 @@ function buyGemEfficientHousing() {
     for (var house in unlockedHousing) {
         var building = game.buildings[unlockedHousing[house]];
         var cost = getBuildingItemPrice(building, "gems", false, 1);
-        var ratio = cost / building.increase.by;
+        var ratio = cost / getHousingIncrease(building);
         //don't consider Gateway if we can't afford it right now - hopefully to prevent game waiting for fragments to buy gateway when collector could be bought right now
         if (unlockedHousing[house] == "Gateway" && !canAffordBuilding('Gateway'))
             continue;
