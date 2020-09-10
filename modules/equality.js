@@ -33,7 +33,9 @@ equality.manageEquality = function() {
 
         //run just enough stacks vs fast
         var aimAtGamma = this.aimAtGamma();
-        if (mainWrapper.isEnemyFast(cell) || aimAtGamma) {
+        //@todo maybe we wanna check equality vs gamma modifiers to see whether waiting for gamma to proc
+        //is better than running suicidally? frenzy won't make this easy, tho
+        if (mainWrapper.isEnemyFast(cell)) {
             var minEnemyDamage = calculateDamage(cell.attack, false, false, false, cell, true);
             var maxEnemyDamage = mainWrapper.min2max(minEnemyDamage);
 
