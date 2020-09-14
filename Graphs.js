@@ -30,7 +30,7 @@ document.getElementById("graphParent").innerHTML += '<div id="graphFooter" style
 var $graphFooter = document.getElementById('graphFooterLine1');
 //$graphFooter.innerHTML += '\
 //Create the dropdown for what graph to show    (these correspond to headings in setGraph() and have to match)
-var graphList = ['Helium - He/Hr', 'Radon - Ra/Hr', 'Helium - Total', 'Helium - He/Hr Instant', 'Helium - He/Hr Delta', 'HeHr % / LifetimeHe', 'He % / LifetimeHe', 'Clear Time', 'Cumulative Clear Time', 'Run Time', 'Map Bonus', 'Void Maps', 'Void Map History', 'Loot Sources', 'Coordinations', 'GigaStations', 'Unused Gigas', 'Last Warpstation', 'Trimps', 'Nullifium Gained', 'Dark Essence', 'Dark Essence PerHour', 'OverkillCells', 'Magmite', 'Magmamancers', 'Fluffy XP', 'Fluffy XP PerHour', 'Nurseries', 'Bones'];
+var graphList = ['Helium - He/Hr', 'Radon - Ra/Hr', 'Helium - Total', 'Helium - He/Hr Instant', 'Helium - He/Hr Delta', 'HeHr % / LifetimeHe', 'He % / LifetimeHe', 'Clear Time', 'Cumulative Clear Time', 'Run Time', 'Map Bonus', 'Void Maps', 'Void Map History', 'Loot Sources', 'Coordinations', 'GigaStations', 'Unused Gigas', 'Last Warpstation', 'Trimps', 'Nullifium Gained', 'Dark Essence', 'Dark Essence PerHour', 'OverkillCells', 'Magmite', 'Magmamancers', 'Fluffy XP', 'Fluffy XP PerHour', 'Scruffy XP', 'Scruffy XP PerHour', 'Nurseries', 'Bones', 'Worshippers'];
 var $graphSel = document.createElement("select");
 $graphSel.id = 'graphSelection';
 $graphSel.setAttribute("style", "");
@@ -361,7 +361,7 @@ function pushData() {
     allSaveData.push({
         totalPortals: game.global.totalPortals + game.global.totalRadPortals,
         heliumOwned: game.resources.helium.owned,
-	radonOwned: game.resources.radon.owned,
+	    radonOwned: game.resources.radon.owned,
         currentTime: new Date().getTime(),
         portalTime: game.global.portalTime,
         world: game.global.world,
@@ -383,7 +383,9 @@ function pushData() {
         magmite: game.global.magmite,
         magmamancers: game.jobs.Magmamancer.owned,
         fluffy: game.global.fluffyExp,
+        scruffy: game.global.fluffyExp2,
         nursery: game.buildings.Nursery.purchased,
+        worshipper: game.jobs.Worshipper.owned,
         bones: game.global.b
     });
     //only keep 15 portals worth of runs to prevent filling storage
@@ -979,31 +981,7 @@ function setGraphData(graph) {
             var currentPortal = -1;
             var currentZone = -1;
             var startEssence = 0;
-            graphData = [];
-            for (var i in allSaveData) {
-                if (allSaveData[i].totalPortals != currentPortal) {
-                    graphData.push({
-                        name: 'Portal ' + allSaveData[i].totalPortals + ': ' + allSaveData[i].challenge,
-                        data: []
-                    });
-                    currentPortal = allSaveData[i].totalPortals;
-                    currentZone = 0;
-                    startEssence = allSaveData[i].essence;
-                }
-                //runs extra checks for mid-run imports, and pushes 0's to align to the right zone properly.
-                if (currentZone != allSaveData[i].world - 1) {
-                    var loop = allSaveData[i].world - 1 - currentZone;
-                    while (loop > 0) {
-                        graphData[graphData.length - 1].data.push(0);
-                        loop--;
-                    }
-                }
-                //write datapoint (one of 3 ways)
-                if (currentZone != 0) {
-                    graphData[graphData.length - 1].data.push(Math.floor((allSaveData[i].essence - startEssence) / ((allSaveData[i].currentTime - allSaveData[i].portalTime) / 3600000)));
-                }
-                currentZone = allSaveData[i].world;
-            }
+            graphData = hourlyGraph('essence');
             title = 'Dark Essence/Hour (Cumulative)';
             xTitle = 'Zone';
             yTitle = 'Dark Essence/Hour';
@@ -1036,44 +1014,36 @@ function setGraphData(graph) {
             var currentPortal = -1;
             var currentZone = -1;
             var startFluffy = 0;
-            graphData = [];
-            for (var i in allSaveData) {
-                if (allSaveData[i].totalPortals != currentPortal) {
-                    graphData.push({
-                        name: 'Portal ' + allSaveData[i].totalPortals + ': ' + allSaveData[i].challenge,
-                        data: []
-                    });
-                    currentPortal = allSaveData[i].totalPortals;
-                    currentZone = 0;
-                    startFluffy = allSaveData[i].fluffy;
-                }
-                //runs extra checks for mid-run imports, and pushes 0's to align to the right zone properly.
-                /*if (currentZone != allSaveData[i].world - 1) {
-                    var loop = allSaveData[i].world - 1 - currentZone;
-                    while (loop > 0) {
-                        graphData[graphData.length - 1].data.push(0);
-                        loop--;
-                    }
-                }*/
-                    if (currentZone != allSaveData[i].world - 1) {
-                        //console.log(allSaveData[i].totalPortals + " / " + allSaveData[i].world);
-                        var loop = allSaveData[i].world - 1 - currentZone;
-                        while (loop > 0) {
-                            graphData[graphData.length - 1].data.push(allSaveData[i-1][item]*1);
-                            loop--;
-                        }
-                    }
-                //write datapoint (one of 3 ways)
-                if (currentZone != 0) {
-                    graphData[graphData.length - 1].data.push(Math.floor((allSaveData[i].fluffy - startFluffy) / ((allSaveData[i].currentTime - allSaveData[i].portalTime) / 3600000)));
-                }
-                currentZone = allSaveData[i].world;
-            }
+            graphData = hourlyGraph('fluffy');
             title = 'Fluffy XP/Hour (Cumulative)';
             xTitle = 'Zone (starts at 300)';
             yTitle = 'Fluffy XP/Hour';
             yType = 'Linear';
             xminFloor = 300;
+            break;
+        case 'Scruffy XP':
+            graphData = allPurposeGraph('scruffy',true,"number");
+            title = 'Scruffy XP (Lifetime Total)';
+            xTitle = 'Zone';
+            yTitle = 'Scruffy XP';
+            yType = 'Linear';
+            break;
+        case 'Scruffy XP PerHour':
+            var currentPortal = -1;
+            var currentZone = -1;
+            var startFluffy = 0;
+            graphData = hourlyGraph('scruffy');
+            title = 'Scruffy XP/Hour (Cumulative)';
+            xTitle = 'Zone';
+            yTitle = 'Scruffy XP/Hour';
+            yType = 'Linear';
+            break;
+        case 'Worshippers':
+            graphData = allPurposeGraph('worshipper',true,"number");
+            title = 'Worshippers Active';
+            xTitle = 'Zone';
+            yTitle = 'Worshippers';
+            yType = 'Linear';
             break;
         case 'OverkillCells':
             var currentPortal = -1;
@@ -1109,6 +1079,34 @@ function setGraphData(graph) {
             yType = 'Linear';
             break;
     }//end of switch(graph)
+
+    function hourlyGraph(item) {
+        graphData = [];
+        for (var i in allSaveData) {
+            if (allSaveData[i].totalPortals != currentPortal) {
+                graphData.push({
+                    name: 'Portal ' + allSaveData[i].totalPortals + ': ' + allSaveData[i].challenge,
+                    data: []
+                });
+                currentPortal = allSaveData[i].totalPortals;
+                currentZone = 0;
+                startingValue = allSaveData[i][item]*1;
+            }
+            //runs extra checks for mid-run imports, and pushes 0's to align to the right zone properly.
+            if (currentZone != allSaveData[i].world - 1) {
+                var loop = allSaveData[i].world - 1 - currentZone;
+                while (loop > 0) {
+                    graphData[graphData.length - 1].data.push(0);
+                    loop--;
+                }
+            }
+            if (currentZone != 0) {
+                graphData[graphData.length - 1].data.push(Math.floor((allSaveData[i][item]*1 - startingValue) / ((allSaveData[i].currentTime - allSaveData[i].portalTime) / 3600000)));
+            }
+            currentZone = allSaveData[i].world;
+        }
+        return graphData;
+    }
 
     //(internal) default function used to draw non-specific graphs (and some specific ones)
     function allPurposeGraph(item,extraChecks,typeCheck,funcToRun,useAccumulator) {
@@ -1151,13 +1149,11 @@ function setGraphData(graph) {
                 var num = funcToRun(allSaveData[i],allSaveData[i-1]);
                 if (num < 0) num = 1;
                 graphData[graphData.length - 1].data.push(num);
-            }
-            else if (funcToRun && useAccumulator && currentZone != 0) {
+            } else if (funcToRun && useAccumulator && currentZone != 0) {
                 accumulator += funcToRun(allSaveData[i],allSaveData[i-1]);
                 if (accumulator < 0) accumulator = 1;
                 graphData[graphData.length - 1].data.push(accumulator);
-            }
-            else {
+            } else {
                 if (allSaveData[i][item] >= 0)
                     graphData[graphData.length - 1].data.push(allSaveData[i][item]*1);
                 else if (extraChecks)
@@ -1167,6 +1163,7 @@ function setGraphData(graph) {
         }
         return graphData;
     }
+
     //default formatter used (can define a decimal precision, and a suffix)
     formatter = formatter || function () {
         var ser = this.series;
