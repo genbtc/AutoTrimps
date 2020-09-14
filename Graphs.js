@@ -393,25 +393,6 @@ function pushData() {
     safeSetItems('allSaveData', JSON.stringify(allSaveData));
 }
 
-//TODO: Cloud Analytics - Experimental function to start tracking graphing data on the cloud server.
-// we want this to be small so we don't transmit the whole 10MB graph-data.
-var graphAnal = [];
-function trackHourlyGraphAnalytics() {
-    graphAnal.push({
-        currentTime: new Date().getTime(),
-        totalPortals: game.global.totalPortals + game.global.totalRadPortals,
-        heliumOwned: game.resources.helium.owned,
-        highzone: game.global.highestLevelCleared,
-        bones: game.global.b
-        //ratio: document.getElementById("ratioPreset").value
-    });
-    safeSetItems('graphAnal', JSON.stringify(graphAnal));
-}
-//Run once.
-trackHourlyGraphAnalytics();
-//then set Timer loop for 1 hour;
-setInterval(trackHourlyGraphAnalytics, 3600000);
-
 function initializeData() {
     //initialize fresh with a blank array if needed
     if (allSaveData === null) {
