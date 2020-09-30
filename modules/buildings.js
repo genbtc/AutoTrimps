@@ -210,7 +210,7 @@ function buyBuildings() {
         safeBuyBuilding('Antenna');
     }
     //Smithy
-    if (!game.buildings.Smithy.locked) {
+    if (!game.buildings.Smithy.locked && !(game.global.challengeActive == 'Quest')) {
         safeBuyBuilding('Smithy');
     }
     //Microchip
