@@ -386,6 +386,7 @@ function initializeAllSettings() {
     createSetting('WaitForGamma', 'Wait for Gamma', '[U2 only] Equality dance subsetting - if true, for fast enemies it will aim at surviving 5 hits to trigger Gamma Burst. Will try to detect situations like reflect when this is not possible. Plague and electricity effects are assumed fine atm due to Angelic mastery.', 'boolean', false, null, 'Combat');
     createSetting('IWannaLive', 'I Wanna Live', '[U2 only] Equality dance subsetting - if true, will try to survive a specified number of hits. Will try to detect situations like reflect when this is not possible. Plague and electricity effects are ignored - adjust the setting to make sure Angelic can keep up for long enough.', 'boolean', false, null, 'Combat');
     createSetting('IWannaLiveForHowLong', 'I Wanna Live For How Long', '[U2 only] Equality dance subsetting - how long do we want to try to live? Is ignored when I Wanna Live is false. Default setting of 24 hits means just about enough equality to survive indefinitely with 1170% prismatic shield and Angelic mastery.', 'value', '24', null, 'Combat');
+    createSetting('SingleHitBackoff', 'Single Hit Backoff', '[U2 only] Equality dance subsetting - if true, will only get enough equality for a single hit survival when full amount of necessary equality is unavailable. Will use max equality if false.', 'boolean', false, null, 'Combat');
 
 
 

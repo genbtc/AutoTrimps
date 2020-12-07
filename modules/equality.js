@@ -6,8 +6,10 @@ MODULES["equality"] = equality;
 
 equality.gammaHits = 5;
 equality.dropEverything = -1;
-//too niche of a setting to pull this to UI
-equality.singleHitBackoff = true;
+
+equality.singleHitBackoff = function() {
+    return getPageSetting('SingleHitBackoff');
+}
 
 //returns true if we should try to keep trimps alive for 5 attacks
 //setting is argument for it
@@ -95,7 +97,7 @@ equality.manageEquality = function() {
 
             equalityNeeded = this.additionalStacksNeeded(ourEffectiveHealthWait, enemyDamage);
 
-            if ((equalityNeeded > this.equalityStackBudget()) && this.singleHitBackoff) {
+            if ((equalityNeeded > this.equalityStackBudget()) && this.singleHitBackoff()) {
                 equalityNeeded = this.additionalStacksNeeded(ourEffectiveHealth, enemyDamage);
             }
         }
