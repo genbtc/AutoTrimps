@@ -95,7 +95,7 @@ equality.manageEquality = function() {
 
             equalityNeeded = this.additionalStacksNeeded(ourEffectiveHealthWait, enemyDamage);
 
-            if (singleHitBackoff && equalityNeeded > this.equalityStackBudget()) {
+            if ((equalityNeeded > this.equalityStackBudget()) && this.singleHitBackoff) {
                 equalityNeeded = this.additionalStacksNeeded(ourEffectiveHealth, enemyDamage);
             }
         }
