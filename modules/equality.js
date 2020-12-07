@@ -5,12 +5,8 @@ equality = {};
 MODULES["equality"] = equality;
 
 //this is the threshold for angelic to heal us indefinitely
-//@todo make this an UI-exposed setting
-//24 gets us 3-4 hits for main health pool which means hey, we get to live indefinitely
-equality.hitsToSurvive = 24;
 equality.gammaHits = 5;
 equality.dropEverything = -1;
-equality.wannaLive = true;
 
 //returns true if we should try to keep trimps alive for 5 attacks
 //setting is argument for it
@@ -24,11 +20,12 @@ equality.aimAtGamma = function() {
     return settingOn;
 }
 
+equality.hitsToSurvive = function() {
+    return getPageSetting('IWannaLiveForHowLong');
+}
 
 equality.iWannaLive = function() {
-    //var settingOn = getPageSetting('IWannaLive')
-    //@todo make this a setting
-    var settingOn = this.wannaLive;
+    var settingOn = getPageSetting('IWannaLive')
     //reflect is going to kill us, so what's the point
     settingOn = settingOn && !mainWrapper.reflect();
 
@@ -48,12 +45,12 @@ equality.howLongDoILive = function(cell) {
         if (this.aimAtGamma()) {
             hitsToSurvive = this.gammaHits;
         }
-        if (this.iWannaLive() && (hitsToSurvive < this.hitsToSurvive)) {
-            hitsToSurvive = this.hitsToSurvive;
+        if (this.iWannaLive() && (hitsToSurvive < this.hitsToSurvive())) {
+            hitsToSurvive = this.hitsToSurvive();
         }
     } else {
         if (this.iWannaLive()) {
-            hitsToSurvive = this.hitsToSurvive;
+            hitsToSurvive = this.hitsToSurvive();
             if (this.aimAtGamma() && (hitsToSurvive < this.gammaHits)) {
                 hitsToSurvive = this.gammaHits;
             }
@@ -109,12 +106,8 @@ equality.additionalStacksNeeded = function(ourHealth, enemyDamage) {
     //cut down on equality if we can
     } else {
         //the corner case is when the truth lies between the two equality stacks
-        //this will cause fluctuation
+        //this might cause fluctuation
         equalityNeeded = -Math.floor(Math.log10(ourHealth / enemyDamage)/Math.log10(1.1));
-        //this setting means we don't really want to die on accident, so let's have one extra
-        if (this.iWannaLive()) {
-            equalityNeeded++;
-        }
     }
     return equalityNeeded;
 }

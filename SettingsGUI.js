@@ -384,7 +384,8 @@ function initializeAllSettings() {
     createSetting('AutoRoboTrimp', 'AutoRoboTrimp', 'Use RoboTrimps ability starting at this level, and every 5 levels thereafter. (set to 0 to disable. default 60.) 60 is a good choice for mostly everybody.', 'value', '60', null, 'Combat');
     createSetting('ManagedEquality', 'Managed Equality', '[U2 only] Use Equality dance - zero equality for non-fast enemies, just enough for fast ones', 'boolean', true, null, 'Combat');
     createSetting('WaitForGamma', 'Wait for Gamma', '[U2 only] Equality dance subsetting - if true, for fast enemies it will aim at surviving 5 hits to trigger Gamma Burst. Will try to detect situations like reflect when this is not possible. Plague and electricity effects are assumed fine atm due to Angelic mastery.', 'boolean', false, null, 'Combat');
-
+    createSetting('IWannaLive', 'I Wanna Live', '[U2 only] Equality dance subsetting - if true, will try to survive a specified number of hits. Will try to detect situations like reflect when this is not possible. Plague and electricity effects are ignored - adjust the setting to make sure Angelic can keep up for long enough.', 'boolean', false, null, 'Combat');
+    createSetting('IWannaLiveForHowLong', 'I Wanna Live For How Long', '[U2 only] Equality dance subsetting - how long do we want to try to live? Is ignored when I Wanna Live is false. Default setting of 24 hits means just about enough equality to survive indefinitely with 1170% prismatic shield and Angelic mastery.', 'value', '24', null, 'Combat');
 
 
 
@@ -849,6 +850,9 @@ function updateCustomButtons() {
         turnOff("goldNoBattle");
     }
     //document.getElementById('Prestige').value = autoTrimpSettings.Prestige.selected; //dont update this, dynamic prestige takes it over and is handled elsewhere.
+
+    //IWannaLive should hide the field when disabled and show it when enabled
+    toggleElem('IWannaLiveForHowLong', getPageSetting('IWannaLive'));
 
     //stop disable farming from needing a refresh
     if (getPageSetting('DisableFarm'))
