@@ -4,9 +4,10 @@
 equality = {};
 MODULES["equality"] = equality;
 
-//this is the threshold for angelic to heal us indefinitely
 equality.gammaHits = 5;
 equality.dropEverything = -1;
+//too niche of a setting to pull this to UI
+equality.singleHitBackoff = true;
 
 //returns true if we should try to keep trimps alive for 5 attacks
 //setting is argument for it
@@ -80,6 +81,10 @@ equality.manageEquality = function() {
         var equalityNeeded = -getPerkLevel("Equality");
 
         if (0 < hitsToSurvive) {
+            //@todo this looks at absolute max dmg, e.g. snimp
+            //but for lower-dmg enemies we might get away with less equality
+            //(x2 difference in dmg is not uncommon)
+            //likewise, improbability hits a tad higher
             var minEnemyDamage = calculateDamage(cell.attack, false, false, false, cell, true);
             var maxEnemyDamage = mainWrapper.min2max(minEnemyDamage);
 
@@ -90,7 +95,7 @@ equality.manageEquality = function() {
 
             equalityNeeded = this.additionalStacksNeeded(ourEffectiveHealthWait, enemyDamage);
 
-            if (equalityNeeded > this.equalityStackBudget()) {
+            if (singleHitBackoff && equalityNeeded > this.equalityStackBudget()) {
                 equalityNeeded = this.additionalStacksNeeded(ourEffectiveHealth, enemyDamage);
             }
         }
