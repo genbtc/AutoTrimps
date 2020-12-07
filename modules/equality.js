@@ -4,6 +4,14 @@
 equality = {};
 MODULES["equality"] = equality;
 
+//this is the threshold for angelic to heal us indefinitely
+//@todo make this an UI-exposed setting
+//24 gets us 3-4 hits for main health pool which means hey, we get to live indefinitely
+equality.hitsToSurvive = 24;
+equality.gammaHits = 5;
+equality.dropEverything = -1;
+equality.wannaLive = true;
+
 //returns true if we should try to keep trimps alive for 5 attacks
 //setting is argument for it
 //reflect is an argument against it
@@ -11,9 +19,47 @@ MODULES["equality"] = equality;
 equality.aimAtGamma = function() {
     var settingOn = getPageSetting('WaitForGamma');
     //reflect is going to kill us, so what's the point
-    settingOn &= !(game.global.challengeActive == "Daily" && typeof game.global.dailyChallenge.mirrored !== 'undefined');
+    settingOn = settingOn && !mainWrapper.reflect();
 
     return settingOn;
+}
+
+
+equality.iWannaLive = function() {
+    //var settingOn = getPageSetting('IWannaLive')
+    //@todo make this a setting
+    var settingOn = this.wannaLive;
+    //reflect is going to kill us, so what's the point
+    settingOn = settingOn && !mainWrapper.reflect();
+
+    return settingOn;
+}
+
+equality.howLongDoILive = function(cell) {
+    var hitsToSurvive = this.dropEverything;
+    //fast => just enough equality to survive
+    //  waitForGamma => survive 5 turns
+    //  iWannaLive => survive however many turns there is, at least 5
+    //slow => zero equality
+    //  iWannaLive => survive however many turns there is
+    //      waitForGamma => at least 5
+    if (mainWrapper.isEnemyFast(cell)) {
+        hitsToSurvive = 1;
+        if (this.aimAtGamma()) {
+            hitsToSurvive = this.gammaHits;
+        }
+        if (this.iWannaLive() && (hitsToSurvive < this.hitsToSurvive)) {
+            hitsToSurvive = this.hitsToSurvive;
+        }
+    } else {
+        if (this.iWannaLive()) {
+            hitsToSurvive = this.hitsToSurvive;
+            if (this.aimAtGamma() && (hitsToSurvive < this.gammaHits)) {
+                hitsToSurvive = this.gammaHits;
+            }
+        }
+    }
+    return hitsToSurvive;
 }
 
 //performs equality dance.
@@ -31,52 +77,68 @@ equality.manageEquality = function() {
         //happens near portal
         if (typeof cell === 'undefined') return false;
 
-        //run just enough stacks vs fast
-        var aimAtGamma = this.aimAtGamma();
-        //@todo maybe we wanna check equality vs gamma modifiers to see whether waiting for gamma to proc
-        //is better than running suicidally? frenzy won't make this easy, tho
-        if (mainWrapper.isEnemyFast(cell)) {
+        var hitsToSurvive = this.howLongDoILive(cell);
+
+        //this will drop equality stacks to zero
+        var equalityNeeded = -getPerkLevel("Equality");
+
+        if (0 < hitsToSurvive) {
             var minEnemyDamage = calculateDamage(cell.attack, false, false, false, cell, true);
             var maxEnemyDamage = mainWrapper.min2max(minEnemyDamage);
 
-            var enemyDamage = (minEnemyDamage + maxEnemyDamage) / 2;
+            var enemyDamage = maxEnemyDamage;
+
             var ourEffectiveHealth = game.global.soldierHealthMax + game.global.soldierEnergyShieldMax;
-            if (aimAtGamma) {
-                enemyDamage = maxEnemyDamage;
-                ourEffectiveHealth = ourEffectiveHealth / 5;
-            }
+            var ourEffectiveHealthWait = ourEffectiveHealth / hitsToSurvive;
 
-            var equalityNeeded = 0;
-            if (enemyDamage > ourEffectiveHealth) {
-                equalityNeeded = Math.ceil(Math.log10(enemyDamage / ourEffectiveHealth)/Math.log10(1.1));
-            //cut down on equality if we can
-            } else {
-                //the corner case is when the truth lies between the two equality stacks
-                //this will cause fluctuation
-                //not very nice for your eyes, but better than adding 1 here and having an extra stack
-                equalityNeeded = -Math.floor(Math.log10(ourEffectiveHealth / enemyDamage)/Math.log10(1.1));
-            }
+            equalityNeeded = this.additionalStacksNeeded(ourEffectiveHealthWait, enemyDamage);
 
-            //there might be some stacks already
-            //this can also be NaN sometimes
-            if (isNaN(game.portal.Equality.disabledStackCount)) {
-                game.portal.Equality.disabledStackCount = 0;
+            if (equalityNeeded > this.equalityStackBudget()) {
+                equalityNeeded = this.additionalStacksNeeded(ourEffectiveHealth, enemyDamage);
             }
-            //also this happens to be string if set via slider, hence Number() call
-            game.portal.Equality.disabledStackCount = Number(game.portal.Equality.disabledStackCount) + equalityNeeded;
-
-            //gotta stay in the interval, game doesn't have validation
-            var maxEquality = getPerkLevel("Equality");
-            if (game.portal.Equality.disabledStackCount > maxEquality) {
-                game.portal.Equality.disabledStackCount = maxEquality;
-            } else if (game.portal.Equality.disabledStackCount < 0) {
-                game.portal.Equality.disabledStackCount = 0;
-            }
-        //if enemy is slow run 0 stacks
-        } else {
-            game.portal.Equality.disabledStackCount = 0;
         }
 
-        manageEqualityStacks();
+        equality.setStacks(equalityNeeded);
     }
+}
+
+equality.additionalStacksNeeded = function(ourHealth, enemyDamage) {
+    var equalityNeeded = 0;
+    if (enemyDamage > ourHealth) {
+        equalityNeeded = Math.ceil(Math.log10(enemyDamage / ourHealth)/Math.log10(1.1));
+    //cut down on equality if we can
+    } else {
+        //the corner case is when the truth lies between the two equality stacks
+        //this will cause fluctuation
+        equalityNeeded = -Math.floor(Math.log10(ourHealth / enemyDamage)/Math.log10(1.1));
+        //this setting means we don't really want to die on accident, so let's have one extra
+        if (this.iWannaLive()) {
+            equalityNeeded++;
+        }
+    }
+    return equalityNeeded;
+}
+
+equality.equalityStackBudget = function() {
+    return getPerkLevel("Equality") - Number(game.portal.Equality.disabledStackCount);
+}
+
+equality.setStacks = function(equalityNeeded) {
+    //there might be some stacks already
+    //this can also be NaN sometimes
+    if (isNaN(game.portal.Equality.disabledStackCount)) {
+        game.portal.Equality.disabledStackCount = 0;
+    }
+    //also this happens to be string if set via slider, hence Number() call
+    game.portal.Equality.disabledStackCount = Number(game.portal.Equality.disabledStackCount) + equalityNeeded;
+
+    //gotta stay in the interval, game doesn't have validation
+    var maxEquality = getPerkLevel("Equality");
+    if (game.portal.Equality.disabledStackCount > maxEquality) { // gotta ignore
+        game.portal.Equality.disabledStackCount = maxEquality;
+    } else if (game.portal.Equality.disabledStackCount < 0) {
+        game.portal.Equality.disabledStackCount = 0;
+    }
+
+    manageEqualityStacks();
 }

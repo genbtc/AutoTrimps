@@ -73,3 +73,7 @@ mainWrapper.canOverkill = function() {
 
     return trimpMaxAttack >= (enemyMaxHealth + enemyHealth);
 }
+
+mainWrapper.reflect = function() {
+    return (game.global.challengeActive == "Daily" && typeof game.global.dailyChallenge.mirrored !== 'undefined');
+}
