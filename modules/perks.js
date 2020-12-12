@@ -90,14 +90,15 @@ var presetListHtml = "\
 <option id='customPreset'>CUSTOM ratio</option></select>";
 
 //U2
-//[looting,toughness,power,motivation,pheromones,artisanistry,carpentry,resilience,prismal,equality,criticality,tenacity,greed, frenzy]
-var preset_Rspace = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-var preset_RZek059 = [7, 10, 5, 1, 0.5, 2, 12, 9, 0.5, 2, 5, 0, 0, 0];
-var preset_RZekmelt = [10, 0.5, 2, 0.5, 0.3, 1.2, 3, 1, 0.5, 1, 3, 18, 20, 0];
-var preset_RZekquag = [8, 0.7, 1.8, 0.8, 0.2, 1.3, 3.3, 0.6, 0.8, 2.8, 6.2, 18, 27, 12];
-var preset_Rmauquag = [8, 0.7, 1.8, 0.8, 0.2, 1.3, 3.3, 0.6, 0.8, 0.01, 6.2, 18, 27, 12];
-var preset_Rmauc3 = [1, 1, 3, 0.8, 0.2, 1.3, 3.3, 2, 1, 0.01, 6.2, 30, 1, 12];
-var preset_Rmauc3greedy = [8, 1, 3, 0.8, 0.2, 1.3, 3.3, 2, 1, 0.01, 6.2, 18, 15, 12];
+//[looting,toughness,power,motivation,pheromones,artisanistry,carpentry,resilience,prismal,equality,criticality,tenacity, greed, frenzy, observation]
+var preset_Rspace = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+var preset_RZek059 = [7, 10, 5, 1, 0.5, 2, 12, 9, 0.5, 2, 5, 0, 0, 0, 0];
+var preset_RZekmelt = [10, 0.5, 2, 0.5, 0.3, 1.2, 3, 1, 0.5, 1, 3, 18, 20, 0, 0];
+var preset_RZekquag = [8, 0.7, 1.8, 0.8, 0.2, 1.3, 3.3, 0.6, 0.8, 2.8, 6.2, 18, 27, 12, 0];
+var preset_Rmauquag = [8, 0.7, 1.8, 0.8, 0.2, 1.3, 3.3, 0.6, 0.8, 0.01, 6.2, 18, 27, 12, 0];
+var preset_Rmauc3 = [1, 1, 3, 0.8, 0.2, 1.3, 3.3, 2, 1, 0.01, 6.2, 30, 1, 12, 1];
+var preset_Rmauc3greedy = [8, 1, 3, 0.8, 0.2, 1.3, 3.3, 2, 1, 0.01, 6.2, 18, 15, 12, 1];
+var preset_Rmauz135 = [8, 0.7, 1.8, 0.8, 0.2, 1.3, 3.3, 2.1, 0.8, 0.1, 2, 1, 2, 1.2, 5];
 
 var presetListU2 = [preset_RZek059, preset_RZekmelt, preset_RZekquag, preset_Rmauquag, 
                     preset_Rmauc3, preset_Rmauc3greedy, preset_Rspace];
@@ -107,6 +108,7 @@ var presetListHtmlU2 = "\
 <option id='preset_RZekquag'>Zek (Quag)</option>\
 <option id='preset_Rmauquag'>maurezen quagmire</option>\
 <option id='preset_Rmauc3'>maurezen c3</option>\
+<option id='preset_Rmauz135'>maurezen ~z135</option>\
 <option id='preset_Rspace'>--------------</option>\
 <option id='customPreset'>CUSTOM ratio</option></select>";	
 
@@ -188,7 +190,7 @@ AutoPerks.displayGUI = function() {
         apGUI.$ratiosLine3.setAttribute('style', 'display: inline-block; text-align: left; width: 100%');
         apGUI.$customRatios.appendChild(apGUI.$ratiosLine3);
         var listratiosLine3;
-        listratiosLine3 = ["Resilience","Tenacity","Greed", "Frenzy"];
+        listratiosLine3 = ["Resilience","Tenacity","Greed", "Frenzy", "Observation"];
         for (var i in listratiosLine3) {
             AutoPerks.createInput(listratiosLine3[i],apGUI.$ratiosLine3);    
         }  
@@ -478,8 +480,13 @@ AutoPerks.calculateIncrease = function(perk, level) {
     if(perk.updatedValue != -1) value = perk.updatedValue;
     else value = perk.value;
 
-    if(perk.compounding) increase = perk.baseIncrease;
-    else increase = (1 + (level + 1) * perk.baseIncrease) / ( 1 + level * perk.baseIncrease) - 1;
+    if (perk.compounding) {
+        increase = perk.baseIncrease;
+    } else if (AutoPerks.QUADRATIC_TYPE === perk.type) {
+        increase = (1 + (level + 1) * (level + 1) * perk.baseIncrease) / ( 1 + level * level * perk.baseIncrease) - 1;
+    } else {
+        increase = (1 + (level + 1) * perk.baseIncrease) / ( 1 + level * perk.baseIncrease) - 1;
+    }
     return increase / perk.baseIncrease * value;
 }
 
@@ -807,11 +814,15 @@ AutoPerks.toggleFastAllocate = function() {
     MODULES["perks"].useAlgo2 = !MODULES["perks"].useAlgo2;
 }
 
+AutoPerks.QUADRATIC_TYPE = "quadratic";
+AutoPerks.EXPONENTIAL_TYPE = "exponential";
+AutoPerks.LINEAR_TYPE = "linear";
+
 AutoPerks.FixedPerk = function(name, base, level, max, fluffy) {
     this.id = -1;
     this.name = name;
     this.base = base;
-    this.type = "exponential";
+    this.type = AutoPerks.EXPONENTIAL_TYPE;
     this.exprate = 1.3;
     this.fixed = true;
     this.level = level || 0;
@@ -820,7 +831,7 @@ AutoPerks.FixedPerk = function(name, base, level, max, fluffy) {
     if (fluffy == "fluffy") {
     //This affects cost calculation on "Capable" fixed perk (during line 273)
        this.fluffy = true; 
-       this.type = "linear";
+       this.type = AutoPerks.LINEAR_TYPE;
        this.increase = 10;
    }
 }
@@ -829,12 +840,12 @@ AutoPerks.VariablePerk = function(name, base, compounding, value, baseIncrease, 
     this.id = -1;
     this.name = name;
     this.base = base;
-    this.type  = "exponential";
+    this.type  = AutoPerks.EXPONENTIAL_TYPE;
     this.exprate = 1.3; //cost is almost always the default 1.3x
     this.fixed = false;
     this.compounding = compounding;
     this.updatedValue = -1; // If a custom ratio is supplied, this will be modified to hold the new value.
-    this.baseIncrease = baseIncrease; // The raw stat increase that the perk gives.
+    this.baseIncrease = baseIncrease; // The raw stat increase that the perk gives. Multiplicative.
     this.efficiency = -1; // Efficiency is defined as % increase * value / He cost
     this.max = max || Number.MAX_VALUE;
     this.level = level || 0; // How many levels have been invested into a perk
@@ -855,7 +866,7 @@ AutoPerks.ArithmeticPerk = function(name, base, increase, baseIncrease, parent, 
     this.name = name;
     this.base = base;
     this.increase = increase;
-    this.type = "linear";
+    this.type = AutoPerks.LINEAR_TYPE;
     this.exprate = 1.0;
     this.fixed = false;
     this.compounding = false;
@@ -921,14 +932,18 @@ AutoPerks.initializePerks = function () {
     //we'll think of it as of 10% compounding to not complicate things too much
     var greed = new AutoPerks.VariablePerk("greed", 10000000000, true,      12, 0.1, 40);
     var frenzy = new AutoPerks.VariablePerk("frenzy", 1000000000000000, true, 13, 0.1);
+    var hunger = new AutoPerks.FixedPerk("hunger", 1000000, 30);
+    //value it at max runestones, so base increase is lvl1 * 1000% = 10x
+    var observation = new AutoPerks.VariablePerk("observation", 1000000000000000000, true, 14, 10);
+    observation.exprate = 2;
+    observation.type = AutoPerks.QUADRATIC_TYPE;
     
     AutoPerks.perkHolder = [];    
     //gather these into an array of objects
     if (game.global.universe == 1) {
         AutoPerks.perkHolder = [siphonology, anticipation, meditation, relentlessness, range, agility, bait, trumps, packrat, looting, toughness, power, motivation, pheromones, artisanistry, carpentry, resilience, coordinated, resourceful, overkill, capable, cunning, curious, classy, toughness_II, power_II, motivation_II, carpentry_II, looting_II];
     } else if (game.global.universe == 2) {
-        var hunger = new AutoPerks.FixedPerk("hunger", 1000000, 30);
-        AutoPerks.perkHolder = [range, agility, bait, trumps, packrat, hunger, looting, toughness, resilience, power, motivation, pheromones, artisanistry, carpentry, prismal, equality, criticality, tenacity, greed, frenzy];
+        AutoPerks.perkHolder = [range, agility, bait, trumps, packrat, hunger, looting, toughness, resilience, power, motivation, pheromones, artisanistry, carpentry, prismal, equality, criticality, tenacity, greed, frenzy, observation];
     }
     //initialize basics on all.
     for(var i in AutoPerks.perkHolder) {
@@ -968,7 +983,7 @@ AutoPerks.getSomePerks = function(fixed,variable,tier2,allperks) {
         if (game.global.universe == 1 ? typeof perk.level === 'undefined' : typeof perk.radLevel === 'undefined') continue;   
         if ((fixed && AutoPerks.perkHolder[i].fixed) ||
            (variable && !AutoPerks.perkHolder[i].fixed) ||
-           (tier2 && AutoPerks.perkHolder[i].type == "linear" && !AutoPerks.perkHolder[i].fluffy) ||
+           (tier2 && AutoPerks.perkHolder[i].type == AutoPerks.LINEAR_TYPE && !AutoPerks.perkHolder[i].fluffy) ||
            (allperks))
         {   perks.push(AutoPerks.perkHolder[i]);    }
     }
