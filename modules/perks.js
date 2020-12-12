@@ -101,7 +101,7 @@ var preset_Rmauc3greedy = [8, 1, 3, 0.8, 0.2, 1.3, 3.3, 2, 1, 0.01, 6.2, 18, 15,
 var preset_Rmauz135 = [8, 0.7, 1.8, 0.8, 0.2, 1.3, 3.3, 2.1, 0.8, 0.1, 2, 1, 2, 1.2, 5];
 
 var presetListU2 = [preset_RZek059, preset_RZekmelt, preset_RZekquag, preset_Rmauquag, 
-                    preset_Rmauc3, preset_Rmauc3greedy, preset_Rspace];
+                    preset_Rmauc3, preset_Rmauz135, preset_Rspace];
 var presetListHtmlU2 = "\
 <option id='preset_RZek059'>Adjusted Zek (z1-59)</option>\
 <option id='preset_RZekmelt'>Adjusted Zek (Melt)</option>\
