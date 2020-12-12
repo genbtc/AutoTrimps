@@ -453,15 +453,20 @@ AutoPerks.getRadon = function() {
 
 //Calculate Price
 AutoPerks.calculatePrice = function(perk, level) { // Calculate price of buying *next* level
-    if(perk.fluffy) return Math.ceil(perk.base * Math.pow(10,level));
-    else if(perk.type == 'exponential') return Math.ceil(level/2 + perk.base * Math.pow(perk.exprate, level));
-    else if(perk.type == 'linear') return Math.ceil(perk.base + perk.increase * level);
+    if (perk.fluffy) {
+        return Math.ceil(perk.base * Math.pow(10,level));
+    } else if (perk.type ==  || perk.type == AutoPerks.QUADRATIC_TYPE) {
+        return Math.ceil(level/2 + perk.base * Math.pow(perk.exprate, level));
+    } else if (perk.type == AutoPerks.LINEAR_TYPE) {
+        return Math.ceil(perk.base + perk.increase * level);
+    }
 }
 //Calculate Total Price
 AutoPerks.calculateTotalPrice = function(perk, finalLevel) {
-    if(perk.type == 'linear' && !perk.fluffy)
+    if(perk.type == AutoPerks.LINEAR_TYPE && !perk.fluffy)
         return AutoPerks.calculateTIIprice(perk, finalLevel);
     var totalPrice = 0;
+    //@todo replace cycle with series sum formula
     for(var i = 0; i < finalLevel; i++) {
         totalPrice += AutoPerks.calculatePrice(perk, i);
     }
@@ -482,10 +487,14 @@ AutoPerks.calculateIncrease = function(perk, level) {
 
     if (perk.compounding) {
         increase = perk.baseIncrease;
-    } else if (AutoPerks.QUADRATIC_TYPE === perk.type) {
-        increase = (1 + (level + 1) * (level + 1) * perk.baseIncrease) / ( 1 + level * level * perk.baseIncrease) - 1;
     } else {
         increase = (1 + (level + 1) * perk.baseIncrease) / ( 1 + level * perk.baseIncrease) - 1;
+    }
+    //@todo this is a dangerous confusion
+    //perk.type is related to cost, not to benefits model
+    //@todo refactor this to a more sane setup
+    if (AutoPerks.QUADRATIC_TYPE === perk.type) {
+        increase = (1 + (level + 1) * (level + 1) * perk.baseIncrease) / ( 1 + level * level * perk.baseIncrease) - 1;
     }
     return increase / perk.baseIncrease * value;
 }
@@ -815,14 +824,14 @@ AutoPerks.toggleFastAllocate = function() {
 }
 
 AutoPerks.QUADRATIC_TYPE = "quadratic";
-AutoPerks.EXPONENTIAL_TYPE = "exponential";
+ = "exponential";
 AutoPerks.LINEAR_TYPE = "linear";
 
 AutoPerks.FixedPerk = function(name, base, level, max, fluffy) {
     this.id = -1;
     this.name = name;
     this.base = base;
-    this.type = AutoPerks.EXPONENTIAL_TYPE;
+    this.type = ;
     this.exprate = 1.3;
     this.fixed = true;
     this.level = level || 0;
