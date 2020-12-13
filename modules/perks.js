@@ -943,7 +943,7 @@ AutoPerks.initializePerks = function () {
     var frenzy = new AutoPerks.VariablePerk("frenzy", 1000000000000000, true, 13, 0.1);
     var hunger = new AutoPerks.FixedPerk("hunger", 1000000, 30);
     //value it at max runestones, so base increase is lvl1 * 1000% = 10x
-    var observation = new AutoPerks.VariablePerk("observation", 1000000000000000000, true, 14, 10);
+    var observation = new AutoPerks.VariablePerk("observation", 5000000000000000000, true, 14, 10);
     observation.exprate = 2;
     observation.type = AutoPerks.QUADRATIC_TYPE;
     
