@@ -455,7 +455,7 @@ AutoPerks.getRadon = function() {
 AutoPerks.calculatePrice = function(perk, level) { // Calculate price of buying *next* level
     if (perk.fluffy) {
         return Math.ceil(perk.base * Math.pow(10,level));
-    } else if (perk.type ==  || perk.type == AutoPerks.QUADRATIC_TYPE) {
+    } else if (perk.type == AutoPerks.EXPONENTIAL_TYPE || perk.type == AutoPerks.QUADRATIC_TYPE) {
         return Math.ceil(level/2 + perk.base * Math.pow(perk.exprate, level));
     } else if (perk.type == AutoPerks.LINEAR_TYPE) {
         return Math.ceil(perk.base + perk.increase * level);
@@ -824,7 +824,7 @@ AutoPerks.toggleFastAllocate = function() {
 }
 
 AutoPerks.QUADRATIC_TYPE = "quadratic";
- = "exponential";
+AutoPerks.EXPONENTIAL_TYPE = "exponential";
 AutoPerks.LINEAR_TYPE = "linear";
 
 AutoPerks.FixedPerk = function(name, base, level, max, fluffy) {
