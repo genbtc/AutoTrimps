@@ -3,11 +3,22 @@
 var wantToScry = false;
 //use S stance
 function useScryerStance() {
+
     var AutoStance = getPageSetting('AutoStance');
     function autostancefunction() {
         if (AutoStance<=1) autoStance();    //"Auto Stance"
         else if (AutoStance==2) autoStance2();   //"Auto Stance #2"
     };
+    // these are needed to trigger a base enemy damage calculation
+    // @TODO #7 get rid of this dependency
+    if (AutoStance<=1)
+        calcBaseDamageinX(); //calculate internal script variables normally processed by autostance.
+    else if (AutoStance==2)
+        calcBaseDamageinX2(); //calculate method #2
+
+    // we don't have formations in U2
+    if (game.global.universe == 2) return;
+
     //check preconditions   (exit quick, if impossible to use)
     var use_auto = game.global.preMapsActive || game.global.gridArray.length === 0 || game.global.highestLevelCleared < 180;
     use_auto = use_auto || game.global.world <= 60;
@@ -18,10 +29,7 @@ function useScryerStance() {
         return;
     }
 
-    if (AutoStance<=1)
-        calcBaseDamageinX(); //calculate internal script variables normally processed by autostance.
-    else if (AutoStance==2)
-        calcBaseDamageinX2(); //calculate method #2
+
     var missingHealth = game.global.soldierHealthMax - game.global.soldierHealth;
     var newSquadRdy = game.resources.trimps.realMax() <= game.resources.trimps.owned + 1;
     var form = game.global.formation;
@@ -56,12 +64,18 @@ function useScryerStance() {
     }
 
 //Any of these being true will indicate scryer should not be used, and cause the function to dump back to regular autoStance():
+    var remainingEssence = countRemainingEssenceDrops();
+    //check for no more dark matter if in world
+    use_auto = use_auto || (remainingEssence == 0 && !game.global.mapsActive);
     //check for spire
     use_auto = use_auto || !game.global.mapsActive && isActiveSpireAT() && getPageSetting('ScryerUseinSpire2')!=1;
     //check for voids
-    use_auto = use_auto || game.global.mapsActive && getCurrentMapObject().location == "Void" && !getPageSetting('ScryerUseinVoidMaps2');
-    //check for maps
-    use_auto = use_auto || game.global.mapsActive && !getPageSetting('ScryerUseinMaps2');
+    var isVoid = game.global.mapsActive && getCurrentMapObject().location == "Void";
+    //ignore scryer for voids if setting is off or running c2
+    var ignoreVoid = isVoid && (!getPageSetting('ScryerUseinVoidMaps2') || game.global.runningChallengeSquared);
+    use_auto = use_auto || ignoreVoid;
+    //check for maps that are NOT void maps
+    use_auto = use_auto || game.global.mapsActive && !(getCurrentMapObject().location == "Void") && !getPageSetting('ScryerUseinMaps2');
     //check for bosses above voidlevel
     use_auto = use_auto || getPageSetting('ScryerSkipBoss2') == 1 && game.global.world > getPageSetting('VoidMaps') && game.global.lastClearedCell == 98;
     //check for bosses (all levels)
@@ -74,7 +88,8 @@ function useScryerStance() {
 
     //check for corrupted cells (and exit)
     var iscorrupt = getCurrentEnemy(1).mutation == "Corruption";
-    iscorrupt = iscorrupt || (mutations.Magma.active() && game.global.mapsActive);
+    //#15 says we'd like to keep S in magma if possible
+//    iscorrupt = iscorrupt || (mutations.Magma.active() && game.global.mapsActive);
     iscorrupt = iscorrupt || (game.global.mapsActive && getCurrentMapObject().location == "Void" && game.global.world >= mutations.Corruption.start());
     if (iscorrupt && getPageSetting('ScryerSkipCorrupteds2')) {
         autostancefunction();
@@ -87,7 +102,7 @@ function useScryerStance() {
     var max_zone = getPageSetting('ScryerMaxZone');
     var valid_min = game.global.world >= min_zone;
     var valid_max = max_zone <= 0 || game.global.world < max_zone;
-    if (valid_min && valid_max) {
+    if ((valid_min && valid_max) || isVoid) {
         if (oktoswitch)
             setFormation(4);
         wantToScry = true;

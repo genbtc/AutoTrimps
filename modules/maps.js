@@ -22,7 +22,7 @@ MODULES["maps"].maxMapBonus = 10;       //cap how many maps are run during Want 
 MODULES["maps"].wantHealthMapBonus = 10;//cap how many maps are run during Want More Health mode
 MODULES["maps"].SpireFarm199Maps = true;   //this will farm spire on 199 maps instead of 200 maps when Map Reducer is bought
 MODULES["maps"].watchChallengeMaps = [15, 25, 35, 50];  //during 'watch' challenge, run maps on these levels:
-MODULES["maps"].shouldFarmCell = 59;
+MODULES["maps"].shouldFarmCell = 81;
 MODULES["maps"].SkipNumUnboughtPrestiges = 2;   //exceeding this number of unbought prestiges will trigger a skip of prestige mode.
 MODULES["maps"].UnearnedPrestigesRequired = 2;
 MODULES["maps"].maxMapBonusAfterZ = MODULES["maps"].maxMapBonus;   //Max Map Bonus After Zone uses this many stacks
@@ -125,7 +125,7 @@ function autoMap() {
 //START CALCULATING DAMAGES:
     var AutoStance = getPageSetting('AutoStance');
     //calculate crits (baseDamage was calced in function autoStance)    this is a weighted average of nonCrit + Crit. (somewhere in the middle)
-    ourBaseDamage = (baseDamage * (1-getPlayerCritChance()) + (baseDamage * getPlayerCritChance() * getPlayerCritDamageMult()));
+    ourBaseDamage = applyCritMultiplier(baseDamage);
     //calculate with map bonus
     var mapbonusmulti = 1 + (0.20*game.global.mapBonus);
     //(autostance2 has mapbonusmulti built in)
@@ -136,28 +136,41 @@ function autoMap() {
     var enemyDamage;
     var enemyHealth;
     if (AutoStance<=1) {
-        enemyDamage = getEnemyMaxAttack(game.global.world + 1, 50, 'Snimp', 1.2);
+        enemyDamage = getEnemyMaxAttack(game.global.world, 90, 'Snimp', 1.2);
         enemyDamage = calcDailyAttackMod(enemyDamage); //daily mods: badStrength,badMapStrength,bloodthirst
     } else {
-        enemyDamage = calcBadGuyDmg(null,getEnemyMaxAttack(game.global.world + 1, 50, 'Snimp', 1.0),true,true); //(enemy,attack,daily,maxormin,[disableFlucts])
+        enemyDamage = calcBadGuyDmg(null,getEnemyMaxAttack(game.global.world, 90, 'Snimp', 1.0),true,true); //(enemy,attack,daily,maxormin,[disableFlucts])
     }
-    enemyHealth = getEnemyMaxHealth(game.global.world + 1,50);
-    if(game.global.challengeActive == "Toxicity") {
+    enemyHealth = getEnemyMaxHealth(game.global.world, 90);
+    if (game.global.challengeActive == "Toxicity") {
         enemyHealth *= 2;
     }
+    //yep, nobody taken care of that yet TODO a stick pending #7
+    if (game.global.challengeActive == "Coordinate") {
+        var badCoord = getBadCoordLevel();
+        enemyHealth *= badCoord;
+        //otherwise it's covered in calcBadGuyDmg already
+        if (AutoStance<=1) {
+            enemyDamage *= badCoord;
+        }
+    }
+    if (game.global.challengeActive == "Obliterated" || game.global.challengeActive == "Eradicated") {
+        obliteratedFactor = calcObliteratedEradicatedFactor();
+        enemyHealth *= obliteratedFactor;
+        //otherwise it's covered in calcBadGuyDmg already
+        if (AutoStance<=1) {
+            enemyDamage *= obliteratedFactor;
+        }
+    }
+
     //Corruption Zone Proportionality Farming Calculator:
-    var corrupt = game.global.world >= mutations.Corruption.start(true);
+    var corrupt = game.global.world >= mutations.Corruption.start(false);
     if (getPageSetting('CorruptionCalc') && corrupt) {
-        var cptnum = getCorruptedCellsNum();     //count corrupted cells
-        var cpthlth = getCorruptScale("health"); //get corrupted health mod
-        var cptpct = cptnum / 100;               //percentage of zone which is corrupted.
-        var hlthprop = cptpct * cpthlth;         //Proportion of cells corrupted * health of a corrupted cell
-        if (hlthprop >= 1)                       //dont allow sub-1 numbers to make the number less
-            enemyHealth *= hlthprop;
-        var cptatk = getCorruptScale("attack");  //get corrupted attack mod
-        var atkprop = cptpct * cptatk;           //Proportion of cells corrupted * attack of a corrupted cell
-        if (atkprop >= 1)
-            enemyDamage *= atkprop;
+        //plain scale, without the averages, because we don't really want to have big corruption spikes
+        //wouldn't be that good to overkill normal cells and die to 1 corrupted hit
+        //a little bit of farming should help smoothen this issue
+        enemyHealth *= getCorruptScale("health");
+        enemyDamage *= getCorruptScale("attack");
         //console.log("enemy dmg:" + enemyDamage + " enemy hp:" + enemyHealth + " base dmg: " + ourBaseDamage);
     }
     // enter farming if it takes over 4 hits in D stance (16) (and exit if under.)
@@ -169,19 +182,21 @@ function autoMap() {
     //Lead specific farming calcuation section:
     if((game.global.challengeActive == 'Lead' && !challSQ)) {
         ourBaseDamage /= mapbonusmulti;
-        if (AutoStance<=1)
+        if (AutoStance<=1) {
             enemyDamage *= (1 + (game.challenges.Lead.stacks * 0.04));
-        enemyHealth *= (1 + (game.challenges.Lead.stacks * 0.04));
+        }
+        //The idea is to check vs a large momentum count, not vs the current one which is low-ish at the end of odd zone when farming usually occurs
+        enemyHealth *= (1 + (250 * 0.04));//we have calcBadGuy to do this to to damage. Note the different multipliers.
         //if the zone is odd:   (skip the +2 calc for the last level.
         if (game.global.world % 2 == 1 && game.global.world != 179){
              //calculate for the next level in advance (since we only farm on odd, and evens are very tough)
             if (AutoStance <= 1) {
                 enemyDamage = getEnemyMaxAttack(game.global.world + 1, 99, 'Snimp', 1.2);
                 enemyDamage = calcDailyAttackMod(enemyDamage); //daily mods: badStrength,badMapStrength,bloodthirst
+                enemyDamage *= (1 + (100 * 0.04));//we already take lead into account in calcBadGuyDmg
             } else {
                 enemyDamage = calcBadGuyDmg(null, getEnemyMaxAttack(game.global.world + 1, 99, 'Snimp', 1.0), true, true); //(enemy,attack,daily,maxormin,[disableFlucts])
             }
-            enemyDamage *= (1 + (100 * 0.04));
             ourBaseDamage /= 1.5; //subtract the odd-zone bonus.
         }
         if (game.global.world == 179) {
@@ -299,7 +314,7 @@ function autoMap() {
     }
 
     //stack tox stacks if we are doing max tox, or if we need to clear our void maps
-    if(game.global.challengeActive == 'Toxicity' && game.global.lastClearedCell > 93 && game.challenges.Toxicity.stacks < 1500 && ((getPageSetting('MaxTox') && game.global.world > 59) || needToVoid)) {
+    if(game.global.challengeActive == 'Toxicity' && game.global.lastClearedCell > 93 && game.challenges.Toxicity.stacks < 1500 && getPageSetting('MaxTox') && ((game.global.world > 59) || needToVoid)) {
         shouldDoMaps = true;
         //we will get at least 85 toxstacks from the 1st voidmap (unless we have overkill)
 //            if (!game.portal.Overkill.locked && game.stats.cellsOverkilled.value)
@@ -344,14 +359,19 @@ function autoMap() {
     if (doMaxMapBonus)
         shouldDoMaps = true;
     //Allow automaps to work with in-game Map at Zone option:
-    vanillaMapatZone = (game.options.menu.mapAtZone.enabled && game.options.menu.mapAtZone.setZone == game.global.world && !isActiveSpireAT());
+    vanillaMapatZone = 
+            (game.options.menu.mapAtZone.enabled 
+        &&  (
+                (game.global.universe == 1 && game.options.menu.mapAtZone.setZone == game.global.world)
+            ||  (game.global.universe == 2 && game.options.menu.mapAtZone.setZoneU2 == game.global.world)) 
+        &&  !isActiveSpireAT());
     if (vanillaMapatZone)
         shouldDoMaps = true;
 
 
     //Dynamic Siphonology section (when necessary)
     //Lower Farming Zone = Lowers the zone used during Farming mode. Starts 10 zones below current and Finds the minimum map level you can successfully one-shot
-    var siphlvl = shouldFarmLowerZone ? game.global.world - 10 : game.global.world - game.portal.Siphonology.level;
+    var siphlvl = shouldFarmLowerZone ? game.global.world - 10 : (game.global.universe == 1 ? game.global.world - game.portal.Siphonology.level : game.global.world);
     var maxlvl = game.talents.mapLoot.purchased ? game.global.world - 1 : game.global.world;
     maxlvl += extraMapLevels;   // extraMapLevels : advanced slider
     if (getPageSetting('DynamicSiphonology') || shouldFarmLowerZone){
@@ -396,19 +416,39 @@ function autoMap() {
        for (var map in game.global.mapsOwnedArray) {
           var theMap = game.global.mapsOwnedArray[map];
           if (theMap.noRecycle) {
-              if (theMap.name == 'The Wall' && game.upgrades.Bounty.allowed == 0 && !game.talents.bounty.purchased) {
+              if ((theMap.name == 'The Wall' || theMap.name == 'Big Wall') && game.upgrades.Bounty.allowed == 0 && (!game.talents.bounty.purchased || game.global.universe == 2)) {
                 var theMapDifficulty = Math.ceil(theMap.difficulty / 2);
-                if(game.global.world < 15 + theMapDifficulty) continue;
+                //15 for U1, 7 for U2
+                if(game.global.world < 7 + (2 - game.global.universe)*8 + theMapDifficulty) continue;
                 selectedMap = theMap.id;
                 break;
               }
-              if (theMap.name == 'Dimension of Anger' && document.getElementById("portalBtn").style.display == "none" && !game.talents.portal.purchased) {
+              if ((theMap.name == 'Dimension of Anger' || theMap.name == 'Dimension of Rage') && document.getElementById("portalBtn").style.display == "none" && (!game.talents.portal.purchased || game.global.universe == 2)) {
                   var theMapDifficulty = Math.ceil(theMap.difficulty / 2);
+                  //15 for U2, 20 for U1
+                  if(game.global.world < 10 + (3 - game.global.universe)*5 + theMapDifficulty) continue;                  
+                  selectedMap = theMap.id;
+                  break;
+              }
+              if (theMap.name == 'Prismatic Palace' && !game.upgrades.Prismalicious.done) {
+                  var theMapDifficulty = Math.ceil(theMap.difficulty / 2);                  
                   if(game.global.world < 20 + theMapDifficulty) continue;
                   selectedMap = theMap.id;
                   break;
               }
-              var dont = game.global.runningChallengeSquared;
+              //c^2 is left for manual control; we also shouldn't run the melting point more than once
+              var dont = game.global.runningChallengeSquared || !game.mapUnlocks.SmithFree.canRunOnce;
+              if (theMap.name == 'Melting Point' && !dont) {
+                  //run ASAP for Melt challenge
+                  if (game.global.world < 51 && game.global.challengeActive == "Melt") continue;
+                  //we want to get a bonus smithy at the last possible moment
+                  if (voidMapLevelSetting > 0 && game.global.world < voidMapLevelSettingZone) continue;
+                  //which includes getting max map bonus and, incidentally, doing a bunch of farming beforehand
+                  if ((doMaxMapBonus && game.global.mapBonus < customVars.maxMapBonus-1) || shouldDoMaps) continue;                  
+
+                  selectedMap = theMap.id;                  
+                  break;
+              }
               if(theMap.name == 'The Block' && !game.upgrades.Shieldblock.allowed && ((game.global.challengeActive == "Scientist" || game.global.challengeActive == "Trimp") && !dont || getPageSetting('BuyShieldblock'))) {
                   var theMapDifficulty = Math.ceil(theMap.difficulty / 2);
                   if(game.global.world < 11 + theMapDifficulty) continue;
@@ -497,7 +537,9 @@ function autoMap() {
                 eAttack *= (getCorruptScale("attack") / 2).toFixed(1);
             //TODO: Account for magmated voidmaps. (not /2)
             //TODO: Account for daily.
-            var ourHealth = baseHealth;
+            //u2 update - prismatic shield
+            //@todo Angelic? 
+            var ourHealth = baseHealth + getBattleStats("shield", true);
             if(game.global.challengeActive == 'Balance') {
                 var stacks = game.challenges.Balance.balanceStacks ? (game.challenges.Balance.balanceStacks > theMap.size) ? theMap.size : game.challenges.Balance.balanceStacks : false;
                 eAttack *= 2;
@@ -510,8 +552,10 @@ function autoMap() {
             if(game.global.challengeActive == 'Toxicity') eAttack *= 5;
             //break to prevent finishing map to finish a challenge?
             //continue to check for doable map?
-            var diff = parseInt(getPageSetting('VoidCheck')) > 0 ? parseInt(getPageSetting('VoidCheck')) : 2;
+            //allow player to kill itself if he wants to, make default difficulty equal to 0.25
+            var diff = parseInt(getPageSetting('VoidCheck')) > 0 ? parseInt(getPageSetting('VoidCheck')) : 0.25;
             var ourBlock = getBattleStats("block", true);   //use block tooltip (after death block) instead of current army block.
+            //@todo get rid of getbattlestats and extract "survives X hits" calculation to a single place
             if(ourHealth/diff < eAttack - ourBlock) {
                 shouldFarm = true;
                 voidCheckPercent = Math.round((ourHealth/diff)/(eAttack-ourBlock)*100);
@@ -621,9 +665,9 @@ function autoMap() {
             if (!game.global.switchToMaps){
                 mapsClicked();
             }
-            //Get Impatient/Abandon if: (need prestige / _NEED_ to do void maps / on lead in odd world.) AND (a new army is ready, OR _need_ to void map OR lead farming and we're almost done with the zone) (handle shouldDoWatchMaps elsewhere below)
+            //Get Impatient/Abandon if: (need prestige / _NEED_ to do void maps / need max map bonus / on lead in odd world.) AND (a new army is ready, OR _need_ to void map OR lead farming and we're almost done with the zone) (handle shouldDoWatchMaps elsewhere below)
             if ((!getPageSetting('PowerSaving') || (getPageSetting('PowerSaving') == 2) && doVoids) && game.global.switchToMaps && !shouldDoWatchMaps &&
-                (needPrestige || doVoids ||
+                (needPrestige || doVoids || doMaxMapBonus || 
                 ((game.global.challengeActive == 'Lead' && !challSQ) && game.global.world % 2 == 1) ||
                 (!enoughDamage && enoughHealth && game.global.lastClearedCell < 9) ||
                 (shouldFarm && game.global.lastClearedCell >= customVars.shouldFarmCell) ||
@@ -696,7 +740,8 @@ function autoMap() {
             //set up various priorities for various situations
             if (updateMapCost(true) > game.resources.fragments.owned) {
                 if (needPrestige && !enoughDamage) decrement.push('diff');
-                if (shouldFarm) decrement.push('size');
+                //size is bad for caches, and in corruption, where this is a problem, maps don't pose a challenge anyway
+                if (shouldFarm) decrement.push('loot');
             }
 
         //Decrement 1 - use priorities first:
@@ -730,7 +775,7 @@ function autoMap() {
                 sizeAdvMapsRange.value -= 1;
             }
 
-        //run the Advanced Special Modifier script, bring
+        //run the Advanced Special Modifier script, bring//@todo consider bringing this higher in the loop for #2
             if (getPageSetting('AdvMapSpecialModifier'))
                 testMapSpecialModController();
 

@@ -1,7 +1,7 @@
 MODULES["breedtimer"] = {};
 //These can be changed (in the console) if you know what you're doing:
-MODULES["breedtimer"].buyGensIncrement = 5;    //Buy this many geneticists at a time
-MODULES["breedtimer"].fireGensIncrement = 10;   //Fire this many geneticists at a time
+MODULES["breedtimer"].buyGensIncrement = 10;    //Buy this many geneticists at a time
+MODULES["breedtimer"].fireGensIncrement = 1;   //Fire this many geneticists at a time
 MODULES["breedtimer"].fireGensFloor = 10;       //Dont FIRE below this number (nothing to do with hiring up to it)(maybe is disregarded?)
 MODULES["breedtimer"].breedFireOn = 6;          //turn breedfire on at X seconds (if BreedFire)
 MODULES["breedtimer"].breedFireOff = 2;         //turn breedfire off at X seconds(if BreedFire)
@@ -76,18 +76,21 @@ function autoBreedTimer() {
     var manageBreedTimer = getPageSetting('ManageBreedtimer');
     if (manageBreedTimer) {
         if(game.portal.Anticipation.level == 0) newGeneTimerSetting = 0;
-        else if(game.global.challengeActive == 'Electricity' || game.global.challengeActive == 'Mapocalypse') newGeneTimerSetting = 3.5;
-        else if(game.global.challengeActive == 'Nom' || game.global.challengeActive == 'Toxicity') {
+        else if(game.global.challengeActive == 'Electricity'
+            || game.global.challengeActive == 'Mapocalypse'
+            || (typeof game.global.dailyChallenge.plague !== 'undefined')) {
+                newGeneTimerSetting = 3.5;
+        } else if(game.global.challengeActive == 'Nom' || game.global.challengeActive == 'Toxicity') {
             if(getPageSetting('FarmWhenNomStacks7') && game.global.gridArray[99].nomStacks >= 5 && !game.global.mapsActive)
                 //if Improbability already has 5 nomstacks, do 30 antistacks.
                 newGeneTimerSetting = defaultBreedTimer;
             else
                 newGeneTimerSetting = 10;
-        }
-        else if (getPageSetting('SpireBreedTimer') > -1 && isActiveSpireAT())
+        } else if (getPageSetting('SpireBreedTimer') > -1 && isActiveSpireAT()) {
             newGeneTimerSetting = getPageSetting('SpireBreedTimer');
-        else
+        } else {
             newGeneTimerSetting = defaultBreedTimer;
+        }
         if (newGeneTimerSetting != targetBreed) {
             setPageSetting('GeneticistTimer',newGeneTimerSetting);
             //controlGeneticistassist(newGeneTimerSetting);
@@ -101,6 +104,10 @@ function autoBreedTimer() {
     //Don't hire geneticists if we have already reached 30 anti stacks (put off further delay to next trimp group) //&& (game.global.lastBreedTime/1000 + getBreedTime(true) < targetBreed)
     var time = getBreedTime();
     var timeLeft = getBreedTime(true);
+    //TODO inline in getBreedTime?
+    if (game.global.challengeActive == "Trapper") {
+            timeLeft = 0;
+    }
     var boughtGenRound1 = false;
     if ((newSquadRdy || (game.global.lastBreedTime/1000 + timeLeft < targetBreed)) && targetBreed > time && !game.jobs.Geneticist.locked && targetBreed > timeLeft && game.resources.trimps.soldiers > 0 && !breedFire) {
         //Buy geneticists in Increments of 1 for now:
@@ -120,8 +127,12 @@ function autoBreedTimer() {
 //FIRING SECTION:
     var time = getBreedTime();
     var timeLeft = getBreedTime(true);
+    if (game.global.challengeActive == "Trapper") {
+            timeLeft = 0;
+    }
     var fire1 = targetBreed*1.02 < time;
-    var fire2 = targetBreed*1.02 < timeLeft;
+    //#10 - can't really get rid of time left fire until we have simulacrum. what about getting a more reasonable threshold?
+    var fire2 = targetBreed*2 < timeLeft;
     var fireobj = fire1 ? time : timeLeft;
     //if we need to speed up our breeding
     //if we have potency upgrades available, buy them. If geneticists are unlocked, or we aren't managing the breed timer, just buy them

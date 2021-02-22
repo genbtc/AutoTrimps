@@ -1,3 +1,26 @@
+//Applies getMegaCritDamageMult(critTier), if needed; applies regular crit as well.
+function applyCritMultiplier(baseDamage) {
+	//(baseDamage * (1-getPlayerCritChance()) + (baseDamage * getPlayerCritChance() * getPlayerCritDamageMult()));
+    var critDamage = baseDamage;
+    var critChance = getPlayerCritChance();
+    var critTier = Math.floor(critChance);
+    var critMult = getPlayerCritDamageMult();
+    var critMegaMult = getMegaCritDamageMult(2);//yes, a single step megacrit modifier is 2	
+	
+    if (critTier > 0) {
+        critDamage *= critMult;
+	while (critTier > 0) {
+	    critChance -= 1;
+	    critTier -= 1;
+	    critDamage *= critMegaMult;
+	}
+	critDamage = critDamage * (1-critChance) + baseDamage * critChance * critMegaMult;
+    } else {
+	critDamage = baseDamage * (1-critChance) + baseDamage * critChance * critMult;
+    }
+    return critDamage;
+}
+
 //MODULES["battlecalc"] = {};
 //AutoTrimps: currently only used for health and block. attack is done by calcOurDmg below
 // function ripped from Trimps "updates.js" line 1103
@@ -57,6 +80,8 @@ function getBattleStats(what,form,crit) {
             trainerStrength = calcHeirloomBonus("Shield", "trainerEfficiency", trainerStrength);
             currentCalc  *= (trainerStrength + 1);
         }
+    } else if (what == "shield") {
+    	return getMaxEnergyShield();
     }
     //Add coordination
     currentCalc  *= game.resources.trimps.maxSoldiers;
@@ -228,6 +253,9 @@ function getBattleStats(what,form,crit) {
     return currentCalc;
 }
 
+//todo #7 - use function calculateDamage(number, buildString, isTrimp, noCheckAchieve, cell)
+//typical invocation calculateDamage(game.global.soldierCurrentAttack, false, true);
+//it gets an accurate pre-crit calculation in current stance
 function calcOurDmg(number,maxormin,disableStances,disableFlucts) { //number = base attack
     var fluctuation = .2; //%fluctuation
     var maxFluct = -1;
@@ -287,7 +315,17 @@ function calcOurDmg(number,maxormin,disableStances,disableFlucts) { //number = b
     if (Fluffy.isActive()){
         number *= Fluffy.getDamageModifier();
     }
-    number *= (1 + (1 - game.empowerments.Ice.getCombatModifier()));
+    //#38 - Amalgamator
+    if (game.jobs.Amalgamator.owned > 0) {
+    	number *= game.jobs.Amalgamator.getDamageMult();
+    }
+    //#38 - Strength Towers
+    if (playerSpireTraps.Strength.owned){
+    	var strBonus = playerSpireTraps.Strength.getWorldBonus();
+    	number *= (1 + (strBonus / 100));
+    }
+    //#18 - disable Ice in h/d ratio calculations
+//    number *= (1 + (1 - game.empowerments.Ice.getCombatModifier()));
 
     if (game.global.challengeActive == "Daily"){
         if (typeof game.global.dailyChallenge.minDamage !== 'undefined'){
@@ -332,6 +370,21 @@ function calcOurDmg(number,maxormin,disableStances,disableFlucts) { //number = b
         return number;
 }
 
+//A method to calculated enemy hp and atk factors for Obliterated and Eradicated challenges
+//If neither challenge is active, returns 1
+function calcObliteratedEradicatedFactor() {
+	if (game.global.challengeActive == "Eradicated" || game.global.challengeActive == "Obliterated") {
+    	var obliteratedFactor =
+        	(game.global.challengeActive == "Eradicated")
+	            ? game.challenges.Eradicated.scaleModifier
+    	        : ((game.global.challengeActive == "Obliterated") ? 1e12 : 1);
+    	var zoneModifier = Math.floor(game.global.world / game.challenges[game.global.challengeActive].zoneScaleFreq);
+    	obliteratedFactor *= Math.pow(game.challenges[game.global.challengeActive].zoneScaling, zoneModifier);
+    	return obliteratedFactor;
+	} else {
+		return 1;
+	}
+}
 
 function calcBadGuyDmg(enemy,attack,daily,maxormin,disableFlucts) {
     var number;
@@ -347,6 +400,10 @@ function calcBadGuyDmg(enemy,attack,daily,maxormin,disableFlucts) {
     //Situational bad guy damage increases
     if (game.global.challengeActive){
         //Challenge bonuses here
+        //#7 - apparently enemy stats factor that in already - but only where enemy was obtained
+        if (!enemy) {
+            number *= calcObliteratedEradicatedFactor();
+        }
         if (game.global.challengeActive == "Coordinate"){
             number *= getBadCoordLevel();
         }
@@ -360,7 +417,7 @@ function calcBadGuyDmg(enemy,attack,daily,maxormin,disableFlucts) {
             number *= 1.25;
         }
         else if (game.global.challengeActive == "Lead"){
-            number *= (1 + (game.challenges.Lead.stacks * 0.04));
+            number *= (1 + (150 * 1.04));//going to be extra careful here and calculate vs 150 Lead stacks.
         }
         else if (game.global.challengeActive == "Scientist" && getScientistLevel() == 5) {
             number *= 10;

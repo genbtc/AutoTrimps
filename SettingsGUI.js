@@ -257,9 +257,9 @@ function initializeAllSettings() {
     createSetting('ManualCoords', 'Don\'t buy Coords', 'Enable it if you know what you\'re doing, disable it if you don\'t know what you\'re doing. For when manually handling coords means a lot on challenges like Trapper.', 'boolean', false, null, 'Core');
     //NewLine3
     document.getElementById('ManualCoords').parentNode.insertAdjacentHTML('afterend','<br>');
-    createSetting('AutoPortal', 'Auto Portal', 'Automatically portal. Will NOT auto-portal if you have a challenge active, the challenge setting dictates which challenge it will select for the next run. All challenge settings will portal right after the challenge ends, regardless. Helium Per Hour only <b>portals at cell 1</b> of the first level where your He/Hr went down even slightly compared to the current runs Best He/Hr. Take note, there is a Buffer option, which is like a grace percentage of how low it can dip without triggering. Setting a buffer will portal mid-zone if you exceed 5x of the buffer.  CAUTION: Selecting He/hr may immediately portal you if its lower-(use Pause AutoTrimps button to pause the script first to avoid this)', 'dropdown', 'Off', ['Off', 'Helium Per Hour', 'Balance', 'Decay', 'Electricity', 'Life', 'Crushed', 'Nom', 'Toxicity', 'Watch', 'Lead', 'Corrupted', 'Custom'], "Core");
+    createSetting('AutoPortal', 'Auto Portal', 'Automatically portal. Will NOT auto-portal if you have a challenge active, the challenge setting dictates which challenge it will select for the next run. All challenge settings will portal right after the challenge ends, regardless. Helium Per Hour only <b>portals at cell 1</b> of the first level where your He/Hr went down even slightly compared to the current runs Best He/Hr. Take note, there is a Buffer option, which is like a grace percentage of how low it can dip without triggering. Setting a buffer will portal mid-zone if you exceed 5x of the buffer.  CAUTION: Selecting He/hr may immediately portal you if its lower-(use Pause AutoTrimps button to pause the script first to avoid this)', 'dropdown', 'Off', ['Off', 'Helium Per Hour', 'Balance', 'Bublé', 'Melt', 'Quagmire', 'Decay', 'Electricity', 'Life', 'Crushed', 'Nom', 'Toxicity', 'Watch', 'Lead', 'Corrupted', 'Domination', 'Custom'], "Core");
     //document.getElementById("AutoPortal").style="font-size: 1.0vw;";    //fit it on 1 line.
-    createSetting('HeliumHourChallenge', 'Portal Challenge', 'Automatically portal into this challenge when using helium per hour or custom autoportal. Custom portals after cell 100 of the zone specified. ', 'dropdown', 'None', ['None', 'Balance', 'Decay', 'Electricity', 'Life', 'Crushed', 'Nom', 'Toxicity', 'Watch', 'Lead', 'Corrupted'], "Core");
+    createSetting('HeliumHourChallenge', 'Portal Challenge', 'Automatically portal into this challenge when using helium per hour or custom autoportal. Custom portals after cell 100 of the zone specified. ', 'dropdown', 'None', ['None', 'Balance', 'Bublé', 'Melt', 'Quagmire', 'Decay', 'Electricity', 'Life', 'Crushed', 'Nom', 'Toxicity', 'Watch', 'Lead', 'Corrupted', 'Domination', 'Archaeology', 'Insanity', 'Mayhem', 'Nurture'], "Core");
     //document.getElementById("HeliumHourChallengeLabel").innerHTML = "Portal Challenge:";    //fit it on 1 line.
     createSetting('CustomAutoPortal', 'Custom Portal', 'Automatically portal AFTER clearing this level.(ie: setting to 200 would portal when you first reach level 201)', 'value', '999', null, "Core");
     createSetting('HeHrDontPortalBefore', 'Don\'t Portal Before', 'Do NOT allow Helium per Hour AutoPortal setting to portal BEFORE this level is reached. It is an additional check that prevents drops in helium/hr from triggering autoportal. Set to 0 or -1 to completely disable this check. (only shows up with Helium per Hour set)', 'value', '999', null, "Core");
@@ -382,7 +382,11 @@ function initializeAllSettings() {
     createSetting('ForceAbandon', 'Auto Force-Abandon', '(Trimpicide). If a new fight group is available and anticipation stacks arent maxed, force abandon and grab a new group. Located in the geneticist management script.', 'boolean', true, null, 'Combat');
     createSetting('DynamicGyms', 'Dynamic Gyms', 'Designed to limit your block to slightly more than however much the enemy attack is. If MaxGyms is capped or GymWall is set, those will still work, and this will NOT override those (works concurrently), but it will further limit them. In the future it may override, but the calculation is not easy to get right so I dont want it undo-ing other things yet. ', 'boolean', false, null, 'Combat');
     createSetting('AutoRoboTrimp', 'AutoRoboTrimp', 'Use RoboTrimps ability starting at this level, and every 5 levels thereafter. (set to 0 to disable. default 60.) 60 is a good choice for mostly everybody.', 'value', '60', null, 'Combat');
-
+    createSetting('ManagedEquality', 'Managed Equality', '[U2 only] Use Equality dance - zero equality for non-fast enemies, just enough for fast ones', 'boolean', true, null, 'Combat');
+    createSetting('WaitForGamma', 'Wait for Gamma', '[U2 only] Equality dance subsetting - if true, for fast enemies it will aim at surviving 5 hits to trigger Gamma Burst. Will try to detect situations like reflect when this is not possible. Plague and electricity effects are assumed fine atm due to Angelic mastery.', 'boolean', false, null, 'Combat');
+    createSetting('IWannaLive', 'I Wanna Live', '[U2 only] Equality dance subsetting - if true, will try to survive a specified number of hits. Will try to detect situations like reflect when this is not possible. Plague and electricity effects are ignored - adjust the setting to make sure Angelic can keep up for long enough.', 'boolean', false, null, 'Combat');
+    createSetting('IWannaLiveForHowLong', 'I Wanna Live For How Long', '[U2 only] Equality dance subsetting - how long do we want to try to live? Is ignored when I Wanna Live is false. Default setting of 24 hits means just about enough equality to survive indefinitely with 1170% prismatic shield and Angelic mastery.', 'value', '24', null, 'Combat');
+    createSetting('SingleHitBackoff', 'Single Hit Backoff', '[U2 only] Equality dance subsetting - if true, will only get enough equality for a single hit survival when full amount of necessary equality is unavailable. Will use max equality if false.', 'boolean', false, null, 'Combat');
 
 
 
@@ -396,7 +400,7 @@ function initializeAllSettings() {
     createSetting('ScryerUseinSpire2', ['Maybe Use in Spire', 'Force Use in Spire', 'Never Use in Spire'], 'Maybe/Force/Never Use in Spire. <b>Never WILL override the Overkill setting, and never use S in Spire.</b> Maybe means default - treat Spire like any other cell (something else has to be ON to trigger Scryer). Force = Always use S.', 'multitoggle', 0, null, 'Scryer');
     //Line2
     createSetting('ScryerSkipBoss2', ['Default on Cell 100', 'Never Use on Cell 100 above VoidLevel', 'Never Use on Cell 100 (ALL Levels)'], 'On cell 100: Default/Never Use(above VoidLevel)/Never Use(ALL Levels). Overkill overrides this setting. Doesnt use Scrying stance for world Improbabilities/Bosses (cell 100) if you are past the level you have your VoidMaps set to run at. (or all levels, if set.) Default treats cell 100 like any other cell.', 'multitoggle', 0, null, 'Scryer');
-    createSetting('ScryerSkipCorrupteds2', ['Maybe Use S on Corrupteds', 'Dont Use S on Corrupteds'], 'Overkill overrides this setting, even on Dont Use. Turning this Green doesnt use S stance for corrupted cells UNLESS you can overkill them. Red/Maybe just means default (corrupteds are treated like normal cells), so something else has to be ON to trigger Scryer to be used. <b>Magma maps and Corrupted Voidmaps are classified under this box as corrupted</b> and Green-DontUse here will override the ForceMaps/ForceVoidmaps (for now)', 'multitoggle', 0, null, 'Scryer');
+    createSetting('ScryerSkipCorrupteds2', ['Maybe Use S on Corrupteds', 'Dont Use S on Corrupteds'], 'Overkill overrides this setting, even on Dont Use. Turning this Green doesnt use S stance for corrupted cells UNLESS you can overkill them. Red/Maybe just means default (corrupteds are treated like normal cells), so something else has to be ON to trigger Scryer to be used. <b>Corrupted Voidmaps are classified under this box as corrupted, but magma maps do not.</b> and Green-DontUse here will override the ForceMaps/ForceVoidmaps (for now)', 'multitoggle', 0, null, 'Scryer');
     createSetting('ScryerDieToUseS', 'Die To Use S', 'Turning this on will switch you back to S even when doing so would kill you. Happens in scenarios where you used Skip Corrupteds that took you into regular Autostance X/H stance, killed the corrupted and reached a non-corrupted enemy that you wish to use S on, but you havent bred yet and you are too low on health to just switch back to S. So youd rather die, wait to breed, then use S for the full non-corrupted enemy, to maximize DE. This feature was added for 1 person, use at your own risk.', 'boolean', false, null, 'Scryer');
     createSetting('ScryerDieZ', 'Scryer Suicide Z', 'You know, Die To Use S is helpful and all, but sometimes it doesn\'t matter in early zones. Don\'t you think so? That was a rhetorical question, don\'t answer it. Like Void Maps config, you can put a decimal value for cell, like 230.60 for after zone 230 for >= 60th cell.', 'value', 230.60, null, 'Scryer');
     //createSetting('ScryUseinPoison', ' Scry in Poison', ['Maybe Use in Poison', 'Force Use in Poison', 'Never Use in Poison']
@@ -443,6 +447,7 @@ function initializeAllSettings() {
     createSetting('AutoPoison', 'Poison', 'Spend/convert Poison tokens', 'dropdown', 'Off', ['Off', 'Empowerment', 'Transfer', 'Convert to Wind', 'Convert to Ice', 'Convert to Both'], 'Nature');
     createSetting('AutoWind', 'Wind', 'Spend/convert Wind tokens', 'dropdown', 'Off', ['Off', 'Empowerment', 'Transfer', 'Convert to Poison', 'Convert to Ice', 'Convert to Both'], 'Nature');
     createSetting('AutoIce', 'Ice', 'Spend/convert Ice tokens', 'dropdown', 'Off', ['Off', 'Empowerment', 'Transfer', 'Convert to Poison', 'Convert to Wind', 'Convert to Both'], 'Nature');
+    createSetting('WindInMaps', 'Wind in maps', 'Use wind stance while in maps ', 'boolean', false, null, 'Nature');
 
 
 
@@ -476,23 +481,7 @@ function initializeAllSettings() {
     createSetting('ExportAutoTrimps', 'Export AutoTrimps', 'Export your AutoTrimps Settings as a output string text formatted in JSON.', 'infoclick', 'ExportAutoTrimps', null, 'Import Export');
     createSetting('DefaultAutoTrimps', 'Reset to Default', 'Reset everything to the way it was when you first installed the script. ', 'infoclick', 'ResetDefaultSettingsProfiles', null, 'Import Export');
     createSetting('CleanupAutoTrimps', 'Cleanup Saved Settings ', 'Deletes old values from previous versions of the script from your AutoTrimps Settings file.', 'infoclick', 'CleanupAutoTrimps', null, 'Import Export');
-    createSetting('allowSettingsUpload', 'Allow Analytics Upload', 'Uploads your AUTOTRIMPS saved settings files (the same as Export AutoTrimps on this tab) <b>anonymously</b> - to https://autotrimps.site = the official Autotrimps development server. It will remain private for now, and aggregated for analytics to improve the script in the future and see which features are being used. Please Opt in. The upload will be approximately a small 5-10KB uncompressed text file every time the script is LOADED (for the time being until it is refined), and there is no concern for any personal data leak or privacy concern. This is all in good faith, and you are welcome to check the open source file modules/client-server.js. In the future, I will have to make a more fine-grained data-usage privacy-policy. Possible other data collected in the near-future may include certain game stats such as your highest zone, helium amount, bones, resource/magma/DE amounts, perk ratio selections. ', 'boolean', true, null, 'Import Export');
     settingsProfileMakeGUI();   //Settings Profile dropdown and Delete button. (this always shows up first - can be here last)
-    //createSetting('ExportModuleVars', 'Export Custom Variables', 'Export your custom MODULES variables.', 'infoclick', 'ExportModuleVars', null, 'Import Export');
-    //createSetting('ImportModuleVars', 'Import Custom Variables', 'Import your custom MODULES variables (and save).', 'infoclick', 'ImportModuleVars', null, 'Import Export');
-    //createSetting('ResetModuleVars', 'Reset Custom Variables', 'Reset(Delete) your custom MODULES variables, and return the script to normal. ', 'infoclick', 'ResetModuleVars', null, 'Import Export');
-    
-    //createSetting('PlayerLevel', 'PlayerLevel', 'PlayerLevel: Indicate around what level you are. noob, low, medium, high, spire, magma, expert, z450+, z500+, endgame and so on. Might be used to control which settings are visible in the future. ', 'dropdown', "Medium", ["Noob","Low","Medium","High","Spire","Magma","Expert","z450+","z500+","EndGame"], 'Display');
-    /*
-    createSetting('ATModuleListDropdown', 'Modules', 'AT Module List Dropdown: Lists all the individual modules (.js files) that have been auto-loaded. It might be possible to unload these or something in the future.', 'dropdown', ATmoduleList[0], ATmoduleList, 'Import Export');
-    document.getElementById('ATModuleListDropdown').multiple = true;    //allow 4 multiple selections
-    document.getElementById('ATModuleListDropdown').size = 4;
-    document.getElementById('ATModuleListDropdown').height = '5vw';    
-    document.getElementById('ATModuleListDropdownLabel').style.verticalAlign = 'top';
-    document.getElementById('ATModuleListDropdownLabel').parentNode.style.width = null; //make the next stuff fit on 1 line.
-    createSetting('ATModuleUnload', 'Unload Module', 'UnLoads a running module file this session', 'infoclick', 'ATModuleUnload', null, 'Import Export');    
-    createSetting('ATModuleLoad', 'ReLoad Module', 'Load/Reloads a module file (.js) and runs it.', 'infoclick', 'ATModuleLoad', null, 'Import Export');
-    */
 }
 initializeAllSettings(); //EXECUTE
 
@@ -818,7 +807,7 @@ function updateCustomButtons() {
     //automaps button in GUI
     document.getElementById("autoMapBtn").setAttribute("class", "noselect settingsBtn settingBtn" + autoTrimpSettings.AutoMaps.value);
     //auto portal setting, hide until player has unlocked the balance challenge
-    (game.challenges.Balance.filter()) ? turnOn("AutoPortal") : turnOff("AutoPortal");
+    //(game.challenges.Balance.filter()) ? turnOn("AutoPortal") : turnOff("AutoPortal");
     //auto Daily settings, hide until player has unlocked the Daily challenges
     var doDaily = game.challenges.Daily.filter();
     (doDaily) ? turnOn("AutoStartDaily") : turnOff("AutoStartDaily");
@@ -862,6 +851,9 @@ function updateCustomButtons() {
         turnOff("goldNoBattle");
     }
     //document.getElementById('Prestige').value = autoTrimpSettings.Prestige.selected; //dont update this, dynamic prestige takes it over and is handled elsewhere.
+
+    //IWannaLive should hide the field when disabled and show it when enabled
+    toggleElem('IWannaLiveForHowLong', getPageSetting('IWannaLive'));
 
     //stop disable farming from needing a refresh
     if (getPageSetting('DisableFarm'))

@@ -5,9 +5,9 @@
 
 //OLD:
 //renamed from sortHeirlooms to worthOfHeirlooms
-var worth = {'Shield': {}, 'Staff': {}};
+var worth = {'Shield': {}, 'Staff': {}, 'Core': {}};
 function worthOfHeirlooms(){
-    worth = {'Shield': {}, 'Staff': {}};
+    worth = {'Shield': {}, 'Staff': {}, 'Core': {}};
     for (var loom in game.global.heirloomsExtra) {
         var theLoom = game.global.heirloomsExtra[loom];
         worth[theLoom.type][loom] = theLoom.rarity;
@@ -28,9 +28,9 @@ function worthOfHeirlooms(){
 
 //NEW:
 //makes an array of heirlooms sitting in the temporary extra area to indicate to the autoHeirlooms2() function which to Carry/Drop
-var worth2 = {'Shield': [], 'Staff': []};
+var worth2 = {'Shield': [], 'Staff': [], 'Core': []};
 function worthOfHeirlooms2(){
-    worth2 = {'Shield': [], 'Staff': []};
+    worth2 = {'Shield': [], 'Staff': [], 'Core': []};
     for (var index in game.global.heirloomsExtra) {
         var theLoom = game.global.heirloomsExtra[index];
         var data = {'location': 'heirloomsExtra', 'index': index, 'rarity': theLoom.rarity, 'eff': evaluateHeirloomMods(index, 'heirloomsExtra')};
@@ -71,7 +71,7 @@ function autoHeirlooms2() {
         var originalLength = game.global.heirloomsExtra.length;
         for(var index=0; index < originalLength; index++) {
             var theLoom = game.global.heirloomsExtra[index];
-            if ((theLoom.protected) && (game.global.heirloomsCarried.length < game.global.maxCarriedHeirlooms)){
+            if ((theLoom.protected) && (game.global.heirloomsCarried.length < getMaxCarriedHeirlooms())){
                 selectHeirloom(index, 'heirloomsExtra');
                 carryHeirloom();
                 index--; originalLength--;  //stop index-skipping/re-ordering (idk how else to do it).
@@ -81,7 +81,7 @@ function autoHeirlooms2() {
         //now start by re-filling any empty carried slots with the most highly evaluated heirlooms
         //Alternates EQUALLY between Shield and Staff, putting the best ones of each.
         //PART 3:
-        while ((game.global.heirloomsCarried.length < game.global.maxCarriedHeirlooms) && game.global.heirloomsExtra.length > 0){
+        while ((game.global.heirloomsCarried.length < getMaxCarriedHeirlooms()) && game.global.heirloomsExtra.length > 0){
             //re-evaluate their worth (needed to refresh the worth array since we for sure re-arranged everything.)
             worthOfHeirlooms2();
             if (worth2["Shield"].length > 0){
@@ -132,7 +132,7 @@ function autoHeirlooms() {
         //start by immediately carrying any protected heirlooms.
         for(var extra in game.global.heirloomsExtra) {
             var theLoom = game.global.heirloomsExtra[extra];
-            if ((theLoom.protected) && (game.global.heirloomsCarried.length < game.global.maxCarriedHeirlooms)){
+            if ((theLoom.protected) && (game.global.heirloomsCarried.length < getMaxCarriedHeirlooms())){
                 selectHeirloom(extra, 'heirloomsExtra');
                 carryHeirloom();
             }
@@ -153,7 +153,7 @@ function autoHeirlooms() {
                 }
             }
         }
-        if (game.global.heirloomsCarried.length < game.global.maxCarriedHeirlooms){
+        if (game.global.heirloomsCarried.length < getMaxCarriedHeirlooms()){
             if(worth.Shield.length > 0)
                 selectHeirloom(worth.Shield[0], 'heirloomsExtra');
             else if(worth.Staff.length > 0)

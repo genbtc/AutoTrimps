@@ -82,16 +82,18 @@ function autoPortal() {
             break;
         case "Balance":
         case "Decay":
+        case "Melt":
         case "Electricity":
         case "Life":
         case "Crushed":
         case "Nom":
         case "Toxicity":
-            if (getPageSetting('MaxTox'))
+            if (!game.global.challengeActive && getPageSetting('MaxTox'))
                 settingChanged("MaxTox");
         case "Watch":
         case "Lead":
         case "Corrupted":
+        case "Domination":
             if(!game.global.challengeActive) {
                 doPortal(autoTrimpSettings.AutoPortal.selected);
             }
@@ -165,6 +167,8 @@ function findOutCurrentPortalLevel() {
     var portalLevelName =
     {
         "Balance" : 41,
+        "Melt": 51,
+        "Quagmire": 71,
         "Decay" : 56,
         "Electricity" : 82,
         "Crushed" : 126,
@@ -172,7 +176,8 @@ function findOutCurrentPortalLevel() {
         "Toxicity" : 166,
         "Lead" : 181,
         "Watch" : 181,
-        "Corrupted" : 191
+        "Corrupted" : 191,
+        "Domination" : 216
     };
     var AP = getPageSetting("AutoPortal");
     switch (AP) {

@@ -2,21 +2,24 @@
 
 function calcBaseDamageinX() {
     //baseDamage
-    baseDamage = game.global.soldierCurrentAttack * (1 + (game.global.achievementBonus / 100)) * ((game.global.antiStacks * game.portal.Anticipation.level * game.portal.Anticipation.modifier) + 1) * (1 + (game.global.roboTrimpLevel * 0.2)) * (1 + (game.global.totalSquaredReward / 100)) * (game.talents.stillRowing2.purchased ? (1 + (0.06 * game.global.spireRows)) : 1) * (game.talents.healthStrength.purchased ? (1 + (0.15 * mutations.Healthy.cellCount())) : 1) * (Fluffy.isActive() ? Fluffy.getDamageModifier() : 1) * (1 + (1 - game.empowerments.Ice.getCombatModifier())) * (game.talents.magmamancer.purchased ? game.jobs.Magmamancer.getBonusPercent() : 1);
-    if (game.global.challengeActive == "Daily"){
-        if (typeof game.global.dailyChallenge.weakness !== 'undefined'){
-            baseDamage *= dailyModifiers.weakness.getMult(game.global.dailyChallenge.weakness.strength, game.global.dailyChallenge.weakness.stacks);
-        }
-        if (typeof game.global.dailyChallenge.oddTrimpNerf !== 'undefined' && ((game.global.world % 2) == 1)){
-            baseDamage *= dailyModifiers.oddTrimpNerf.getMult(game.global.dailyChallenge.oddTrimpNerf.strength);
-        }
-        if (typeof game.global.dailyChallenge.evenTrimpBuff !== 'undefined' && ((game.global.world % 2) == 0)){
-            baseDamage *= dailyModifiers.evenTrimpBuff.getMult(game.global.dailyChallenge.evenTrimpBuff.strength);
-        }
-        if (typeof game.global.dailyChallenge.rampage !== 'undefined'){
-            baseDamage *= dailyModifiers.rampage.getMult(game.global.dailyChallenge.rampage.strength, game.global.dailyChallenge.rampage.stacks);
-        }
-    }
+//     baseDamage = game.global.soldierCurrentAttack * (1 + (game.global.achievementBonus / 100)) * ((game.global.antiStacks * game.portal.Anticipation.level * game.portal.Anticipation.modifier) + 1) * (1 + (game.global.roboTrimpLevel * 0.2)) * (1 + (game.global.totalSquaredReward / 100)) * (game.talents.stillRowing2.purchased ? (1 + (0.06 * game.global.spireRows)) : 1) * (game.talents.healthStrength.purchased ? (1 + (0.15 * mutations.Healthy.cellCount())) : 1) * (Fluffy.isActive() ? Fluffy.getDamageModifier() : 1) * (1 + (1 - game.empowerments.Ice.getCombatModifier())) * (game.talents.magmamancer.purchased ? game.jobs.Magmamancer.getBonusPercent() : 1);
+//     if (game.global.challengeActive == "Daily"){
+//         if (typeof game.global.dailyChallenge.weakness !== 'undefined'){
+//             baseDamage *= dailyModifiers.weakness.getMult(game.global.dailyChallenge.weakness.strength, game.global.dailyChallenge.weakness.stacks);
+//         }
+//         if (typeof game.global.dailyChallenge.oddTrimpNerf !== 'undefined' && ((game.global.world % 2) == 1)){
+//             baseDamage *= dailyModifiers.oddTrimpNerf.getMult(game.global.dailyChallenge.oddTrimpNerf.strength);
+//         }
+//         if (typeof game.global.dailyChallenge.evenTrimpBuff !== 'undefined' && ((game.global.world % 2) == 0)){
+//             baseDamage *= dailyModifiers.evenTrimpBuff.getMult(game.global.dailyChallenge.evenTrimpBuff.strength);
+//         }
+//         if (typeof game.global.dailyChallenge.rampage !== 'undefined'){
+//             baseDamage *= dailyModifiers.rampage.getMult(game.global.dailyChallenge.rampage.strength, game.global.dailyChallenge.rampage.stacks);
+//         }
+//     }
+    // yay #7, @todo take care of calcBaseDamageinX2 (or, rather, battlecalc.js:calcOurDmg)
+    //baseDamage according to game
+    baseDamage = calculateDamage(game.global.soldierCurrentAttack, false, true);
     //baseBlock
     baseBlock = game.global.soldierCurrentBlock;
     //baseHealth
@@ -251,7 +254,10 @@ function autoStance() {
 
 function autoStance2() {
     //get back to a baseline of no stance (X)
-    calcBaseDamageinX2();
+    //calcBaseDamageinX2();
+    //temporary stick to help with #7
+    //stats in v2 are about x100 off
+    calcBaseDamageinX();
     //no need to continue
     if (game.global.gridArray.length === 0) return true;
     if (game.global.soldierHealth <= 0) return; //dont calculate stances when dead, cause the "current" numbers are not updated when dead.
@@ -294,6 +300,11 @@ function autoStance2() {
         enemyDamage *= 2;
     if (enemy.corrupted == 'corruptTough')
         enemyHealth *= 5;
+    //Ice
+    var iceFactor = game.empowerments.Ice.getCombatModifier();
+    if (iceFactor && iceFactor < 1) {
+        enemyDamage *= iceFactor;
+    }
 
     //calc X,D,B:
     var xDamage = (enemyDamage - baseBlock);
@@ -396,8 +407,17 @@ function autoStance2() {
     var voidCritinXok = !isCritThing || oneshotFast || surviveX;
 
     if (!game.global.preMapsActive && game.global.soldierHealth > 0) {
+        //use Wind stance if: enlightened wind is active and we're in the wind zone
+        if (getUberEmpowerment() == "Wind" && getEmpowerment() == "Wind"
+            //only use Wind in maps if the user wants it
+            && (!game.global.mapsActive || getPageSetting('WindInMaps'))
+            //turn Wind off in spires, we don't want any trouble on plagued dailies or something
+            && !mainWrapper.isInSpire()
+            //we want to switch Wind off as soon as we hit 300 if we can't possibly overkill
+            && (mainWrapper.canOverkill() || game.empowerments.Wind.currentDebuffPower < 300)) {
+            setFormation(5);
         //use D stance if: new army is ready&waiting / can survive void-double-attack or we can one-shot / can survive lead damage / can survive void-crit-dmg
-        if (game.upgrades.Dominance.done && surviveD && leadAttackOK && drainAttackOK && voidCritinDok && dExplosionOK) {
+        } else if (game.upgrades.Dominance.done && surviveD && leadAttackOK && drainAttackOK && voidCritinDok && dExplosionOK) {
             setFormation(2);
         //if CritVoidMap, switch out of D stance if we cant survive. Do various things.
         } else if (isCritThing && !voidCritinDok) {

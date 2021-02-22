@@ -1,16 +1,30 @@
 MODULES["jobs"] = {};
 //These can be changed (in the console) if you know what you're doing:
 MODULES["jobs"].scientistRatio = 25;        //ratio for scientists. (totalRatios / this)
-MODULES["jobs"].scientistRatio2 = 10;       //used for lowlevel and Watch challenge
+MODULES["jobs"].scientistRatio2 = 10;       //used for lowlevel, Watch and Archaeology challenges
 MODULES["jobs"].magmamancerRatio = 0.1;     //buys 10% of your gem resources per go.
 //Worker Ratios = [Farmer,Lumber,Miner]
-MODULES["jobs"].autoRatio6 = [1,12,12];
-MODULES["jobs"].autoRatio5 = [1,2,22];
-MODULES["jobs"].autoRatio4 = [1,1,10];
-MODULES["jobs"].autoRatio3 = [3,1,4];
-MODULES["jobs"].autoRatio2 = [3,3,5];
-MODULES["jobs"].autoRatio1 = [1,1,1];
-MODULES["jobs"].customRatio;    //set this like above and it will Auto use it.
+MODULES["jobs"].ratios = {};
+MODULES["jobs"].ratios[1] = {};
+MODULES["jobs"].ratios[2] = {};
+//[1] is U1
+MODULES["jobs"].ratios[1][8] = [1,1,100];
+MODULES["jobs"].ratios[1][7] = [1,1,24];
+MODULES["jobs"].ratios[1][6] = [1,12,12];
+MODULES["jobs"].ratios[1][5] = [1,2,22];
+MODULES["jobs"].ratios[1][4] = [1,1,10];
+MODULES["jobs"].ratios[1][3] = [3,1,4];
+MODULES["jobs"].ratios[1][2] = [3,3,5];
+MODULES["jobs"].ratios[1][1] = [1,1,1];
+//[2] is U2
+MODULES["jobs"].ratios[2][6] = [1,1,1];
+MODULES["jobs"].ratios[2][5] = [1,20,200];
+MODULES["jobs"].ratios[2][4] = [10,1,1];
+MODULES["jobs"].ratios[2][3] = [3,1,4];
+MODULES["jobs"].ratios[2][2] = [3,3,5];
+MODULES["jobs"].ratios[2][1] = [1,1,1];
+//set this like above and it will Auto use it.
+MODULES["jobs"].customRatio;
 
 function safeBuyJob(jobTitle, amount) {
     if (!Number.isFinite(amount) || amount === 0 || typeof amount === 'undefined' || Number.isNaN(amount)) {
@@ -83,7 +97,7 @@ function buyJobs() {
     var minerRatio = parseInt(getPageSetting('MinerRatio'));
     var totalRatio = farmerRatio + lumberjackRatio + minerRatio;
     var scientistRatio = totalRatio / MODULES["jobs"].scientistRatio;
-    if (game.jobs.Farmer.owned < 100) {
+    if (game.jobs.Farmer.owned < 100 || game.global.challengeActive == "Archaeology") {
         scientistRatio = totalRatio / MODULES["jobs"].scientistRatio2;
     }
 
@@ -176,6 +190,10 @@ function buyJobs() {
             safeBuyJob('Scientist', buyScientists);
         }
     }
+    //Meteorologists
+    if (game.jobs.Meteorologist.locked == 0) {
+        checkFireandHire('Meteorologist');
+    }
     //Trainers:
     if (getPageSetting('MaxTrainers') > game.jobs.Trainer.owned || getPageSetting('MaxTrainers') == -1) {
         // capped to tributes percentage.
@@ -225,8 +243,13 @@ function buyJobs() {
     //game.jobs.Magmamancer.getBonusPercent(true);
     var timeOnZone = Math.floor((new Date().getTime() - game.global.zoneStarted) / 60000);
     // Add 5 minutes for zone-time for magmamancer mastery
-    if (game.talents.magmamancer.purchased)
+    if (game.talents.magmamancer.purchased) {
         timeOnZone += 5;
+    }
+    // Add some minutes for Still Magmamancing master
+    if (game.talents.stillMagmamancer.purchased) {
+        timeOnZone += game.global.spireRows;
+    }
     var stacks2 = Math.floor(timeOnZone / 10);
     if (getPageSetting('AutoMagmamancers') && stacks2 > tierMagmamancers) {
         var old = preBuy2();
@@ -279,22 +302,54 @@ function workerRatios() {
     var ratioSet;
     if (MODULES["jobs"].customRatio) {
         ratioSet = MODULES["jobs"].customRatio;
-    } else if (game.buildings.Tribute.owned > 3000 && mutations.Magma.active()) {
-        ratioSet = MODULES["jobs"].autoRatio6;
-    } else if (game.buildings.Tribute.owned > 1500) {
-        ratioSet = MODULES["jobs"].autoRatio5;
-    } else if (game.buildings.Tribute.owned > 1000) {
-        ratioSet = MODULES["jobs"].autoRatio4;
-    } else if (game.resources.trimps.realMax() > 3000000) {
-        ratioSet = MODULES["jobs"].autoRatio3;
-    } else if (game.resources.trimps.realMax() > 300000) {
-        ratioSet = MODULES["jobs"].autoRatio2;
     } else {
-        ratioSet = MODULES["jobs"].autoRatio1;
+        ratio = 1;
+
+        if (game.global.universe == 2) {
+            //if we have a ton of tributes, we don't need more even if greed is not maxed yet
+            if (getPerkLevel("Greed") > 4 || game.buildings.Tribute.owned > 1250) {
+                ratio++;
+            }
+            if (game.buildings.Tribute.owned > 1250) {
+                ratio++;
+            }
+        } else {
+            if (game.buildings.Tribute.owned > 6000 && mutations.Magma.active()) {
+                ratio++;
+            }
+            if (game.buildings.Tribute.owned > 4500 && mutations.Magma.active()) {
+                ratio++;
+            }
+            if (game.buildings.Tribute.owned > 3000 && mutations.Magma.active()) {
+                ratio++;
+            }
+            if (game.buildings.Tribute.owned > 1500) {
+                ratio++;
+            }
+            if (game.buildings.Tribute.owned > 1000) {
+                ratio++;
+            }
+        }
+
+        if (game.resources.trimps.realMax() > 3000000) {
+            ratio++;
+        }
+        if (game.resources.trimps.realMax() > 300000) {
+            ratio++;
+        }
+
+        //we want that sweet parity buff if we're where it's important (u2)
+        //1:1:1 gets quite a bonus, which is not that lower than 1:0:0 skew, so we'll stick to this
+        //TODO have a setting for maxing parity
+        if (game.global.universe == 2 && getParityBonus() > 1) {
+            ratio = 6;
+        }
+
+        ratioSet = MODULES["jobs"].ratios[game.global.universe][ratio];
     }
     //Override normal ratios with challenge specific ones
     if (game.global.challengeActive == 'Watch'){
-        ratioSet = MODULES["jobs"].autoRatio1;
+        ratioSet = MODULES["jobs"].ratios[1][1];
     } else if (game.global.challengeActive == 'Metal'){
         ratioSet = [4,5,0]; //this challenge likes workers split half and half between farmers and lumbers (idk why)
     }
