@@ -130,7 +130,7 @@ equality.setStacks = function(equalityNeeded) {
     if (isNaN(game.portal.Equality.disabledStackCount)) {
         game.portal.Equality.disabledStackCount = 0;
     }
-    if (isNaN(equalityNeeded) {
+    if (isNaN(equalityNeeded)) {
         equalityNeeded = 0;
     }
     //also this happens to be string if set via slider, hence Number() call
