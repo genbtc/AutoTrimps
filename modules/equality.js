@@ -87,7 +87,8 @@ equality.manageEquality = function() {
             //but for lower-dmg enemies we might get away with less equality
             //(x2 difference in dmg is not uncommon)
             //likewise, improbability hits a tad higher
-            var minEnemyDamage = calculateDamage(cell.attack, false, false, false, cell, true);
+            //math.max for the case when atk is somehow zero
+            var minEnemyDamage = calculateDamage(Math.max(cell.attack, 1), false, false, false, cell, true);
             var maxEnemyDamage = mainWrapper.min2max(minEnemyDamage);
 
             var enemyDamage = maxEnemyDamage;
@@ -128,6 +129,9 @@ equality.setStacks = function(equalityNeeded) {
     //this can also be NaN sometimes
     if (isNaN(game.portal.Equality.disabledStackCount)) {
         game.portal.Equality.disabledStackCount = 0;
+    }
+    if (isNaN(equalityNeeded) {
+        equalityNeeded = 0;
     }
     //also this happens to be string if set via slider, hence Number() call
     game.portal.Equality.disabledStackCount = Number(game.portal.Equality.disabledStackCount) + equalityNeeded;

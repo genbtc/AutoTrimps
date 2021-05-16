@@ -90,18 +90,19 @@ var presetListHtml = "\
 <option id='customPreset'>CUSTOM ratio</option></select>";
 
 //U2
-//[looting,toughness,power,motivation,pheromones,artisanistry,carpentry,resilience,prismal,equality,criticality,tenacity, greed, frenzy, observation]
-var preset_Rspace = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-var preset_RZek059 = [7, 10, 5, 1, 0.5, 2, 12, 9, 0.5, 2, 5, 0, 0, 0, 0];
-var preset_RZekmelt = [10, 0.5, 2, 0.5, 0.3, 1.2, 3, 1, 0.5, 1, 3, 18, 20, 0, 0];
-var preset_RZekquag = [8, 0.7, 1.8, 0.8, 0.2, 1.3, 3.3, 0.6, 0.8, 2.8, 6.2, 18, 27, 12, 0];
-var preset_Rmauquag = [8, 0.7, 1.8, 0.8, 0.2, 1.3, 3.3, 0.6, 0.8, 0.01, 6.2, 18, 27, 12, 0];
-var preset_Rmauc3 = [1, 1, 3, 0.8, 0.2, 1.3, 3.3, 2, 1, 0.01, 6.2, 30, 1, 12, 1];
-var preset_Rmauc3greedy = [8, 1, 3, 0.8, 0.2, 1.3, 3.3, 2, 1, 0.01, 6.2, 18, 15, 12, 1];
-var preset_Rmauz135 = [8, 0.7, 1.8, 0.8, 0.2, 1.3, 3.3, 2.1, 0.8, 0.1, 2, 1, 2, 1.2, 5];
+//[looting,toughness,power,motivation,pheromones,artisanistry,carpentry,resilience,prismal,equality,criticality,tenacity, greed, frenzy, observation, championism]
+var preset_Rspace = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+var preset_RZek059 = [7, 10, 5, 1, 0.5, 2, 12, 9, 0.5, 2, 5, 0, 0, 0, 0, 0];
+var preset_RZekmelt = [10, 0.5, 2, 0.5, 0.3, 1.2, 3, 1, 0.5, 1, 3, 18, 20, 0, 0, 0];
+var preset_RZekquag = [8, 0.7, 1.8, 0.8, 0.2, 1.3, 3.3, 0.6, 0.8, 2.8, 6.2, 18, 27, 12, 0, 0];
+var preset_Rmauquag = [8, 0.7, 1.8, 0.8, 0.2, 1.3, 3.3, 0.6, 0.8, 0.01, 6.2, 18, 27, 12, 0, 0];
+var preset_Rmauc3 = [1, 1, 3, 0.8, 0.2, 1.3, 3.3, 2, 1, 0.01, 6.2, 30, 1, 12, 1, 1];
+var preset_Rmauc3greedy = [8, 1, 3, 0.8, 0.2, 1.3, 3.3, 2, 1, 0.01, 6.2, 18, 15, 12, 1, 0];
+var preset_Rmauz135 = [8, 0.7, 1.8, 0.8, 0.2, 1.3, 3.3, 2.1, 0.8, 0.1, 2, 1, 2, 1.2, 5, 0];
+var preset_Rmauz155 = [8, 0.7, 1.8, 0.8, 0.2, 1.3, 3.3, 2.1, 0.8, 0.1, 2, 1, 2, 1.2, 5, 1];
 
 var presetListU2 = [preset_RZek059, preset_RZekmelt, preset_RZekquag, preset_Rmauquag, 
-                    preset_Rmauc3, preset_Rmauz135, preset_Rspace];
+                    preset_Rmauc3, preset_Rmauz135, preset_Rmauz155, preset_Rspace];
 var presetListHtmlU2 = "\
 <option id='preset_RZek059'>Adjusted Zek (z1-59)</option>\
 <option id='preset_RZekmelt'>Adjusted Zek (Melt)</option>\
@@ -109,6 +110,7 @@ var presetListHtmlU2 = "\
 <option id='preset_Rmauquag'>maurezen quagmire</option>\
 <option id='preset_Rmauc3'>maurezen c3</option>\
 <option id='preset_Rmauz135'>maurezen ~z135</option>\
+<option id='preset_Rmauz135'>maurezen ~z155</option>\
 <option id='preset_Rspace'>--------------</option>\
 <option id='customPreset'>CUSTOM ratio</option></select>";	
 
@@ -190,7 +192,7 @@ AutoPerks.displayGUI = function() {
         apGUI.$ratiosLine3.setAttribute('style', 'display: inline-block; text-align: left; width: 100%');
         apGUI.$customRatios.appendChild(apGUI.$ratiosLine3);
         var listratiosLine3;
-        listratiosLine3 = ["Resilience","Tenacity","Greed", "Frenzy", "Observation"];
+        listratiosLine3 = ["Resilience","Tenacity","Greed", "Frenzy", "Observation", "Championism"];
         for (var i in listratiosLine3) {
             AutoPerks.createInput(listratiosLine3[i],apGUI.$ratiosLine3);    
         }  
@@ -946,13 +948,17 @@ AutoPerks.initializePerks = function () {
     var observation = new AutoPerks.VariablePerk("observation", 5000000000000000000, true, 14, 10);
     observation.exprate = 2;
     observation.type = AutoPerks.QUADRATIC_TYPE;
+
+    //value it at 10% compounding (would be true at 18 SA levels)
+    var championism = new AutoPerks.VariablePerk("championism", 1e9, true, 15, 0.1)
+    championism.exprate = 5;
     
     AutoPerks.perkHolder = [];    
     //gather these into an array of objects
     if (game.global.universe == 1) {
         AutoPerks.perkHolder = [siphonology, anticipation, meditation, relentlessness, range, agility, bait, trumps, packrat, looting, toughness, power, motivation, pheromones, artisanistry, carpentry, resilience, coordinated, resourceful, overkill, capable, cunning, curious, classy, toughness_II, power_II, motivation_II, carpentry_II, looting_II];
     } else if (game.global.universe == 2) {
-        AutoPerks.perkHolder = [range, agility, bait, trumps, packrat, hunger, looting, toughness, resilience, power, motivation, pheromones, artisanistry, carpentry, prismal, equality, criticality, tenacity, greed, frenzy, observation];
+        AutoPerks.perkHolder = [range, agility, bait, trumps, packrat, hunger, looting, toughness, resilience, power, motivation, pheromones, artisanistry, carpentry, prismal, equality, criticality, tenacity, greed, frenzy, observation, championism];
     }
     //initialize basics on all.
     for(var i in AutoPerks.perkHolder) {
